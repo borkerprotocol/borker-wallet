@@ -3,8 +3,6 @@ import Sidebar, { SidebarProps } from "react-sidebar"
 import logo from '../assets/logo.svg'
 import './App.css'
 import SidebarContent from "./sidebar-content"
-// import * as borkerLib from 'borker-rs'
-// const borker = new borkerLib.JsWallet([])
 
 const mql = window.matchMedia(`(min-width: 800px)`);
 
@@ -52,8 +50,10 @@ class App extends React.Component<{}, AppState> {
 
   async componentWillMount() {
     mql.addListener(this.mediaQueryChanged)
-    // const words = borker.words()
-    // console.log(words)
+    const borkerLib = await import('borker-rs')
+    const wallet = new borkerLib.JsWallet(undefined as any)
+    const words = wallet.words()
+    console.log(words.join(" "))
   }
 
   componentWillUnmount() {
