@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/react-sidebar": "^3.0.0",
-    "borker-rs": "^0.1.3",
+    "borker-rs": "^0.1.5",
     "lighthouse": "^4.0.0-alpha.2-3.2.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",

@@ -51,7 +51,7 @@ class App extends React.Component<{}, AppState> {
   async componentWillMount() {
     mql.addListener(this.mediaQueryChanged)
     const borkerLib = await import('borker-rs')
-    const wallet = new borkerLib.JsWallet(undefined as any)
+    const wallet = new borkerLib.JsWallet()
     const words = wallet.words()
     console.log(words.join(" "))
   }
