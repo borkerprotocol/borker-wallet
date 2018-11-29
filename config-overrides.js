@@ -7,7 +7,6 @@ module.exports = function override(config, env) {
 
   config.resolve.extensions.push('.wasm');
   // make the file loader ignore wasm files
-  console.log(config.module.rules.find(section => section.oneOf));
   const fileLoader = config.module.rules
     .find(section => section.oneOf).oneOf
     .find(rule => rule.loader && rule.loader.includes(`file-loader`));
