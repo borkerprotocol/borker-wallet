@@ -1,8 +1,8 @@
 import React from 'react'
 
-export interface PostsProps {}
+export interface SettingsProps {}
 
-export interface PostsState {}
+export interface SettingsState {}
 
 const styles = {
   content: {
@@ -10,7 +10,7 @@ const styles = {
   }
 }
 
-class Posts extends React.Component<PostsProps, PostsState> {
+class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
   constructor(props) {
     super(props)
@@ -21,11 +21,11 @@ class Posts extends React.Component<PostsProps, PostsState> {
     return (
       <div style={styles.content}>
         <p>
-          Posts Page
+          Settings Page
         </p>
       </div>
     )
   }
 }
 
-export default Posts
+export default SettingsPage

@@ -10,7 +10,7 @@ const styles = {
   }
 }
 
-class Wallet extends React.Component<WalletProps, WalletState> {
+class WalletPage extends React.Component<WalletProps, WalletState> {
 
   constructor(props) {
     super(props)
@@ -35,4 +35,4 @@ class Wallet extends React.Component<WalletProps, WalletState> {
   }
 }
 
-export default Wallet
+export default WalletPage

@@ -1,11 +1,10 @@
 import React from 'react'
 import Sidebar, { SidebarProps } from "react-sidebar"
-import { BrowserRouter as Router, Route, Link } from "react-router-dom"
-import './App.css'
-import Posts from './posts/posts'
-import Wallet from './wallet/wallet'
-import Settings from './settings/settings'
-import SidebarContent from './sidebar-content/sidebar-content';
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom"
+import PostsPage from './pages/posts/posts'
+import WalletPage from './pages/wallet/wallet'
+import SettingsPage from './pages/settings/settings'
+import SidebarContent from './sidebar-content'
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
@@ -21,14 +20,6 @@ const styles = {
     textDecoration: "none",
     color: "white",
     padding: 8
-  },
-  content: {
-    padding: "16px"
-  },
-  root: {
-    fontFamily:
-      '"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif',
-    fontWeight: 300
   },
   header: {
     backgroundColor: "gray",
@@ -79,39 +70,17 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   render() {
-    const routes = [
-      {
-        path: "/posts",
-        exact: true,
-        title: () => contentHeader('Posts'),
-        body: () => <Posts />
-      },
-      {
-        path: "/wallet",
-        exact: true,
-        title: () => contentHeader('Wallet'),
-        body: () => <Wallet />
-      },
-      {
-        path: "/settings",
-        exact: true,
-        title: () => contentHeader('Settings'),
-        body: () => <Settings />
-      }
-    ]
-
-    const contentHeader = (title: string) => (
+    const contentHeader = (
       <span>
         {!this.state.sidebarDocked && (
           <a
-            href="#"
             onClick={this.toggleSidebar}
             style={styles.contentHeaderMenuLink}
           >
             =
           </a>
         )}
-        <span>{title}</span>
+        <span>Borker!</span>
       </span>
     )
 
@@ -126,28 +95,15 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <Router>
         <Sidebar {...sidebarProps}>
-          <div style={styles.root}>
-            <div style={styles.header}>
-              {routes.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={route.title}
-                />
-              ))}
-            </div>
+          <div style={styles.header}>
+            {contentHeader}
           </div>
-          <div style={styles.content}>
-            {routes.map((route, index) => (
-              <Route
-                key={index}
-                path={route.path}
-                exact={route.exact}
-                component={route.body}
-              />
-            ))}
-          </div>
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to="/posts" />} />
+            <Route path="/posts" component={PostsPage} />
+            <Route path="/wallet" component={WalletPage} />
+            <Route path="/settings" component={SettingsPage} />
+          </Switch>
         </Sidebar>
       </Router>
     )
