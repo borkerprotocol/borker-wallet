@@ -1,15 +1,19 @@
 import React from 'react'
 import Sidebar, { SidebarProps } from "react-sidebar"
-import logo from '../assets/logo.svg'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom"
 import './App.css'
-import SidebarContent from "./sidebar-content"
+import Posts from './posts/posts'
+import Wallet from './wallet/wallet'
+import Settings from './settings/settings'
+import SidebarContent from './sidebar-content/sidebar-content';
 
-const mql = window.matchMedia(`(min-width: 800px)`);
+const mql = window.matchMedia(`(min-width: 800px)`)
+
+export interface AppProps {}
 
 export interface AppState {
   sidebarOpen: boolean
   sidebarDocked: boolean
-  mql
 }
 
 const styles = {
@@ -30,34 +34,35 @@ const styles = {
     backgroundColor: "gray",
     color: "white",
     padding: "16px",
-    fontSize: "1.5em"
+    fontSize: "1.6em",
+    fontWeight: "bold" as "bold"
+  },
+  sidebar: {
+    sidebar: {
+      overflowY: "hidden"
+    }
   }
 }
 
-class App extends React.Component<{}, AppState> {
+class App extends React.Component<AppProps, AppState> {
 
   constructor(props) {
     super(props)
     this.state = {
       sidebarDocked: mql.matches,
-      sidebarOpen: true,
-      mql
+      sidebarOpen: false,
     }
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this)
-    this.menuButtonClick = this.menuButtonClick.bind(this)
+    this.toggleSidebar = this.toggleSidebar.bind(this)
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     mql.addListener(this.mediaQueryChanged)
-    const borkerLib = await import('borker-rs')
-    const wallet = new borkerLib.JsWallet()
-    const words = wallet.words()
-    console.log(words.join(" "))
   }
 
   componentWillUnmount() {
-    this.state.mql.removeListener(this.mediaQueryChanged)
+    mql.removeListener(this.mediaQueryChanged)
   }
 
   mediaQueryChanged() {
@@ -68,47 +73,83 @@ class App extends React.Component<{}, AppState> {
     this.setState({ sidebarOpen: open })
   }
 
-  menuButtonClick(ev) {
+  toggleSidebar(ev) {
     ev.preventDefault()
     this.onSetSidebarOpen(!this.state.sidebarOpen)
   }
 
   render() {
-    const contentHeader = (
+    const routes = [
+      {
+        path: "/posts",
+        exact: true,
+        title: () => contentHeader('Posts'),
+        body: () => <Posts />
+      },
+      {
+        path: "/wallet",
+        exact: true,
+        title: () => contentHeader('Wallet'),
+        body: () => <Wallet />
+      },
+      {
+        path: "/settings",
+        exact: true,
+        title: () => contentHeader('Settings'),
+        body: () => <Settings />
+      }
+    ]
+
+    const contentHeader = (title: string) => (
       <span>
         {!this.state.sidebarDocked && (
           <a
-            onClick={this.menuButtonClick}
             href="#"
+            onClick={this.toggleSidebar}
             style={styles.contentHeaderMenuLink}
           >
             =
           </a>
         )}
-        <span>Borker</span>
+        <span>{title}</span>
       </span>
     )
 
     const sidebarProps: SidebarProps = {
-      sidebar: <SidebarContent />,
+      sidebar: <SidebarContent toggleSidebar={this.toggleSidebar} />,
       docked: this.state.sidebarDocked,
       open: this.state.sidebarOpen,
       onSetOpen: this.onSetSidebarOpen,
+      styles: styles.sidebar
     }
 
     return (
-      <Sidebar {...sidebarProps}>
-        <div style={styles.root}>
-          <div style={styles.header}>
-            {contentHeader}
+      <Router>
+        <Sidebar {...sidebarProps}>
+          <div style={styles.root}>
+            <div style={styles.header}>
+              {routes.map((route, index) => (
+                <Route
+                  key={index}
+                  path={route.path}
+                  exact={route.exact}
+                  component={route.title}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        <div style={styles.content}>
-          <p>
-            Borker is here!
-          </p>
-        </div>
-      </Sidebar>
+          <div style={styles.content}>
+            {routes.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                component={route.body}
+              />
+            ))}
+          </div>
+        </Sidebar>
+      </Router>
     )
   }
 }
