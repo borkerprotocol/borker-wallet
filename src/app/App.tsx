@@ -2,9 +2,11 @@ import React from 'react'
 import Sidebar, { SidebarProps } from "react-sidebar"
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom"
 import PostsPage from './pages/posts/posts'
+import ProfilePage from './pages/profile/profile'
 import WalletPage from './pages/wallet/wallet'
 import SettingsPage from './pages/settings/settings'
 import SidebarContent from './sidebar-content'
+import './App.css'
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
@@ -80,6 +82,7 @@ class App extends React.Component<AppProps, AppState> {
             =
           </a>
         )}
+        <img src={require('../assets/borker.jpeg')} className="image" />
         <span>Borker!</span>
       </span>
     )
@@ -103,6 +106,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/posts" component={PostsPage} />
             <Route path="/wallet" component={WalletPage} />
             <Route path="/settings" component={SettingsPage} />
+            <Route exact path="/profile/:address" component={ProfilePage} />
           </Switch>
         </Sidebar>
       </Router>

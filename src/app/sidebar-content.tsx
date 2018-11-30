@@ -33,15 +33,15 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
   render() {
     return (
       <div style={styles.content}>
-          <span onClick={this.props.toggleSidebar}>
-            <Link to="/posts" style={styles.link}>Posts</Link>
-          </span>
-          <span onClick={this.props.toggleSidebar}>
-            <Link to="/wallet" style={styles.link}>Wallet</Link>
-          </span>
-          <span onClick={this.props.toggleSidebar}>
-            <Link to="/settings" style={styles.link}>Settings</Link>
-          </span>
+        <span onClick={this.props.toggleSidebar}>
+          <Link to="/posts" style={styles.link}>Posts</Link>
+        </span>
+        <span onClick={this.props.toggleSidebar}>
+          <Link to="/wallet" style={styles.link}>Wallet</Link>
+        </span>
+        <span onClick={this.props.toggleSidebar}>
+          <Link to="/settings" style={styles.link}>Settings</Link>
+        </span>
       </div>
     )
   }

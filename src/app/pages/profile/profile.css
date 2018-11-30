@@ -1,0 +1,10 @@
+.profile-header {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.avatar {
+  margin-top: 40px;
+  max-width: 80px;
+  max-height: 80px;
+}

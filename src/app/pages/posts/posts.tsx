@@ -1,5 +1,8 @@
 import React from 'react'
+import { Link } from "react-router-dom"
 import { Post } from '../../../types/types'
+import { getPosts } from '../../util/mocks'
+import './posts.css'
 
 export interface PostsProps {}
 
@@ -17,13 +20,11 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
   }
 
   async componentDidMount() {
-    this.setState({
-      posts: await this._getPosts()
-    })
+    this.setState({ posts: await this._getPosts() })
   }
 
   async _getPosts(): Promise<Post[]> {
-    return samplePosts
+    return getPosts()
   }
 
   render() {
@@ -33,7 +34,16 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
           return (
             <li key={post.txid}>
               <p>
-                {post.user.name} - {post.user.birthBlock} - {post.timestamp}
+                {post.user.name}
+                <span> &#183; </span>
+                <Link
+                  to={`/profile/${post.user.address}`}
+                  className="link"
+                >
+                  @{post.user.address.substring(0,11)}
+                </Link>
+                <span> &#183; </span>
+                {post.timestamp}
               </p>
               <p>
                 {post.content}
@@ -47,33 +57,3 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
 }
 
 export default PostsPage
-
-
-export const samplePosts: Post[] = [
-  {
-    timestamp: new Date().toLocaleDateString(),
-    txid: 'txid',
-    user: {
-      name: 'MattHill',
-      address: 'address',
-      birthBlock: 4000,
-      profileTxids: ['1234'],
-      postTxids: ['9876', '5432']
-
-    },
-    content: 'I like post. I like post'  
-  },
-  {
-    timestamp: new Date().toLocaleDateString(),
-    txid: 'txid2222',
-    user: {
-      name: 'AidenMcClelland',
-      address: 'addreess2222',
-      birthBlock: 3000,
-      profileTxids: ['2345'],
-      postTxids: ['8765', '4321']
-
-    },
-    content: 'Post some more. Post some more.'  
-  }
-]
