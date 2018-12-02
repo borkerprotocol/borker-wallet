@@ -54,7 +54,9 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
             <ul>
             {user.profileTxids.map(txid => {
               return (
-                <li><a href={`https://blockchain.com/btc/tx/${txid}`} target="_blank">{txid.substr(0, 30)}...</a></li>
+                <li key={txid}>
+                  <a href={`https://blockchain.com/btc/tx/${txid}`} target="_blank">{txid.substr(0, 30)}...</a>
+                </li>
               )
               })}     
             </ul>
