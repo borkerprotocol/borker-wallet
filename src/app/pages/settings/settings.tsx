@@ -1,14 +1,9 @@
 import React from 'react'
+import '../../App.css'
 
 export interface SettingsProps {}
 
 export interface SettingsState {}
-
-const styles = {
-  content: {
-    padding: "16px"
-  }
-}
 
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
@@ -19,7 +14,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
   render() {
     return (
-      <div style={styles.content}>
+      <div className="page-content">
         <p>
           Settings Page
         </p>

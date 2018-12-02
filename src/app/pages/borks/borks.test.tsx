@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PostsPage from './posts'
+import BorksPage from './borks'
 
 it('renders without crashing', () => {
   const div = document.createElement('div')
-  ReactDOM.render(<PostsPage />, div)
+  ReactDOM.render(<BorksPage />, div)
   ReactDOM.unmountComponentAtNode(div)
 })

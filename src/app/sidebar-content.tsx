@@ -34,7 +34,7 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
     return (
       <div style={styles.content}>
         <span onClick={this.props.toggleSidebar}>
-          <Link to="/posts" style={styles.link}>Posts</Link>
+          <Link to="/borks" style={styles.link}>Borks</Link>
         </span>
         <span onClick={this.props.toggleSidebar}>
           <Link to="/wallet" style={styles.link}>Wallet</Link>

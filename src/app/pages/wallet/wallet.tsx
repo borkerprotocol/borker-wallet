@@ -6,6 +6,7 @@ import '../../App.css'
 
 export interface WalletProps {
   loggedIn: boolean
+  address: string
 }
 
 export interface WalletState {
@@ -26,7 +27,7 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
     this.state = {
       loggedIn: props.loggedIn,
       words: [],
-      address: '',
+      address: props.address || '',
       isModalOpen: false,
       password: ''
     }
@@ -37,14 +38,15 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
   }
 
   async componentDidMount() {
-    borkerLib = await import('borker-rs')
-    this._genWallet()
+    if (!this.state.loggedIn) {
+      borkerLib = await import('borker-rs')
+      this._genWallet()
+    }
   }
 
   _genWallet() {
     wallet = new borkerLib.JsWallet()
-    const words = wallet.words()
-    this.setState({ words })
+    this.setState({ words: wallet.words() })
   }
 
   _saveWallet(e) {
@@ -88,7 +90,7 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
         >
           <button onClick={this._toggleModal}>x</button>
           <form onSubmit={this._saveWallet}>
-            <input type="text" value={this.state.password} onChange={this._handlePasswordChange} placeholder="Pin"/>
+            <input type="password" value={this.state.password} onChange={this._handlePasswordChange} />
             <input type="submit" value="Save" />
           </form>
         </Modal>
