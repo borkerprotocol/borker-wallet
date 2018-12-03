@@ -1,8 +1,7 @@
 import React from 'react'
-import { Link } from "react-router-dom"
-import { Bork, BorkWithUser } from '../../../types/types'
+import { BorkWithUser } from '../../../types/types'
 import { getBorksWithUser } from '../../util/mocks'
-import './borks.css'
+import BorkList from '../../components/bork-list/bork-list';
 
 export interface BorksProps {}
 
@@ -12,7 +11,7 @@ export interface BorksState {
 
 class BorksPage extends React.Component<BorksProps, BorksState> {
 
-  constructor(props) {
+  constructor(props: BorksProps) {
     super(props)
     this.state = {
       borks: []
@@ -30,29 +29,11 @@ class BorksPage extends React.Component<BorksProps, BorksState> {
 
   render() {
     return (
-      <ul>
-        {this.state.borks.map(b => {
-          return (
-            <li key={b.txid}>
-              <p>
-                {b.user.name}
-                <span> &#183; </span>
-                <Link
-                  to={`/profile/${b.address}`}
-                  className="link"
-                >
-                  @{b.address.substring(0,11)}
-                </Link>
-                <span> &#183; </span>
-                {b.timestamp}
-              </p>
-              <p>
-                {b.content}
-              </p>
-            </li>
-          )
-        })}
-      </ul>
+      <div>
+        {this.state.borks.length &&
+          <BorkList borks={this.state.borks} />
+        }
+      </div>
     )
   }
 }

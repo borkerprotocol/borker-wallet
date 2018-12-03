@@ -66,7 +66,7 @@ export const sampleBorks: Bork[] = [
     timestamp: new Date().toLocaleDateString(),
     txid: '5c4e82eb1a754aca919d92c7f1c7e1f92445a841123d6e07dd444d911f675fbf',
     address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    content: ''  
+    content: 'Ill just go ahead and Bork again'
   }
 ]
 

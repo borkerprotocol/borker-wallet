@@ -1,15 +1,19 @@
 import React from 'react'
 import { Link } from "react-router-dom"
+import { User } from '../types/types';
 
 export interface SidebarContentProps {
+  user?: User
   toggleSidebar: (ev: any) => void
 }
 
-export interface SidebarContentState {}
+export interface SidebarContentState {
+  user?: User
+}
 
 const styles = {
   content: {
-    width: 240,
+    width: 200,
     height: "100%",
     padding: "16px",
     backgroundColor: "white"
@@ -27,12 +31,23 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
 
   constructor(props: SidebarContentProps) {
     super(props)
-    this.state = {}
+    console.log(props)
+    this.state = {
+      user: props.user
+    }
   }
 
   render() {
     return (
       <div style={styles.content}>
+        <span onClick={this.props.toggleSidebar}>
+          <Link
+            to={`/profile/${this.state.user ? this.state.user.address : 'create'}`}
+            style={styles.link}
+          >
+            Profile
+          </Link>
+        </span>
         <span onClick={this.props.toggleSidebar}>
           <Link to="/borks" style={styles.link}>Borks</Link>
         </span>

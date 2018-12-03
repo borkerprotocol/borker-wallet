@@ -6,13 +6,16 @@ import ProfilePage from './pages/profile/profile'
 import WalletPage from './pages/wallet/wallet'
 import SettingsPage from './pages/settings/settings'
 import SidebarContent from './sidebar-content'
+import { User } from '../types/types';
 import './App.css'
+import { getUser, sampleUsers } from './util/mocks';
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
 export interface AppProps {}
 
 export interface AppState {
+  user?: User
   sidebarOpen: boolean
   sidebarDocked: boolean
 }
@@ -42,6 +45,7 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props) {
     super(props)
     this.state = {
+      user: sampleUsers[0],
       sidebarDocked: mql.matches,
       sidebarOpen: false,
     }
@@ -82,13 +86,15 @@ class App extends React.Component<AppProps, AppState> {
             =
           </a>
         )}
-        <img src={require('../assets/borker.jpeg')} className="image" />
         <span>Borker!</span>
       </span>
     )
 
     const sidebarProps: SidebarProps = {
-      sidebar: <SidebarContent toggleSidebar={this.toggleSidebar} />,
+      sidebar: <SidebarContent
+        user={this.state.user}
+        toggleSidebar={this.toggleSidebar}
+      />,
       docked: this.state.sidebarDocked,
       open: this.state.sidebarOpen,
       onSetOpen: this.onSetSidebarOpen,
