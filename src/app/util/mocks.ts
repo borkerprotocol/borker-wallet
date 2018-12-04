@@ -11,6 +11,10 @@ export async function getBorks(address: string): Promise<Bork[]> {
   return sampleBorks.filter(b => b.address === address)
 }
 
+export async function getLikes(address: string): Promise<Bork[]> {
+  return []
+}
+
 export async function getBorksWithUser(): Promise<BorkWithUser[]> {
   return Promise.all(sampleBorks.map(async b => {
     const user = await getUser(b.address)

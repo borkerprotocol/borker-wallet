@@ -77,7 +77,7 @@ class App extends React.Component<AppProps, AppState> {
 
   render() {
     const contentHeader = (
-      <span>
+      <div>
         {!this.state.sidebarDocked && (
           <a
             onClick={this.toggleSidebar}
@@ -87,7 +87,7 @@ class App extends React.Component<AppProps, AppState> {
           </a>
         )}
         <span>Borker!</span>
-      </span>
+      </div>
     )
 
     const sidebarProps: SidebarProps = {

@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import { JsWallet } from 'borker-rs'
 import * as CryptoJS from "crypto-js"
 import '../../App.css'
+import './wallet.css'
 
 export interface WalletProps {
   loggedIn: boolean
@@ -15,6 +16,17 @@ export interface WalletState {
   address: string
   isModalOpen: boolean
   password: string
+}
+
+const modalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
 }
 
 let borkerLib: any
@@ -85,11 +97,12 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
           </div>
         }
         <Modal
-          ariaHideApp={false}
           isOpen={this.state.isModalOpen}
+          style={modalStyles}
         >
           <button onClick={this._toggleModal}>x</button>
-          <form onSubmit={this._saveWallet}>
+          <form onSubmit={this._saveWallet} className="password-form">
+            <p>Please enter a password to encrypt you private key on this device.</p>
             <input type="password" value={this.state.password} onChange={this._handlePasswordChange} />
             <input type="submit" value="Save" />
           </form>

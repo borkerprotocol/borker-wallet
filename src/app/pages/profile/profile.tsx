@@ -5,7 +5,7 @@ import { User, Bork, ProfileUpdate } from '../../../types/types'
 import './profile.css'
 import '../../App.css'
 import 'react-tabs/style/react-tabs.css';
-import { getUser, getBorks, getProfileUpdates } from '../../util/mocks'
+import { getUser, getBorks, getLikes, getProfileUpdates } from '../../util/mocks'
 import BorkList from '../../components/bork-list/bork-list';
 
 export interface ProfileParams {
@@ -17,6 +17,7 @@ export interface ProfileProps extends RouteComponentProps<ProfileParams> {}
 export interface ProfileState {
   user?: User
   borks: Bork[]
+  likes: Bork[]
   profileUpdates: ProfileUpdate[]
 }
 
@@ -26,6 +27,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     super(props)
     this.state = {
       borks: [],
+      likes: [],
       profileUpdates: []
     }
   }
@@ -34,6 +36,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     this.setState({
       user: await this._getUser(),
       borks: await this._getBorks(),
+      likes: await this._getLikes(),
       profileUpdates: await this._getProfileUpdates()
     })
   }
@@ -46,12 +49,16 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     return getBorks(this.props.match.params.address)
   }
 
+  async _getLikes(): Promise<Bork[]> {
+    return getLikes(this.props.match.params.address)
+  }
+
   async _getProfileUpdates(): Promise<ProfileUpdate[]> {
     return getProfileUpdates(this.props.match.params.address)
   }
 
   render() {
-    const { user, borks, profileUpdates } = this.state
+    const { user, borks, likes, profileUpdates } = this.state
     return (
       <div className="page-content">
         {!user &&
@@ -73,7 +80,8 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
             </div>
             <Tabs>
               <TabList>
-                <Tab>Borks</Tab>
+                <Tab>Borks & Reborks</Tab>
+                <Tab>Likes</Tab>
                 <Tab>Profile Updates</Tab>
               </TabList>
 
@@ -84,18 +92,28 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
                   })} />
                 }
                 {!borks.length &&
-                <p>Borks you make will appear here.</p>
+                  <p>Your Borks and Reborks will appear here.</p>
                 }
               </TabPanel>
 
               <TabPanel>
-                <ul>
+                {likes.length > 0 &&
+                  <BorkList borks={likes.map(b => {
+                    return {...b, user}
+                  })} />
+                }
+                {!likes.length &&
+                  <p>Borks you LIKE will appear here.</p>
+                }
+              </TabPanel>
+
+              <TabPanel>
+                <ul className="profile-update-list">
                   {profileUpdates.map(p => {
                     return (
                       <li key={p.txid}>
-                        <p>{p.timestamp}</p>
-                        <p><b>Updated Field: </b>{p.field}</p>
-                        <p><b>New Value: </b>{p.value}</p>
+                        <p style={{color: 'gray'}}>{p.timestamp}</p>
+                        <p>Updated {p.field} to {p.value}</p>
                       </li>
                     )
                   })}     

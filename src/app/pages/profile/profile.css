@@ -8,3 +8,16 @@
   max-width: 80px;
   max-height: 80px;
 }
+
+.profile-update-list {
+  list-style: none;
+  margin-top: 0;
+  padding-left: 14px;
+}
+
+.profile-update-list li {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: darkgray;
+  overflow: hidden;
+}

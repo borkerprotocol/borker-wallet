@@ -13,7 +13,7 @@ export interface SidebarContentState {
 
 const styles = {
   content: {
-    width: 200,
+    width: 220,
     height: "100%",
     padding: "16px",
     backgroundColor: "white"
