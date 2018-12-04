@@ -4,18 +4,18 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 import BorksPage from './pages/borks/borks'
 import ProfilePage from './pages/profile/profile'
 import WalletPage from './pages/wallet/wallet'
+import WalletCreatePage from './pages/wallet-create/wallet-create'
+import WalletRestorePage from './pages/wallet-restore/wallet-restore'
 import SettingsPage from './pages/settings/settings'
 import SidebarContent from './sidebar-content'
-import { User } from '../types/types';
+import * as Storage from 'idb-keyval'
 import './App.css'
-import { getUser, sampleUsers } from './util/mocks';
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
 export interface AppProps {}
 
 export interface AppState {
-  user?: User
   sidebarOpen: boolean
   sidebarDocked: boolean
 }
@@ -45,7 +45,6 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props) {
     super(props)
     this.state = {
-      user: sampleUsers[0],
       sidebarDocked: mql.matches,
       sidebarOpen: false,
     }
@@ -56,6 +55,13 @@ class App extends React.Component<AppProps, AppState> {
 
   componentWillMount() {
     mql.addListener(this.mediaQueryChanged)
+  }
+
+  componentDidMount() {
+    if (!('indexedDB' in window)) {
+      alert('This browser doesn\'t support IndexedDB')
+      return
+    }
   }
 
   componentWillUnmount() {
@@ -75,6 +81,10 @@ class App extends React.Component<AppProps, AppState> {
     this.onSetSidebarOpen(!this.state.sidebarOpen)
   }
 
+  async _logout() {
+    await Storage.clear()
+  }
+
   render() {
     const contentHeader = (
       <div>
@@ -86,13 +96,12 @@ class App extends React.Component<AppProps, AppState> {
             =
           </a>
         )}
-        <span>Borker!</span>
+        <button onClick={this._logout} className="logout-button">Logout</button>
       </div>
     )
 
     const sidebarProps: SidebarProps = {
       sidebar: <SidebarContent
-        user={this.state.user}
         toggleSidebar={this.toggleSidebar}
       />,
       docked: this.state.sidebarDocked,
@@ -110,7 +119,10 @@ class App extends React.Component<AppProps, AppState> {
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/borks" />} />
             <Route path="/borks" component={BorksPage} />
-            <Route path="/wallet" component={WalletPage} />
+            <Route exact path="/wallet" component={WalletPage} />
+            <Route exact path="/wallet/create" component={WalletCreatePage} />
+            <Route exact path="/wallet/restore" component={WalletRestorePage} />
+            <Route exact path="/wallet/:address" component={WalletPage} />
             <Route path="/settings" component={SettingsPage} />
             <Route exact path="/profile/:address" component={ProfilePage} />
           </Switch>

@@ -1,6 +1,6 @@
 export interface User {
-  birthBlock: number
   address: string
+  birthBlock?: number
   name?: string
   bio?: string
   avatar?: string

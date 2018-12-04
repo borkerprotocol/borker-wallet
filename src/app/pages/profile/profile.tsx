@@ -33,28 +33,41 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
   }
 
   async componentDidMount() {
+    const address = this.props.match.params.address
     this.setState({
-      user: await this._getUser(),
-      borks: await this._getBorks(),
-      likes: await this._getLikes(),
-      profileUpdates: await this._getProfileUpdates()
+      user: await this._getUser(address),
+      borks: await this._getBorks(address),
+      likes: await this._getLikes(address),
+      profileUpdates: await this._getProfileUpdates(address)
     })
   }
 
-  async _getUser(): Promise<User> {
-    return getUser(this.props.match.params.address)
+  async componentWillReceiveProps(nextProps: ProfileProps) {
+    const address = nextProps.match.params.address
+    if (address !== this.props.match.params.address) {
+      this.setState({
+        user: await this._getUser(address),
+        borks: await this._getBorks(address),
+        likes: await this._getLikes(address),
+        profileUpdates: await this._getProfileUpdates(address)
+      })
+    }
   }
 
-  async _getBorks(): Promise<Bork[]> {
-    return getBorks(this.props.match.params.address)
+  async _getUser(address: string): Promise<User> {
+    return getUser(address)
   }
 
-  async _getLikes(): Promise<Bork[]> {
-    return getLikes(this.props.match.params.address)
+  async _getBorks(address: string): Promise<Bork[]> {
+    return getBorks(address)
   }
 
-  async _getProfileUpdates(): Promise<ProfileUpdate[]> {
-    return getProfileUpdates(this.props.match.params.address)
+  async _getLikes(address: string): Promise<Bork[]> {
+    return getLikes(address)
+  }
+
+  async _getProfileUpdates(address: string): Promise<ProfileUpdate[]> {
+    return getProfileUpdates(address)
   }
 
   render() {
