@@ -1,7 +1,7 @@
 import React from 'react'
 import Sidebar, { SidebarProps } from "react-sidebar"
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom"
-import BorksPage from './pages/borks/borks'
+import PostsPage from './pages/posts/posts'
 import ProfilePage from './pages/profile/profile'
 import WalletPage from './pages/wallet/wallet'
 import WalletCreatePage from './pages/wallet-create/wallet-create'
@@ -117,8 +117,8 @@ class App extends React.Component<AppProps, AppState> {
             {contentHeader}
           </div>
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/borks" />} />
-            <Route path="/borks" component={BorksPage} />
+            <Route exact path="/" render={() => <Redirect to="/posts" />} />
+            <Route path="/posts" component={PostsPage} />
             <Route exact path="/wallet" component={WalletPage} />
             <Route exact path="/wallet/create" component={WalletCreatePage} />
             <Route exact path="/wallet/restore" component={WalletRestorePage} />

@@ -1,12 +1,12 @@
 import React from 'react'
 import { RouteComponentProps, Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { User, Bork, ProfileUpdate } from '../../../types/types'
+import { User, Post, ProfileUpdate } from '../../../types/types'
 import './profile.css'
 import '../../App.css'
 import 'react-tabs/style/react-tabs.css';
-import { getUser, getBorks, getLikes, getProfileUpdates } from '../../util/mocks'
-import BorkList from '../../components/bork-list/bork-list';
+import { getUser, getPosts, getLikes, getProfileUpdates } from '../../util/mocks'
+import PostList from '../../components/post-list/post-list';
 
 export interface ProfileParams {
   address: string
@@ -16,8 +16,8 @@ export interface ProfileProps extends RouteComponentProps<ProfileParams> {}
 
 export interface ProfileState {
   user?: User
-  borks: Bork[]
-  likes: Bork[]
+  posts: Post[]
+  likes: Post[]
   profileUpdates: ProfileUpdate[]
 }
 
@@ -26,7 +26,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
   constructor(props) {
     super(props)
     this.state = {
-      borks: [],
+      posts: [],
       likes: [],
       profileUpdates: []
     }
@@ -36,7 +36,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     const address = this.props.match.params.address
     this.setState({
       user: await this._getUser(address),
-      borks: await this._getBorks(address),
+      posts: await this._getPosts(address),
       likes: await this._getLikes(address),
       profileUpdates: await this._getProfileUpdates(address)
     })
@@ -47,7 +47,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     if (address !== this.props.match.params.address) {
       this.setState({
         user: await this._getUser(address),
-        borks: await this._getBorks(address),
+        posts: await this._getPosts(address),
         likes: await this._getLikes(address),
         profileUpdates: await this._getProfileUpdates(address)
       })
@@ -58,11 +58,11 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     return getUser(address)
   }
 
-  async _getBorks(address: string): Promise<Bork[]> {
-    return getBorks(address)
+  async _getPosts(address: string): Promise<Post[]> {
+    return getPosts(address)
   }
 
-  async _getLikes(address: string): Promise<Bork[]> {
+  async _getLikes(address: string): Promise<Post[]> {
     return getLikes(address)
   }
 
@@ -71,7 +71,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
   }
 
   render() {
-    const { user, borks, likes, profileUpdates } = this.state
+    const { user, posts, likes, profileUpdates } = this.state
     return (
       <div className="page-content">
         {!user &&
@@ -93,30 +93,30 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
             </div>
             <Tabs>
               <TabList>
-                <Tab>Borks & Reborks</Tab>
+                <Tab>Posts & Reposts</Tab>
                 <Tab>Likes</Tab>
                 <Tab>Profile Updates</Tab>
               </TabList>
 
               <TabPanel>
-                {borks.length > 0 &&
-                  <BorkList borks={borks.map(b => {
+                {posts.length > 0 &&
+                  <PostList posts={posts.map(b => {
                     return {...b, user}
                   })} />
                 }
-                {!borks.length &&
-                  <p>Your Borks and Reborks will appear here.</p>
+                {!posts.length &&
+                  <p>Your Posts and Reposts will appear here.</p>
                 }
               </TabPanel>
 
               <TabPanel>
                 {likes.length > 0 &&
-                  <BorkList borks={likes.map(b => {
+                  <PostList posts={likes.map(b => {
                     return {...b, user}
                   })} />
                 }
                 {!likes.length &&
-                  <p>Borks you LIKE will appear here.</p>
+                  <p>Posts you LIKE will appear here.</p>
                 }
               </TabPanel>
 

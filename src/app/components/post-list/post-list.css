@@ -1,17 +1,17 @@
-.bork-list {
+.post-list {
   list-style: none;
   margin-top: 0;
   padding-left: 0;
 }
 
-.bork-list li {
+.post-list li {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-color: darkgray;
   overflow: hidden;
 }
 
-.bork-list li img {
+.post-list li img {
   position: relative;
   float: left;
   margin: 14px;

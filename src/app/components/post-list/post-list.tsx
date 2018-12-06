@@ -1,29 +1,29 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { BorkWithUser } from '../../../types/types'
-import './bork-list.css'
+import { PostWithUser } from '../../../types/types'
+import './post-list.css'
 
-export interface BorkListProps {
-  borks: BorkWithUser[]
+export interface PostListProps {
+  posts: PostWithUser[]
 }
 
-export interface BorkListState {
-  borks: BorkWithUser[]
+export interface PostListState {
+  posts: PostWithUser[]
 }
 
-class BorkList extends React.Component<BorkListProps, BorkListState> {
+class PostList extends React.Component<PostListProps, PostListState> {
 
-  constructor(props: BorkListProps) {
+  constructor(props: PostListProps) {
     super(props)
     this.state = {
-      borks: props.borks
+      posts: props.posts
     }
   }
 
   render() {
     return (
-      <ul className="bork-list">
-        {this.state.borks.map(b => {
+      <ul className="post-list">
+        {this.state.posts.map(b => {
           return (
             <li key={b.txid}>
               <Link to={`/profile/${b.address}`}>
@@ -50,4 +50,4 @@ class BorkList extends React.Component<BorkListProps, BorkListState> {
   }
 }
 
-export default BorkList
+export default PostList

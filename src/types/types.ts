@@ -6,15 +6,15 @@ export interface User {
   avatar?: string
 }
 
-export interface Bork {
-  type: BorkType
+export interface Post {
+  type: PostType
   timestamp: string
   txid: string
   content: string
   address: string
 }
 
-export interface BorkWithUser extends Bork {
+export interface PostWithUser extends Post {
   user: User
 }
 
@@ -26,10 +26,10 @@ export interface ProfileUpdate {
   value: string
 }
 
-export enum BorkType {
+export enum PostType {
   post = 'post',
   reply = 'reply',
-  rebork = 'rebork'
+  repost = 'repost'
 }
 
 export enum ProfileFields {

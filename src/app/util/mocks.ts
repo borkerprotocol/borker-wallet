@@ -1,4 +1,4 @@
-import { Bork, User, BorkType, ProfileUpdate, ProfileFields, BorkWithUser } from "../../types/types"
+import { Post, User, PostType, ProfileUpdate, ProfileFields, PostWithUser } from "../../types/types"
 import { avatar1, avatar2 } from './avatars'
 
 export async function getUser(address: string): Promise<User> {
@@ -7,16 +7,16 @@ export async function getUser(address: string): Promise<User> {
   }) as User
 }
 
-export async function getBorks(address: string): Promise<Bork[]> {
-  return sampleBorks.filter(b => b.address === address)
+export async function getPosts(address: string): Promise<Post[]> {
+  return samplePosts.filter(b => b.address === address)
 }
 
-export async function getLikes(address: string): Promise<Bork[]> {
+export async function getLikes(address: string): Promise<Post[]> {
   return []
 }
 
-export async function getBorksWithUser(): Promise<BorkWithUser[]> {
-  return Promise.all(sampleBorks.map(async b => {
+export async function getPostsWithUser(): Promise<PostWithUser[]> {
+  return Promise.all(samplePosts.map(async b => {
     const user = await getUser(b.address)
     return { ...b, user }
   }))
@@ -43,34 +43,34 @@ export const sampleUsers: User[] = [
   }
 ]
 
-export const sampleBorks: Bork[] = [
+export const samplePosts: Post[] = [
   {
-    type: BorkType.post,
+    type: PostType.post,
     timestamp: new Date().toLocaleDateString(),
     txid: '1c8cd0ebe84a81971527e390b0dd9631a14aeb1708428fa1a71914c10930f744',
     address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
-    content: 'I like to bork. I like to bork'  
+    content: 'I like to post. I like to post'  
   },
   {
-    type: BorkType.post,
+    type: PostType.post,
     timestamp: new Date().toLocaleDateString(),
     txid: 'f5bf8f50a9b2d9ffd1ac23dc606ae7eb47a3fed7498f508fc000c206c417a675',
     address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    content: 'Bork some more. Bork some more.'  
+    content: 'Post some more. Post some more.'  
   },
   {
-    type: BorkType.post,
+    type: PostType.post,
     timestamp: new Date().toLocaleDateString(),
     txid: '83fc80db8971becfb3bd31a9333bc9fb62b57ffaf1a6029793aed2b67e3e7b72',
     address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
-    content: 'Borking like there aint no tomorrow'
+    content: 'Posting like there aint no tomorrow'
   },
   {
-    type: BorkType.post,
+    type: PostType.post,
     timestamp: new Date().toLocaleDateString(),
     txid: '5c4e82eb1a754aca919d92c7f1c7e1f92445a841123d6e07dd444d911f675fbf',
     address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    content: 'Ill just go ahead and Bork again'
+    content: 'Ill just go ahead and Post again'
   }
 ]
 
