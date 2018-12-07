@@ -1,14 +1,15 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { User } from '../types/types'
+import { User } from '../../types/types'
 import * as Storage from 'idb-keyval'
 
 export interface SidebarContentProps {
+  address: string
   toggleSidebar: (ev: any) => void
 }
 
 export interface SidebarContentState {
-  user?: User
+  address: string
 }
 
 const styles = {
@@ -31,19 +32,18 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
 
   constructor(props: SidebarContentProps) {
     super(props)
-    this.state = {}
-  }
-
-  async componentDidMount() {
-    this.setState({ user: await Storage.get('user') as User })
+    this.state = {
+      address: props.address
+    }
   }
 
   render() {
+    const { address } = this.state
     return (
       <div style={styles.content}>
         <span onClick={this.props.toggleSidebar}>
           <Link
-            to={`/profile/${this.state.user ? this.state.user.address : 'create'}`}
+            to={`/profile/${address}`}
             style={styles.link}
           >
             Profile
@@ -54,7 +54,7 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
         </span>
         <span onClick={this.props.toggleSidebar}>
         <Link
-            to={`/wallet/${this.state.user ? this.state.user.address : ''}`}
+            to={`/wallet`}
             style={styles.link}
           >
             Wallet

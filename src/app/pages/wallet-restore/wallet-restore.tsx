@@ -3,7 +3,9 @@ import EncryptModal from '../../components/encrypt-modal/encrypt-modal'
 import '../../App.css'
 import './wallet-restore.css'
 
-export interface WalletRestoreProps {}
+export interface WalletRestoreProps {
+  login: (address: string) => Promise<void>
+}
 
 export interface WalletRestoreState {
   mnemonic: string
@@ -51,6 +53,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
         </button>
         {this.state.isModalOpen &&
           <EncryptModal
+            login={this.props.login}
             mnemonic={this.state.mnemonic}
           />
         }

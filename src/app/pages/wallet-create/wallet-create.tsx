@@ -4,7 +4,9 @@ import { JsWallet } from 'borker-rs'
 import '../../App.css'
 import './wallet-create.css'
 
-export interface WalletCreateProps {}
+export interface WalletCreateProps {
+  login: (address: string) => Promise<void>
+}
 
 export interface WalletCreateState {
   mnemonic: string[]
@@ -51,6 +53,7 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
         </button>
         {this.state.isModalOpen &&
           <EncryptModal
+            login={this.props.login}
             mnemonic={mnemonic}
           />
         }

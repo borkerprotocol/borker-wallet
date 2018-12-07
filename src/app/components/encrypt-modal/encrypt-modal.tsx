@@ -1,14 +1,14 @@
 import React from 'react'
+import { Redirect } from 'react-router'
 import Modal from 'react-modal'
 import * as CryptoJS from "crypto-js"
 import * as Storage from 'idb-keyval'
 import '../../App.css'
 import './encrypt-modal.css'
-import { User } from '../../../types/types'
-import { Redirect } from 'react-router';
 
 export interface EncryptModalProps {
   mnemonic: string
+  login: (address: string) => void
 }
 
 export interface EncryptModalState {
@@ -16,7 +16,7 @@ export interface EncryptModalState {
   mnemonic: string
   password: string
   address: string
-  toWallet: boolean
+  isSaved: boolean
 }
 
 const modalStyles = {
@@ -39,25 +39,23 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
       mnemonic: props.mnemonic,
       password: '',
       address: '',
-      toWallet: false
+      isSaved: false
     }
     this._handlePasswordChange = this._handlePasswordChange.bind(this)
     this._saveWallet = this._saveWallet.bind(this)
     this._toggleModal = this._toggleModal.bind(this)
   }
 
-  async _saveWallet(e) {
+  async _saveWallet(e): Promise<void> {
     e.preventDefault()
     const encryptedData = CryptoJS.AES.encrypt(this.state.mnemonic, this.state.password)
     const address = '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh'
-    const user: User = {
-      address
-    }
     await Promise.all([
       Storage.set('mnemonic', encryptedData.toString()),
-      Storage.set('user', user)
+      Storage.set('address', address),
+      Storage.set(`${address}`, {})
     ])
-    this.setState({ address, toWallet: true })
+    this.props.login(address)
   }
 
   _handlePasswordChange(e) {
@@ -69,8 +67,8 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
   }
 
   render() {
-    if (this.state.toWallet === true) {
-      return <Redirect to={`/wallet/${this.state.address}`} />
+    if (this.state.isSaved) {
+      return <Redirect to="/posts" />
     }
     return (
       <Modal

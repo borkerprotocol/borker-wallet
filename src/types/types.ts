@@ -18,6 +18,11 @@ export interface PostWithUser extends Post {
   user: User
 }
 
+export interface FullUser extends User {
+  posts: Post[]
+  profileUpdates: ProfileUpdate[]
+}
+
 export interface ProfileUpdate {
   address: string
   timestamp: string
