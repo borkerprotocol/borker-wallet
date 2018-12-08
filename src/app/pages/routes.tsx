@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom"
+import { BrowserRouter, Switch, Redirect } from "react-router-dom"
 import PostsPage from './posts/posts'
 import ProfilePage from './profile/profile'
 import WalletPage from './wallet/wallet'
@@ -19,18 +19,22 @@ export interface RoutesProps {
 export const authenticatedRoutes = [
   {
     path: "/posts",
+    title: "Posts",
     component: PostsPage
   },
   {
     path: "/wallet",
+    title: "Wallet",
     component: WalletPage
   },
   {
     path: "/settings",
+    title: "Settings",
     component: SettingsPage
   },
   {
     path: "/profile/:address",
+    title: "Profile",
     component: ProfilePage
   },
 ]
@@ -57,13 +61,14 @@ class Routes extends React.Component<RoutesProps, {}> {
   render() {
     const { address, logout, login } = this.props
     return (
-      <Router>
+      <BrowserRouter>
         <Switch>
-          {authenticatedRoutes.map(({ path, component }) => {
+          {authenticatedRoutes.map(({ path, title, component }) => {
             return <AuthRoute
               key={path}
               exact
               path={path}
+              title={title}
               component={component}
               address={address}
               logout={logout}
@@ -81,7 +86,7 @@ class Routes extends React.Component<RoutesProps, {}> {
             />
           })}
         </Switch>
-      </Router>
+      </BrowserRouter>
     )
   }
 }

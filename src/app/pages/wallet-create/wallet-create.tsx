@@ -1,8 +1,8 @@
 import React from 'react'
 import EncryptModal from '../../components/encrypt-modal/encrypt-modal'
 import { JsWallet } from 'borker-rs'
-import '../../App.css'
-import './wallet-create.css'
+import '../../App.scss'
+import './wallet-create.scss'
 
 export interface WalletCreateProps {
   login: (address: string) => Promise<void>

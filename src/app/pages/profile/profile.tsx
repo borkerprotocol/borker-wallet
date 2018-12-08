@@ -2,9 +2,9 @@ import React from 'react'
 import { RouteComponentProps, Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { User, Post, ProfileUpdate } from '../../../types/types'
-import './profile.css'
-import '../../App.css'
-import 'react-tabs/style/react-tabs.css';
+import './profile.scss'
+import '../../App.scss'
+import 'react-tabs/style/react-tabs.scss';
 import { getUser, getPosts, getLikes, getProfileUpdates } from '../../util/mocks'
 import PostList from '../../components/post-list/post-list';
 

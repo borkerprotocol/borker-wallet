@@ -12,6 +12,9 @@ export interface Post {
   txid: string
   content: string
   address: string
+  replies: number,
+  relays: number
+  likes: number
 }
 
 export interface PostWithUser extends Post {

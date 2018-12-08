@@ -1,7 +1,8 @@
 import React from 'react'
 import { PostWithUser } from '../../../types/types'
 import { getPostsWithUser } from '../../util/mocks'
-import PostList from '../../components/post-list/post-list';
+import PostList from '../../components/post-list/post-list'
+import './posts.scss'
 
 export interface PostsProps {}
 
@@ -33,6 +34,7 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
         {this.state.posts.length &&
           <PostList posts={this.state.posts} />
         }
+        <button className="fab">+</button>
       </div>
     )
   }

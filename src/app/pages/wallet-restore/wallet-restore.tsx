@@ -1,7 +1,7 @@
 import React from 'react'
 import EncryptModal from '../../components/encrypt-modal/encrypt-modal'
-import '../../App.css'
-import './wallet-restore.css'
+import '../../App.scss'
+import './wallet-restore.scss'
 
 export interface WalletRestoreProps {
   login: (address: string) => Promise<void>

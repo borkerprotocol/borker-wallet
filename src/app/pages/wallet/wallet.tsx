@@ -1,6 +1,6 @@
 import React from 'react'
-import '../../App.css'
-import './wallet.css'
+import '../../App.scss'
+import './wallet.scss'
 
 export interface WalletProps {
   address: string

@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Storage from 'idb-keyval'
 import Routes from './pages/routes'
-import './App.css'
+import './App.scss'
 
 export interface AppState {
   isLoading: boolean

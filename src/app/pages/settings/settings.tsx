@@ -1,7 +1,9 @@
 import React from 'react'
-import '../../App.css'
+import '../../App.scss'
 
-export interface SettingsProps {}
+export interface SettingsProps {
+  logout: () => void
+}
 
 export interface SettingsState {}
 
@@ -15,9 +17,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   render() {
     return (
       <div className="page-content">
-        <p>
-          Settings Page
-        </p>
+        <button onClick={this.props.logout}>Logout</button>
       </div>
     )
   }

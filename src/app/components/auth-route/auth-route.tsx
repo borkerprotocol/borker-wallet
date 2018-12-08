@@ -2,9 +2,12 @@ import React from 'react'
 import { Route, Redirect, RouteProps } from "react-router-dom"
 import Sidebar, { SidebarProps } from "react-sidebar"
 import SidebarContent from '../sidebar-content'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 export interface AuthRouteProps extends RouteProps {
   address: string
+  title: string
   component: React.ComponentType<any>
   logout: () => void
 }
@@ -16,11 +19,6 @@ export interface AuthRouteState {
 }
 
 const styles = {
-  contentHeaderMenuLink: {
-    textDecoration: "none",
-    color: "white",
-    padding: 8
-  },
   header: {
     backgroundColor: "gray",
     color: "white",
@@ -73,18 +71,15 @@ class AuthRoute extends React.Component<AuthRouteProps, AuthRouteState> {
   }
 
   render() {
-    const { component: Component, address, ...rest } = this.props
+
+    const { component: Component, address, title, ...rest } = this.props
+
     const contentHeader = (
       <div>
         {!this.state.sidebarDocked && (
-          <a
-            onClick={this._toggleSidebar}
-            style={styles.contentHeaderMenuLink}
-          >
-            =
-          </a>
+          <a onClick={this._toggleSidebar}><FontAwesomeIcon icon={faBars} /></a>
         )}
-        <button onClick={this.props.logout} className="logout-button">Logout</button>
+        <span style={{ textTransform: 'capitalize', paddingLeft: "12px" }}>{title}</span>
       </div>
     )
 

@@ -3,8 +3,8 @@ import { Redirect } from 'react-router'
 import Modal from 'react-modal'
 import * as CryptoJS from "crypto-js"
 import * as Storage from 'idb-keyval'
-import '../../App.css'
-import './encrypt-modal.css'
+import '../../App.scss'
+import './encrypt-modal.scss'
 
 export interface EncryptModalProps {
   mnemonic: string
