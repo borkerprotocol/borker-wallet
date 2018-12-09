@@ -1,7 +1,7 @@
 import React from 'react'
 import '../../App.scss'
 import './home.scss'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 class HomePage extends React.Component {
 

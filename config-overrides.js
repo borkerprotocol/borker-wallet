@@ -3,20 +3,20 @@
 const path = require('path')
 
 module.exports = function override(config, env) {
-  const wasmExtensionRegExp = /\.wasm$/;
+  const wasmExtensionRegExp = /\.wasm$/
 
-  config.resolve.extensions.push('.wasm');
+  config.resolve.extensions.push('.wasm')
   // make the file loader ignore wasm files
   const fileLoader = config.module.rules
     .find(section => section.oneOf).oneOf
-    .find(rule => rule.loader && rule.loader.includes(`file-loader`));
-  fileLoader.exclude.push(wasmExtensionRegExp);
+    .find(rule => rule.loader && rule.loader.includes(`file-loader`))
+  fileLoader.exclude.push(wasmExtensionRegExp)
 
   // and add a dedicated loader for them
   config.module.rules.push({
     test: wasmExtensionRegExp,
     include: path.resolve(__dirname, "src"),
     use: [{loader: require.resolve('wasm-loader'), options: {}}]
-  });
-  return config;
+  })
+  return config
 }
