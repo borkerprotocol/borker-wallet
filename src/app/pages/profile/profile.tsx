@@ -1,23 +1,26 @@
 import React from 'react'
-import { RouteComponentProps, Link } from "react-router-dom"
+import { RouteComponentProps } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import { User, Post, ProfileUpdate } from '../../../types/types'
+import { User, Post, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser } from '../../../types/types'
+import { getUser, getMyPosts, getLikes, getProfileUpdates } from '../../util/mocks'
+import PostList from '../../components/post-list/post-list'
+import { calendar } from '../../util/timestamps'
+import 'react-tabs/style/react-tabs.scss'
 import './profile.scss'
 import '../../App.scss'
-import 'react-tabs/style/react-tabs.scss'
-import { getUser, getPosts, getLikes, getProfileUpdates } from '../../util/mocks'
-import PostList from '../../components/post-list/post-list'
 
 export interface ProfileParams {
+  id: string
+}
+
+export interface ProfileProps extends RouteComponentProps<ProfileParams> {
   address: string
 }
 
-export interface ProfileProps extends RouteComponentProps<ProfileParams> {}
-
 export interface ProfileState {
   user?: User
-  posts: Post[]
-  likes: Post[]
+  posts: RelativePost[]
+  likes: RelativePostWithUser[]
   profileUpdates: ProfileUpdate[]
 }
 
@@ -33,41 +36,25 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
   }
 
   async componentDidMount() {
-    const address = this.props.match.params.address
+    const address = this.props.match.params.id
     this.setState({
-      user: await this._getUser(address),
-      posts: await this._getPosts(address),
-      likes: await this._getLikes(address),
-      profileUpdates: await this._getProfileUpdates(address)
+      user: await getUser(address),
+      posts: await getMyPosts(address, this.props.address),
+      likes: await getLikes(address),
+      profileUpdates: await getProfileUpdates(address)
     })
   }
 
   async componentWillReceiveProps(nextProps: ProfileProps) {
-    const address = nextProps.match.params.address
-    if (address !== this.props.match.params.address) {
+    const address = nextProps.match.params.id
+    if (address !== this.props.match.params.id) {
       this.setState({
-        user: await this._getUser(address),
-        posts: await this._getPosts(address),
-        likes: await this._getLikes(address),
-        profileUpdates: await this._getProfileUpdates(address)
+        user: await getUser(address),
+        posts: await getMyPosts(address, this.props.address),
+        likes: await getLikes(address),
+        profileUpdates: await getProfileUpdates(address)
       })
     }
-  }
-
-  async _getUser(address: string): Promise<User> {
-    return getUser(address)
-  }
-
-  async _getPosts(address: string): Promise<Post[]> {
-    return getPosts(address)
-  }
-
-  async _getLikes(address: string): Promise<Post[]> {
-    return getLikes(address)
-  }
-
-  async _getProfileUpdates(address: string): Promise<ProfileUpdate[]> {
-    return getProfileUpdates(address)
   }
 
   render() {
@@ -93,15 +80,15 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
             </div>
             <Tabs>
               <TabList>
-                <Tab>Posts & Reposts</Tab>
+                <Tab>Posts & re:Posts</Tab>
                 <Tab>Likes</Tab>
                 <Tab>Profile Updates</Tab>
               </TabList>
 
               <TabPanel>
                 {posts.length > 0 &&
-                  <PostList posts={posts.map(b => {
-                    return {...b, user}
+                  <PostList posts={posts.map(p => {
+                    return {...p, user}
                   })} />
                 }
                 {!posts.length &&
@@ -111,8 +98,8 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
 
               <TabPanel>
                 {likes.length > 0 &&
-                  <PostList posts={likes.map(b => {
-                    return {...b, user}
+                  <PostList posts={likes.map(p => {
+                    return {...p}
                   })} />
                 }
                 {!likes.length &&
@@ -125,8 +112,9 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
                   {profileUpdates.map(p => {
                     return (
                       <li key={p.txid}>
-                        <p style={{color: 'gray'}}>{p.timestamp}</p>
-                        <p>Updated {p.field} to {p.value}</p>
+                        <p style={{color: 'gray'}}>{calendar(p.timestamp)}</p>
+
+                        <p>Changed {p.field}{p.field === ProfileFields.name ? ` to ${p.value}` : ''}</p>
                       </li>
                     )
                   })}     

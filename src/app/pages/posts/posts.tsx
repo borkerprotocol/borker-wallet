@@ -1,13 +1,15 @@
 import React from 'react'
-import { PostWithUser } from '../../../types/types'
-import { getPostsWithUser } from '../../util/mocks'
+import { RelativePostWithUser } from '../../../types/types'
+import { getPosts } from '../../util/mocks'
 import PostList from '../../components/post-list/post-list'
 import './posts.scss'
 
-export interface PostsProps {}
+export interface PostsProps {
+  address: string
+}
 
 export interface PostsState {
-  posts: PostWithUser[]
+  posts: RelativePostWithUser[]
 }
 
 class PostsPage extends React.Component<PostsProps, PostsState> {
@@ -20,12 +22,7 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
   }
 
   async componentDidMount() {
-    const posts = await this._getPosts()
-    this.setState({ posts })
-  }
-
-  async _getPosts(): Promise<PostWithUser[]> {
-    return getPostsWithUser()
+    this.setState({ posts: await getPosts(this.props.address) })
   }
 
   render() {

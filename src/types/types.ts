@@ -12,13 +12,24 @@ export interface Post {
   txid: string
   content: string
   address: string
-  replies: number,
-  relays: number
+  replies: number
+  reposts: number
   likes: number
 }
 
-export interface PostWithUser extends Post {
+export interface RelativePost extends Post {
+  iReply: boolean
+  iRepost: boolean
+  iLike: boolean
+}
+
+export interface RelativePostWithUser extends RelativePost {
   user: User
+}
+
+export interface Like {
+  address: string
+  txid: string
 }
 
 export interface FullUser extends User {
@@ -36,8 +47,8 @@ export interface ProfileUpdate {
 
 export enum PostType {
   post = 'post',
-  reply = 'reply',
-  repost = 'repost'
+  repost = 'repost',
+  reply = 'reply'
 }
 
 export enum ProfileFields {

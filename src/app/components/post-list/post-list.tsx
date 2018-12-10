@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { PostWithUser, Post } from '../../../types/types'
+import { RelativePostWithUser, Post } from '../../../types/types'
+import { fromNow } from '../../util/timestamps'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
 import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
@@ -10,11 +11,11 @@ import { faRetweet } from '@fortawesome/free-solid-svg-icons'
 import './post-list.scss'
 
 export interface PostListProps {
-  posts: PostWithUser[]
+  posts: RelativePostWithUser[]
 }
 
 export interface PostListState {
-  posts: PostWithUser[]
+  posts: RelativePostWithUser[]
 }
 
 class PostList extends React.Component<PostListProps, PostListState> {
@@ -30,8 +31,8 @@ class PostList extends React.Component<PostListProps, PostListState> {
     alert('replies coming soon')
   }
 
-  relay(post: Post) {
-    alert('relays coming soon')
+  repost(post: Post) {
+    alert('reposts coming soon')
   }
 
   like(post: Post) {
@@ -58,20 +59,35 @@ class PostList extends React.Component<PostListProps, PostListState> {
                     @{p.address.substring(0,11)}
                   </Link>
                   <span> &#183; </span>
-                  <span style={{color: 'gray'}}>{p.timestamp}</span>
+                  <span style={{color: 'gray'}}>{fromNow(p.timestamp)}</span>
                 </p>
                 <p>{p.content}</p>
                 <table>
                   <tbody>
                     <tr>
                       <td>
-                        <a onClick={() => this.reply(p)}><FontAwesomeIcon icon={commentsOutline} /> {p.replies}</a>
+                        <a onClick={() => this.reply(p)}>
+                          <FontAwesomeIcon
+                            icon={p.iReply ? commentsSolid : commentsOutline}
+                            style={p.iReply ? {color: 'blue'} : {} }
+                          /> {p.replies}
+                        </a>
                       </td>
                       <td>
-                        <a onClick={() => this.relay(p)}><FontAwesomeIcon icon={faRetweet} /> {p.relays}</a>
+                        <a onClick={() => this.repost(p)}>
+                          <FontAwesomeIcon
+                            icon={faRetweet}
+                            style={p.iRepost ? {color: 'green'} : {} }
+                          /> {p.reposts}
+                        </a>
                       </td>
                       <td>
-                        <a onClick={() => this.like(p)}><FontAwesomeIcon icon={heartOutline} /> {p.likes}</a>
+                        <a onClick={() => this.like(p)}>
+                          <FontAwesomeIcon
+                            icon={p.iLike ? heartSolid : heartOutline}
+                            style={p.iLike ? {color: 'red'} : {} }
+                          /> {p.likes}
+                        </a>
                       </td>
                     </tr>      
                   </tbody>

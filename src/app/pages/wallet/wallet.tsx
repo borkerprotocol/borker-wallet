@@ -4,7 +4,6 @@ import './wallet.scss'
 
 export interface WalletProps {
   address: string
-  balance: number
 }
 
 export interface WalletState {
@@ -16,7 +15,14 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
 
   constructor(props: WalletProps) {
     super(props)
-    this.state = { ...props }
+    this.state = {
+      address: props.address,
+      balance: 0
+    }
+  }
+
+  async componentDidMount() {
+    // await getWallet(address)
   }
 
   render() {
@@ -24,8 +30,8 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
 
     return (
       <div className="page-content">
-        <p><b>Address: </b>{this.state.address}</p>
-        <p><b>Balance: </b>{this.state.balance}</p>
+        <p><b>Address: </b>{address}</p>
+        <p><b>Balance: </b>{balance}</p>
       </div>
     )
   }

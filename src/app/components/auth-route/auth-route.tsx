@@ -99,7 +99,7 @@ class AuthRoute extends React.Component<AuthRouteProps, AuthRouteState> {
         <div style={styles.header}>
           {contentHeader}
         </div>
-        <Route {...rest} render={props => <Component {...props} {...rest} />} />
+        <Route {...rest} render={props => <Component {...props} address={address} />} />
       </Sidebar>
     ) : (
       <Redirect to="/"/>

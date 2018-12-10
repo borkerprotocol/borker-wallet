@@ -23,7 +23,7 @@ export const authenticatedRoutes = [
     component: SettingsPage
   },
   {
-    path: "/profile/:address",
+    path: "/profile/:id",
     title: "Profile",
     component: ProfilePage
   },
