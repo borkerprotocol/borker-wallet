@@ -1,19 +1,22 @@
 import React from 'react'
-import { Route, Redirect, RouteProps } from "react-router-dom"
+import { Switch, Redirect, Route } from "react-router-dom"
 import Sidebar, { SidebarProps } from "react-sidebar"
-import SidebarContent from '../sidebar-content'
+import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
+import PostsPage from './posts/posts'
+import WalletPage from './wallet/wallet'
+import SettingsPage from './settings/settings'
+import ProfilePage from './profile/profile'
 
-export interface AuthRouteProps extends RouteProps {
+export interface AuthRoutesProps {
   address: string
-  title: string
-  component: React.ComponentType<any>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
-export interface AuthRouteState {
+export interface AuthRoutesState {
   address: string
+  title: string
   sidebarOpen: boolean
   sidebarDocked: boolean
 }
@@ -35,18 +38,20 @@ const styles = {
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
-class AuthRoute extends React.Component<AuthRouteProps, AuthRouteState> {
+class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
 
-  constructor(props: AuthRouteProps) {
+  constructor(props: AuthRoutesProps) {
     super(props)
     this.state = {
       address: props.address,
+      title: '',
       sidebarDocked: mql.matches,
       sidebarOpen: false,
     }
     this._mediaQueryChanged = this._mediaQueryChanged.bind(this)
     this._onSetSidebarOpen = this._onSetSidebarOpen.bind(this)
     this._toggleSidebar = this._toggleSidebar.bind(this)
+    this.setTitle = this.setTitle.bind(this)
   }
 
   componentWillMount() {
@@ -70,16 +75,19 @@ class AuthRoute extends React.Component<AuthRouteProps, AuthRouteState> {
     this._onSetSidebarOpen(!this.state.sidebarOpen)
   }
 
-  render() {
+  setTitle(title: string) {
+    this.setState({ title })
+  }
 
-    const { component: Component, address, title, logout, ...rest } = this.props
+  render() {
+    const { address, logout } = this.props
 
     const contentHeader = (
       <div>
         {!this.state.sidebarDocked && (
           <a onClick={this._toggleSidebar}><FontAwesomeIcon icon={faBars} /></a>
         )}
-        <span style={{ textTransform: 'capitalize', paddingLeft: "12px" }}>{title}</span>
+        <span style={{ paddingLeft: "12px" }}>{this.state.title}</span>
       </div>
     )
 
@@ -94,17 +102,37 @@ class AuthRoute extends React.Component<AuthRouteProps, AuthRouteState> {
       styles: styles.sidebar
     }
 
-    return address ? (
+    return (
       <Sidebar {...sidebarProps}>
         <div style={styles.header}>
           {contentHeader}
         </div>
-        <Route {...rest} render={props => <Component {...props} logout={logout} address={address} />} />
+        <Switch>
+          <Route
+            exact
+            path="/posts"
+            render={props => <PostsPage {...props} address={address} setTitle={this.setTitle} />}
+          />
+          <Route
+            exact
+            path="/wallet"
+            render={props => <WalletPage {...props} address={address} setTitle={this.setTitle} />}
+          />
+          <Route
+            exact
+            path="/settings"
+            render={props => <SettingsPage {...props} logout={logout} setTitle={this.setTitle} />}
+          />
+          <Route
+            exact
+            path="/profile/:id"
+            render={props => <ProfilePage {...props} address={address} setTitle={this.setTitle} />}
+          />
+          <Redirect to="/posts" />
+        </Switch>
       </Sidebar>
-    ) : (
-      <Redirect to="/"/>
     )
   }
 }
 
-export default AuthRoute
+export default AuthRoutes

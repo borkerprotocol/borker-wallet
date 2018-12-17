@@ -6,7 +6,7 @@ export async function getUser(address: string): Promise<User> {
   return sampleUsers.find(u => u.address === address) as User
 }
 
-export async function getMyPosts(userAddress: string, myAddress: string): Promise<RelativePost[]> {
+export async function getRelativePosts(userAddress: string, myAddress: string): Promise<RelativePost[]> {
   return samplePosts
           .filter((p: Post) => p.address === userAddress)
           .map(p => {

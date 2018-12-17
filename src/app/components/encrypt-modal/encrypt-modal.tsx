@@ -8,7 +8,7 @@ import './encrypt-modal.scss'
 
 export interface EncryptModalProps {
   mnemonic: string
-  login: (address: string) => void
+  login: (address: string) => Promise<any>
 }
 
 export interface EncryptModalState {

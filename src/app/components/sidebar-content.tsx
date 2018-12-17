@@ -1,7 +1,5 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { User } from '../../types/types'
-import * as Storage from 'idb-keyval'
 
 export interface SidebarContentProps {
   address: string

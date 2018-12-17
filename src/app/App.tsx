@@ -1,6 +1,7 @@
 import React from 'react'
 import * as Storage from 'idb-keyval'
-import Routes from './pages/routes'
+import AuthRoutes from './pages/auth-routes'
+import UnauthRotes from './pages/unauth-routes'
 import './App.scss'
 
 export interface AppState {
@@ -28,7 +29,7 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
-  async login(address: string): Promise<void> {
+  async login(address: string): Promise<any> {
     this.setState({ address })
   }
 
@@ -38,13 +39,18 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    return this.state.isLoading ? (
+    const { address, isLoading } = this.state
+
+    return isLoading ? (
       <div><p>loading</p></div>
-    ) : (
-      <Routes
-        address={this.state.address}
-        login={this.login}
+    ) : address ? (
+      <AuthRoutes
+        address={address}
         logout={this.logout}
+      />
+    ) : (
+      <UnauthRotes
+        login={this.login}
       />
     )
   }

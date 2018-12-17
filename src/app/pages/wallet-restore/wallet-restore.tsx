@@ -4,7 +4,7 @@ import '../../App.scss'
 import './wallet-restore.scss'
 
 export interface WalletRestoreProps {
-  login: (address: string) => Promise<void>
+  login: (address: string) => Promise<any>
 }
 
 export interface WalletRestoreState {

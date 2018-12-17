@@ -6,6 +6,7 @@ import './posts.scss'
 
 export interface PostsProps {
   address: string
+  setTitle: (title: string) => void
 }
 
 export interface PostsState {
@@ -22,6 +23,7 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
   }
 
   async componentDidMount() {
+    this.props.setTitle('Posts')
     this.setState({ posts: await getPosts(this.props.address) })
   }
 

@@ -4,6 +4,7 @@ import './wallet.scss'
 
 export interface WalletProps {
   address: string
+  setTitle: (title: string) => void
 }
 
 export interface WalletState {
@@ -22,7 +23,7 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
   }
 
   async componentDidMount() {
-    // await getWallet(address)
+    this.props.setTitle('Wallet')
   }
 
   render() {

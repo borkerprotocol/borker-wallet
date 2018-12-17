@@ -5,7 +5,7 @@ import '../../App.scss'
 import './wallet-create.scss'
 
 export interface WalletCreateProps {
-  login: (address: string) => Promise<void>
+  login: (address: string) => Promise<any>
 }
 
 export interface WalletCreateState {

@@ -1,8 +1,8 @@
 import React from 'react'
 import { RouteComponentProps } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import { User, Post, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser } from '../../../types/types'
-import { getUser, getMyPosts, getLikes, getProfileUpdates } from '../../util/mocks'
+import { User, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser } from '../../../types/types'
+import { getUser, getRelativePosts, getLikes, getProfileUpdates } from '../../util/mocks'
 import PostList from '../../components/post-list/post-list'
 import { calendar } from '../../util/timestamps'
 import 'react-tabs/style/react-tabs.scss'
@@ -15,6 +15,7 @@ export interface ProfileParams {
 
 export interface ProfileProps extends RouteComponentProps<ProfileParams> {
   address: string
+  setTitle: (title: string) => void
 }
 
 export interface ProfileState {
@@ -36,23 +37,24 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
   }
 
   async componentDidMount() {
-    const address = this.props.match.params.id
+    this.props.setTitle('Profile')
+    const userAddress = this.props.match.params.id
     this.setState({
-      user: await getUser(address),
-      posts: await getMyPosts(address, this.props.address),
-      likes: await getLikes(address),
-      profileUpdates: await getProfileUpdates(address)
+      user: await getUser(userAddress),
+      posts: await getRelativePosts(userAddress, this.props.address),
+      likes: await getLikes(userAddress),
+      profileUpdates: await getProfileUpdates(userAddress)
     })
   }
 
   async componentWillReceiveProps(nextProps: ProfileProps) {
-    const address = nextProps.match.params.id
-    if (address !== this.props.match.params.id) {
+    const userAddress = nextProps.match.params.id
+    if (userAddress !== this.props.match.params.id) {
       this.setState({
-        user: await getUser(address),
-        posts: await getMyPosts(address, this.props.address),
-        likes: await getLikes(address),
-        profileUpdates: await getProfileUpdates(address)
+        user: await getUser(userAddress),
+        posts: await getRelativePosts(userAddress, this.props.address),
+        likes: await getLikes(userAddress),
+        profileUpdates: await getProfileUpdates(userAddress)
       })
     }
   }

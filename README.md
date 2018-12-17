@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Borker is an open-source, React/Typescript/Rust/WASM Progressive Web Application for decentralized, unstoppable news sharing on the Degecoin Blockchain. All cryptographic operations are performed client-side.
 
 ## Available Scripts
 
