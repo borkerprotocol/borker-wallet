@@ -29,7 +29,7 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
-  async login(address: string): Promise<any> {
+  async login(address: string): Promise<void> {
     this.setState({ address })
   }
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import SettingsPage from './settings'
+import NewPostPage from './post-new'
 
 // it('renders without crashing', () => {
 //   const div = document.createElement('div')
-//   ReactDOM.render(<SettingsPage />, div)
+//   ReactDOM.render(<NewPostPage />, div)
 //   ReactDOM.unmountComponentAtNode(div)
 // })

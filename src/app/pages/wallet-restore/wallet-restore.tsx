@@ -4,7 +4,7 @@ import '../../App.scss'
 import './wallet-restore.scss'
 
 export interface WalletRestoreProps {
-  login: (address: string) => Promise<any>
+  login: (address: string) => Promise<void>
 }
 
 export interface WalletRestoreState {
@@ -38,23 +38,25 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
   }
 
   render() {
+    const { isModalOpen, isMnemonicEntered, mnemonic } = this.state
+
     return (
       <div className="page-content">
         <p>Insert your 12 word mnemonic phrase, separted with spaces as shown below</p>
         <textarea
           placeholder="word1 word2 word3"
-          value={this.state.mnemonic}
+          value={mnemonic}
           onChange={this._handleMnemonicChange}
           className="textarea"
         />
         <br></br>
-        <button onClick={this._toggleModal} disabled={!this.state.isMnemonicEntered}>
+        <button onClick={this._toggleModal} disabled={!isMnemonicEntered}>
           Restore
         </button>
-        {this.state.isModalOpen &&
+        {isModalOpen &&
           <EncryptModal
             login={this.props.login}
-            mnemonic={this.state.mnemonic}
+            mnemonic={mnemonic}
           />
         }
       </div>

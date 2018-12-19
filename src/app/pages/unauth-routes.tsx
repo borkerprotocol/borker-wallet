@@ -5,7 +5,7 @@ import WalletCreatePage from './wallet-create/wallet-create'
 import WalletRestorePage from './wallet-restore/wallet-restore'
 
 export interface UnauthRoutesProps {
-  login: (address: string) => Promise<any>
+  login: (address: string) => Promise<void>
 }
 
 class UnauthRoutes extends React.Component<UnauthRoutesProps, {}> {
@@ -23,7 +23,7 @@ class UnauthRoutes extends React.Component<UnauthRoutesProps, {}> {
         <Route
           exact
           path="/restore"
-          render={props => <WalletCreatePage {...props} login={login} />}
+          render={props => <WalletRestorePage {...props} login={login} />}
         />
         <Redirect to="/"/>
       </Switch>

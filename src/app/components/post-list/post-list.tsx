@@ -8,6 +8,7 @@ import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as heartOutline } from '@fortawesome/free-regular-svg-icons'
 import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
 import { faRetweet } from '@fortawesome/free-solid-svg-icons'
+import '../../App.scss'
 import './post-list.scss'
 
 export interface PostListProps {
@@ -61,7 +62,11 @@ class PostList extends React.Component<PostListProps, PostListState> {
                   <span> &#183; </span>
                   <span style={{color: 'gray'}}>{fromNow(p.timestamp)}</span>
                 </p>
-                <p>{p.content}</p>
+                <Link
+                  to={`/posts/view`}
+                >
+                  <p>{p.content}</p>
+                </Link>
                 <table>
                   <tbody>
                     <tr>

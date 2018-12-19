@@ -1,8 +1,13 @@
 import { Post, User, PostType, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser, Like } from "../../types/types"
 import { avatar1, avatar2 } from './avatars'
+import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
-export async function getUser(address: string): Promise<User> {
+export async function getRates (): Promise<{ txRate: BigNumber, charRate: BigNumber }> {
+  return { txRate: new BigNumber(1), charRate: new BigNumber(.01) }
+}
+
+export async function getUser (address: string): Promise<User> {
   return sampleUsers.find(u => u.address === address) as User
 }
 
@@ -18,7 +23,7 @@ export async function getRelativePosts(userAddress: string, myAddress: string): 
           }})
 }
 
-export async function getPosts(address: string): Promise<RelativePostWithUser[]> {
+export async function getPosts (address: string): Promise<RelativePostWithUser[]> {
   return samplePosts.map(p => {
     const user = sampleUsers.find(u => u.address === p.address) as User
     return {
@@ -30,7 +35,7 @@ export async function getPosts(address: string): Promise<RelativePostWithUser[]>
     }})
 }
 
-export async function getLikes(address: string): Promise<RelativePostWithUser[]> {
+export async function getLikes (address: string): Promise<RelativePostWithUser[]> {
   const likes = sampleLikes.filter(l => l.address === address)
   return likes.map(l => {
     const post = samplePosts.find(p => p.txid === l.txid) as Post
@@ -44,7 +49,7 @@ export async function getLikes(address: string): Promise<RelativePostWithUser[]>
     }})
 }
 
-export async function getProfileUpdates(address: string): Promise<ProfileUpdate[]> {
+export async function getProfileUpdates (address: string): Promise<ProfileUpdate[]> {
   return sampleProfileUpdates.filter(p => p.address === address)
 }
 

@@ -1,10 +1,11 @@
 import React from 'react'
-import { Switch, Redirect, Route } from "react-router-dom"
+import { Switch, Redirect, Route, Link } from "react-router-dom"
 import Sidebar, { SidebarProps } from "react-sidebar"
 import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import PostsPage from './posts/posts'
+import PostsPage from './posts/posts-routes'
+import PostNewPage from './posts/post-new/post-new'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
 import ProfilePage from './profile/profile'
@@ -109,27 +110,27 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
         </div>
         <Switch>
           <Route
-            exact
             path="/posts"
-            render={props => <PostsPage {...props} address={address} setTitle={this.setTitle} />}
-          />
-          <Route
-            exact
-            path="/wallet"
-            render={props => <WalletPage {...props} address={address} setTitle={this.setTitle} />}
-          />
-          <Route
-            exact
-            path="/settings"
-            render={props => <SettingsPage {...props} logout={logout} setTitle={this.setTitle} />}
+            render={props => <PostsPage {...props} setTitle={this.setTitle} address={address} />}
           />
           <Route
             exact
             path="/profile/:id"
-            render={props => <ProfilePage {...props} address={address} setTitle={this.setTitle} />}
+            render={props => <ProfilePage {...props} setTitle={this.setTitle} address={address} />}
+          />
+          <Route
+            exact
+            path="/settings"
+            render={props => <SettingsPage {...props} setTitle={this.setTitle} logout={logout} />}
+          />
+          <Route
+            exact
+            path="/wallet"
+            render={props => <WalletPage {...props} setTitle={this.setTitle} address={address} />}
           />
           <Redirect to="/posts" />
         </Switch>
+        <Link to={`/posts/new`} className="fab">+</Link>
       </Sidebar>
     )
   }

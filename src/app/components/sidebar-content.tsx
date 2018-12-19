@@ -37,26 +37,17 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
 
   render() {
     const { address } = this.state
+    
     return (
       <div style={styles.content}>
         <span onClick={this.props.toggleSidebar}>
-          <Link
-            to={`/profile/${address}`}
-            style={styles.link}
-          >
-            Profile
-          </Link>
+          <Link to={`/profile/${address}`} style={styles.link}>Profile</Link>
         </span>
         <span onClick={this.props.toggleSidebar}>
           <Link to="/posts" style={styles.link}>Posts</Link>
         </span>
         <span onClick={this.props.toggleSidebar}>
-        <Link
-            to={`/wallet`}
-            style={styles.link}
-          >
-            Wallet
-          </Link>
+        <Link to={`/wallet`} style={styles.link}>Wallet</Link>
         </span>
         <span onClick={this.props.toggleSidebar}>
           <Link to="/settings" style={styles.link}>Settings</Link>

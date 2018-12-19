@@ -8,7 +8,7 @@ import './encrypt-modal.scss'
 
 export interface EncryptModalProps {
   mnemonic: string
-  login: (address: string) => Promise<any>
+  login: (address: string) => Promise<void>
 }
 
 export interface EncryptModalState {
@@ -67,19 +67,21 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
   }
 
   render() {
-    if (this.state.isSaved) {
+    const { password, isOpen, isSaved } = this.state
+
+    if (isSaved) {
       return <Redirect to="/posts" />
     }
     return (
       <Modal
         ariaHideApp={false}
-        isOpen={this.state.isOpen}
+        isOpen={isOpen}
         style={modalStyles}
       >
         <button onClick={this._toggleModal}>x</button>
         <form onSubmit={this._saveWallet} className="password-form">
           <p>Please enter a password to encrypt your mnemonic phrase on this device.</p>
-          <input type="password" value={this.state.password} onChange={this._handlePasswordChange} />
+          <input type="password" value={password} onChange={this._handlePasswordChange} />
           <input type="submit" value="Save" />
         </form>
       </Modal>

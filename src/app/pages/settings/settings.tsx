@@ -1,5 +1,6 @@
 import React from 'react'
 import '../../App.scss'
+import './settings.scss'
 
 export interface SettingsProps {
   logout: () => Promise<void>
