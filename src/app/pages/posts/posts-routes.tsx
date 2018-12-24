@@ -24,7 +24,7 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
     super(props)
     this.state = {
       loading: true,
-      posts: []
+      posts: [],
     }
   }
 
@@ -36,7 +36,7 @@ class PostsPage extends React.Component<PostsProps, PostsState> {
     })
   }
 
-  render() {
+  render () {
     const { loading, posts } = this.state
     return (
       <div>

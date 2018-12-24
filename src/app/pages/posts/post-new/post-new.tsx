@@ -39,13 +39,13 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
     })
   }
 
-  _handleBodyChange (e) {
+  _handleBodyChange (e: any) {
     this.setState({
       body: e.target.value,
     })
   }
 
-  toggleModal (e) {
+  toggleModal (e: any) {
     e.preventDefault()
     this.setState({
       isModalOpen: !this.state.isModalOpen,
@@ -56,7 +56,7 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
     alert('broadcasts coming soon!')
   }
 
-  render() {
+  render () {
     const { body, txRate, charRate, isModalOpen } = this.state
     const txCount = Math.ceil(body.length / 77) || 1
     const charCount = body.length

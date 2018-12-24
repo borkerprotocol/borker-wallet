@@ -15,27 +15,27 @@ const styles = {
     width: 220,
     height: "100%",
     padding: "16px",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   link: {
     fontSize: "1.6rem",
     display: "block",
     padding: "12px",
     color: "gray",
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 }
 
 class SidebarContent extends React.Component<SidebarContentProps, SidebarContentState> {
 
-  constructor(props: SidebarContentProps) {
+  constructor (props: SidebarContentProps) {
     super(props)
     this.state = {
-      address: props.address
+      address: props.address,
     }
   }
 
-  render() {
+  render () {
     const { address } = this.state
     
     return (

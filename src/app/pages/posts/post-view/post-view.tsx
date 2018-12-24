@@ -15,18 +15,18 @@ export interface PostViewState {
 
 class PostViewPage extends React.Component<PostViewProps, PostViewState> {
 
-  constructor(props: PostViewProps) {
+  constructor (props: PostViewProps) {
     super(props)
     this.state = {
-      thread: []
+      thread: [],
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.props.setTitle('Post View')
   }
 
-  render() {
+  render () {
     return (
       <div>
         <PostList posts={[this.props.post]} />

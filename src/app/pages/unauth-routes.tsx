@@ -9,7 +9,7 @@ export interface UnauthRoutesProps {
 }
 
 class UnauthRoutes extends React.Component<UnauthRoutesProps, {}> {
-  render() {
+  render () {
     const { login } = this.props
 
     return (

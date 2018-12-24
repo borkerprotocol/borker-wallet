@@ -1,21 +1,22 @@
 import React from 'react'
 import { Redirect } from 'react-router'
 import Modal from 'react-modal'
-import * as CryptoJS from "crypto-js"
+import * as CryptoJS from 'crypto-js'
+import { JsWallet } from 'borker-rs'
 import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './encrypt-modal.scss'
 
 export interface EncryptModalProps {
-  mnemonic: string
+  isOpen: boolean
+  wallet: JsWallet
+  toggleModal: (e: any) => void
   login: (address: string) => Promise<void>
 }
 
 export interface EncryptModalState {
   isOpen: boolean
-  mnemonic: string
   password: string
-  address: string
   isSaved: boolean
 }
 
@@ -26,48 +27,58 @@ const modalStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-40%',
-    transform: 'translate(-50%, -50%)'
-  }
+    transform: 'translate(-50%, -50%)',
+  },
 }
 
 class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState> {
 
-  constructor(props: EncryptModalProps) {
+  constructor (props: EncryptModalProps) {
     super(props)
     this.state = {
-      isOpen: true,
-      mnemonic: props.mnemonic,
+      isOpen: props.isOpen,
       password: '',
-      address: '',
-      isSaved: false
+      isSaved: false,
     }
     this._handlePasswordChange = this._handlePasswordChange.bind(this)
     this._saveWallet = this._saveWallet.bind(this)
-    this._toggleModal = this._toggleModal.bind(this)
   }
 
-  async _saveWallet(e): Promise<void> {
+  async _saveWallet (e: any): Promise<void> {
     e.preventDefault()
-    const encryptedData = CryptoJS.AES.encrypt(this.state.mnemonic, this.state.password)
-    const address = '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh'
+    const { wallet } = this.props
+
+    const borkerLib = await import('borker-rs')
+
+    const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer().toString(), this.state.password).toString()
+    const address = wallet.childAt([-44, -0, -0, 0, 0]).address(borkerLib.Network.Dogecoin)
+
     await Promise.all([
-      Storage.set('mnemonic', encryptedData.toString()),
+      Storage.set('wallet', encrypted),
       Storage.set('address', address),
-      Storage.set(`${address}`, {})
     ])
+
+    // baseline values
+    console.log(wallet.words())
+    console.log('buffer', wallet.toBuffer())
+    console.log('string buffer', wallet.toBuffer().toString())
+    // recovered values
+    const stringBuffer = CryptoJS.AES.decrypt(encrypted, 'password').toString(CryptoJS.enc.Utf8)
+    const buffer = new TextEncoder().encode(stringBuffer)
+    console.log('string buffer', stringBuffer)
+    console.log('buffer', buffer)
+    console.log('words', borkerLib.JsWallet.fromBuffer(buffer).words())
+
     this.props.login(address)
   }
 
-  _handlePasswordChange(e) {
+  _handlePasswordChange (e: any) {
     this.setState({ password: e.target.value })
   }
 
-  _toggleModal() {
-    this.setState({ isOpen: !this.state.isOpen })
-  }
-
-  render() {
-    const { password, isOpen, isSaved } = this.state
+  render () {
+    const { isOpen, toggleModal } = this.props
+    const { password, isSaved } = this.state
 
     if (isSaved) {
       return <Redirect to="/posts" />
@@ -78,7 +89,7 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
         isOpen={isOpen}
         style={modalStyles}
       >
-        <button onClick={this._toggleModal}>x</button>
+        <button onClick={toggleModal}>x</button>
         <form onSubmit={this._saveWallet} className="password-form">
           <p>Please enter a password to encrypt your mnemonic phrase on this device.</p>
           <input type="password" value={password} onChange={this._handlePasswordChange} />

@@ -27,39 +27,39 @@ export interface ProfileState {
 
 class ProfilePage extends React.Component<ProfileProps, ProfileState> {
 
-  constructor(props) {
+  constructor (props: ProfileProps) {
     super(props)
     this.state = {
       posts: [],
       likes: [],
-      profileUpdates: []
+      profileUpdates: [],
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.props.setTitle('Profile')
     const userAddress = this.props.match.params.id
     this.setState({
       user: await getUser(userAddress),
       posts: await getRelativePosts(userAddress, this.props.address),
       likes: await getLikes(userAddress),
-      profileUpdates: await getProfileUpdates(userAddress)
+      profileUpdates: await getProfileUpdates(userAddress),
     })
   }
 
-  async componentWillReceiveProps(nextProps: ProfileProps) {
+  async componentWillReceiveProps (nextProps: ProfileProps) {
     const userAddress = nextProps.match.params.id
     if (userAddress !== this.props.match.params.id) {
       this.setState({
         user: await getUser(userAddress),
         posts: await getRelativePosts(userAddress, this.props.address),
         likes: await getLikes(userAddress),
-        profileUpdates: await getProfileUpdates(userAddress)
+        profileUpdates: await getProfileUpdates(userAddress),
       })
     }
   }
 
-  render() {
+  render () {
     const { user, posts, likes, profileUpdates } = this.state
     return (
       <div className="page-content">
@@ -75,7 +75,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
               <h4>
                 {user.name}
                 <br></br>
-                <a href={`https://blockchain.com/btc/address/${user.address}`} target="_blank">@{user.address.substr(0,11)}</a>
+                <a href={`https://blockchain.com/btc/address/${user.address}`} target="_blank">@{user.address.substr(0, 11)}</a>
                 <br></br>
                 <b>Birth Block: </b>{user.birthBlock}
               </h4>
@@ -90,7 +90,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
               <TabPanel>
                 {posts.length > 0 &&
                   <PostList posts={posts.map(p => {
-                    return {...p, user}
+                    return { ...p, user }
                   })} />
                 }
                 {!posts.length &&
@@ -101,7 +101,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
               <TabPanel>
                 {likes.length > 0 &&
                   <PostList posts={likes.map(p => {
-                    return {...p}
+                    return { ...p }
                   })} />
                 }
                 {!likes.length &&
@@ -114,12 +114,12 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
                   {profileUpdates.map(p => {
                     return (
                       <li key={p.txid}>
-                        <p style={{color: 'gray'}}>{calendar(p.timestamp)}</p>
+                        <p style={{ color: 'gray' }}>{calendar(p.timestamp)}</p>
 
                         <p>Changed {p.field}{p.field === ProfileFields.name ? ` to ${p.value}` : ''}</p>
                       </li>
                     )
-                  })}     
+                  })}
                 </ul>
               </TabPanel>
             </Tabs>

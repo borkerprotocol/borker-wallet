@@ -11,16 +11,16 @@ export interface SettingsState {}
 
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
-  constructor(props) {
+  constructor (props: SettingsProps) {
     super(props)
     this.state = {}
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.setTitle('Settings')
   }
 
-  render() {
+  render () {
     return (
       <div className="page-content">
         <button onClick={this.props.logout}>Logout</button>

@@ -14,19 +14,19 @@ export interface WalletState {
 
 class WalletPage extends React.Component<WalletProps, WalletState> {
 
-  constructor(props: WalletProps) {
+  constructor (props: WalletProps) {
     super(props)
     this.state = {
       address: props.address,
-      balance: 0
+      balance: 0,
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.props.setTitle('Wallet')
   }
 
-  render() {
+  render () {
     const { address, balance } = this.state
 
     return (

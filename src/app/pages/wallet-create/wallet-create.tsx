@@ -1,6 +1,7 @@
 import React from 'react'
 import EncryptModal from '../../components/encrypt-modal/encrypt-modal'
 import { JsWallet } from 'borker-rs'
+import { sampleWords } from '../../util/mocks'
 import '../../App.scss'
 import './wallet-create.scss'
 
@@ -9,52 +10,48 @@ export interface WalletCreateProps {
 }
 
 export interface WalletCreateState {
-  mnemonic: string[]
+  wallet: JsWallet | null
+  mnemonic: string,
   isModalOpen: boolean
 }
 
-let borkerLib: any
-let wallet: JsWallet
-
 class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateState> {
 
-  constructor(props: WalletCreateProps) {
+  constructor (props: WalletCreateProps) {
     super(props)
     this.state = {
-      mnemonic: [],
-      isModalOpen: false
+      wallet: null,
+      mnemonic: '',
+      isModalOpen: false,
     }
-    this._genWallet = this._genWallet.bind(this)
-    this._toggleModal = this._toggleModal.bind(this)
+    this.toggleModal = this.toggleModal.bind(this)
   }
 
-  async componentDidMount() {
-    borkerLib = await import('borker-rs')
-    this._genWallet()
+  async componentDidMount () {
+    const borkerLib = await import('borker-rs')
+    const wallet = new borkerLib.JsWallet(sampleWords)
+    this.setState({ wallet, mnemonic: wallet.words().join(' ') })
   }
 
-  _genWallet() {
-    wallet = new borkerLib.JsWallet()
-    this.setState({ mnemonic: wallet.words() })
-  }
-
-  _toggleModal() {
+  toggleModal () {
     this.setState({ isModalOpen: !this.state.isModalOpen })
   }
 
-  render() {
-    const mnemonic = this.state.mnemonic.join(' ')
+  render () {
+    const { isModalOpen, wallet, mnemonic } = this.state
 
     return (
       <div className="page-content">
         <code>{mnemonic}</code>
-        <button onClick={this._toggleModal}>
+        <button onClick={this.toggleModal}>
           I've Written Down My Mnemonic Phrase
         </button>
-        {this.state.isModalOpen &&
+        {isModalOpen && wallet &&
           <EncryptModal
+            isOpen={isModalOpen}
+            toggleModal={this.toggleModal}
             login={this.props.login}
-            mnemonic={mnemonic}
+            wallet={wallet}
           />
         }
       </div>

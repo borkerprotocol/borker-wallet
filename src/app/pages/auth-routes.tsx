@@ -5,7 +5,6 @@ import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import PostsPage from './posts/posts-routes'
-import PostNewPage from './posts/post-new/post-new'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
 import ProfilePage from './profile/profile'
@@ -28,20 +27,20 @@ const styles = {
     color: "white",
     padding: "16px",
     fontSize: "1.6em",
-    fontWeight: "bold" as "bold"
+    fontWeight: "bold" as "bold",
   },
   sidebar: {
     sidebar: {
-      overflowY: "hidden"
-    }
-  }
+      overflowY: "hidden",
+    },
+  },
 }
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
 class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
 
-  constructor(props: AuthRoutesProps) {
+  constructor (props: AuthRoutesProps) {
     super(props)
     this.state = {
       address: props.address,
@@ -55,32 +54,32 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
     this.setTitle = this.setTitle.bind(this)
   }
 
-  componentWillMount() {
+  componentWillMount () {
     mql.addListener(this._mediaQueryChanged)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     mql.removeListener(this._mediaQueryChanged)
   }
 
-  _mediaQueryChanged() {
+  _mediaQueryChanged () {
     this.setState({ sidebarDocked: mql.matches, sidebarOpen: false })
   }
 
-  _onSetSidebarOpen(open: boolean) {
+  _onSetSidebarOpen (open: boolean) {
     this.setState({ sidebarOpen: open })
   }
 
-  _toggleSidebar(ev) {
+  _toggleSidebar (ev: any) {
     ev.preventDefault()
     this._onSetSidebarOpen(!this.state.sidebarOpen)
   }
 
-  setTitle(title: string) {
+  setTitle (title: string) {
     this.setState({ title })
   }
 
-  render() {
+  render () {
     const { address, logout } = this.props
 
     const contentHeader = (
@@ -100,7 +99,7 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
       docked: this.state.sidebarDocked,
       open: this.state.sidebarOpen,
       onSetOpen: this._onSetSidebarOpen,
-      styles: styles.sidebar
+      styles: styles.sidebar,
     }
 
     return (

@@ -9,7 +9,7 @@ export interface BroadcastModalProps {
   charCount: number
   cost: BigNumber
   isOpen: boolean
-  toggleModal: (e) => void
+  toggleModal: (e: any) => void
   broadcast: () => Promise<void>
 }
 
@@ -22,13 +22,13 @@ const modalStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-40%',
-    transform: 'translate(-50%, -50%)'
-  }
+    transform: 'translate(-50%, -50%)',
+  },
 }
 
 class BroadcastModal extends React.Component<BroadcastModalProps, BroadcastModalState> {
 
-  render() {
+  render () {
     const { isOpen, txCount, charCount, cost, toggleModal, broadcast } = this.props
 
     return (

@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-export function fromNow(timestamp: string) {
+export function fromNow (timestamp: string) {
   const now = moment(timestamp)
   const diff = moment().diff(now, 'minute')
   if (diff < 1) {
@@ -14,6 +14,6 @@ export function fromNow(timestamp: string) {
   }
 }
 
-export function calendar(timestamp: string) {
+export function calendar (timestamp: string) {
   return moment(timestamp).calendar()
 }

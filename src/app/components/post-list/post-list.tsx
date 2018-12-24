@@ -21,26 +21,26 @@ export interface PostListState {
 
 class PostList extends React.Component<PostListProps, PostListState> {
 
-  constructor(props: PostListProps) {
+  constructor (props: PostListProps) {
     super(props)
     this.state = {
-      posts: props.posts
+      posts: props.posts,
     }
   }
 
-  reply(post: Post) {
+  reply (post: Post) {
     alert('replies coming soon')
   }
 
-  repost(post: Post) {
+  repost (post: Post) {
     alert('reposts coming soon')
   }
 
-  like(post: Post) {
+  like (post: Post) {
     alert('likes coming soon')
   }
 
-  render() {
+  render () {
     return (
       <ul className="post-list">
         {this.state.posts.map(p => {

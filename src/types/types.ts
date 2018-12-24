@@ -48,11 +48,11 @@ export interface ProfileUpdate {
 export enum PostType {
   post = 'post',
   repost = 'repost',
-  reply = 'reply'
+  reply = 'reply',
 }
 
 export enum ProfileFields {
   name = 'name',
   avatar = 'avatar',
-  bio = 'bio'
+  bio = 'bio',
 }
