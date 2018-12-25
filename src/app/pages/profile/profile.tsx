@@ -1,8 +1,8 @@
 import React from 'react'
 import { RouteComponentProps } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import { User, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser } from '../../../types/types'
-import { getUser, getRelativePosts, getLikes, getProfileUpdates } from '../../util/mocks'
+import { User, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser, Post } from '../../../types/types'
+import { getUser, getPosts, getLikes, getProfileUpdates } from '../../util/mocks'
 import PostList from '../../components/post-list/post-list'
 import { calendar } from '../../util/timestamps'
 import 'react-tabs/style/react-tabs.scss'
@@ -41,7 +41,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     const userAddress = this.props.match.params.id
     this.setState({
       user: await getUser(userAddress),
-      posts: await getRelativePosts(userAddress, this.props.address),
+      posts: await getPosts(this.props.address, userAddress),
       likes: await getLikes(userAddress),
       profileUpdates: await getProfileUpdates(userAddress),
     })
@@ -52,7 +52,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
     if (userAddress !== this.props.match.params.id) {
       this.setState({
         user: await getUser(userAddress),
-        posts: await getRelativePosts(userAddress, this.props.address),
+        posts: await getPosts(this.props.address, userAddress),
         likes: await getLikes(userAddress),
         profileUpdates: await getProfileUpdates(userAddress),
       })
@@ -61,11 +61,12 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
 
   render () {
     const { user, posts, likes, profileUpdates } = this.state
+
     return (
       <div className="page-content">
         {!user &&
           <div>
-            <p>User not found</p>
+            <p>User not found.</p>
           </div>
         }
         {user &&
@@ -75,7 +76,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
               <h4>
                 {user.name}
                 <br></br>
-                <a href={`https://blockchain.com/btc/address/${user.address}`} target="_blank">@{user.address.substr(0, 11)}</a>
+                <a href={`https://live.blockcypher.com/doge/address/${user.address}/`} target="_blank">@{user.address.substr(0, 11)}</a>
                 <br></br>
                 <b>Birth Block: </b>{user.birthBlock}
               </h4>
@@ -94,7 +95,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
                   })} />
                 }
                 {!posts.length &&
-                  <p>Your Posts and Reposts will appear here.</p>
+                  <p>No Posts</p>
                 }
               </TabPanel>
 
@@ -105,22 +106,27 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
                   })} />
                 }
                 {!likes.length &&
-                  <p>Posts you LIKE will appear here.</p>
+                  <p>No Likes</p>
                 }
               </TabPanel>
 
               <TabPanel>
-                <ul className="profile-update-list">
-                  {profileUpdates.map(p => {
-                    return (
-                      <li key={p.txid}>
-                        <p style={{ color: 'gray' }}>{calendar(p.timestamp)}</p>
+                {profileUpdates.length > 0 &&
+                  <ul className="profile-update-list">
+                    {profileUpdates.map(p => {
+                      return (
+                        <li key={p.txid}>
+                          <p style={{ color: 'gray' }}>{calendar(p.timestamp)}</p>
 
-                        <p>Changed {p.field}{p.field === ProfileFields.name ? ` to ${p.value}` : ''}</p>
-                      </li>
-                    )
-                  })}
-                </ul>
+                          <p>Changed {p.field}{p.field === ProfileFields.name ? ` to ${p.value}` : ''}</p>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                }
+                {!profileUpdates.length &&
+                  <p>No Profile Updates</p>
+                }
               </TabPanel>
             </Tabs>
           </div>

@@ -7,29 +7,5 @@
     border-bottom-width: 1px;
     border-color: darkgray;
     overflow: hidden;
-    & img {
-      position: relative;
-      float: left;
-      margin: 14px;
-      max-width: 40px;
-      max-height: 40px;
-      border-radius: 48px;
-    }
   }
-}
-
-.post-body {
-  margin-left: 60px;
-  margin-bottom: 14px;
-  & table {
-    width: 100%;
-    & tr {
-      color: gray;
-    }
-  }
-}
-
-.link {
-  text-decoration: none;
-  color: gray;
 }

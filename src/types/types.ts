@@ -9,9 +9,13 @@ export interface User {
 export interface Post {
   type: PostType
   timestamp: string
+  nonce: number
   txid: string
+  refTxid: string
   content: string
   address: string
+  isThread: boolean
+  threadIndex: number
   replies: number
   reposts: number
   likes: number

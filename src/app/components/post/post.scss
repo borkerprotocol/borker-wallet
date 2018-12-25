@@ -1,0 +1,35 @@
+.post-avatar {
+  position: relative;
+  float: left;
+  margin-left: 10px;
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 48px;
+}
+
+.post-content {
+  margin-left: 60px;
+  margin-bottom: 14px;
+  & table {
+    width: 100%;
+    & tr {
+      color: gray;
+    }
+  }
+}
+
+.post-username {
+  text-decoration: none;
+  font-weight: bold;
+  color: orange;
+}
+
+.post-useraddress {
+  text-decoration: none;
+  color: gray;
+}
+
+.post-body {
+  text-decoration: none;
+  color: black;
+}

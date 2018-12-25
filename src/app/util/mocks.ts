@@ -11,28 +11,24 @@ export async function getUser (address: string): Promise<User> {
   return sampleUsers.find(u => u.address === address) as User
 }
 
-export async function getRelativePosts (userAddress: string, myAddress: string): Promise<RelativePost[]> {
-  return samplePosts
-          .filter((p: Post) => p.address === userAddress)
-          .map(p => {
-            return {
-              ...p,
-              iReply: false,
-              iRepost: false,
-              iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === p.txid),
-          }})
-}
+export async function getPosts (myAddress: string, userAddress?: string, txid?: string): Promise<RelativePostWithUser[]> {
+  let postsToMap: Post[] = []
+  if (userAddress) {
+    postsToMap = samplePosts.filter(p => p.address === userAddress && !p.refTxid)
+  } else if (txid) {
+    postsToMap = samplePosts.filter(p => p.txid === txid || p.refTxid === txid)
+  } else {
+    postsToMap = samplePosts.filter(p => !p.refTxid)
+  }
 
-export async function getPosts (address: string): Promise<RelativePostWithUser[]> {
-  return samplePosts.map(p => {
-    const user = sampleUsers.find(u => u.address === p.address) as User
+  return postsToMap.map(p => {
     return {
       ...p,
-      user,
+      user: sampleUsers.find(u => u.address === p.address) as User,
       iReply: false,
       iRepost: false,
-      iLike: !!sampleLikes.filter(l => l.address === address).find(l => l.txid === p.txid),
-    }})
+      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === p.txid),
+  }})
 }
 
 export async function getLikes (address: string): Promise<RelativePostWithUser[]> {
@@ -70,14 +66,14 @@ export const sampleWords = [
 
 export const sampleUsers: User[] = [
   {
-    address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
     birthBlock: 551973,
     name: 'MattHill',
     bio: '',
     avatar: avatar1,
   },
   {
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
     birthBlock: 421871,
     name: 'DR-BoneZ',
     bio: '',
@@ -89,9 +85,13 @@ export const samplePosts: Post[] = [
   {
     type: PostType.post,
     timestamp: moment().subtract(30, 's').toISOString(),
-    txid: '1c8cd0ebe84a81971527e390b0dd9631a14aeb1708428fa1a71914c10930f744',
-    address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
-    content: 'I like to post. I like to post',
+    nonce: 0,
+    txid: '8b5ab18a8593ba3f1abae61c07bf02169487c58b0e244922b6c4578eaf6e0d35',
+    refTxid: '',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
+    content: 'I like to bork. I like to bork',
+    isThread: false,
+    threadIndex: 0,
     replies: 2,
     reposts: 4,
     likes: 20,
@@ -99,9 +99,13 @@ export const samplePosts: Post[] = [
   {
     type: PostType.post,
     timestamp: moment().subtract(30, 'm').toISOString(),
-    txid: 'f5bf8f50a9b2d9ffd1ac23dc606ae7eb47a3fed7498f508fc000c206c417a675',
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    content: 'Post some more. Post some more.',
+    nonce: 0,
+    txid: '43873bcc83d6d811df6bff1909a5cd3fc98eb84bbaded5a44443fc86f9ef0e3b',
+    refTxid: '',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    content: 'Bork some more. Bork some more.',
+    isThread: false,
+    threadIndex: 0,
     replies: 4,
     reposts: 20,
     likes: 100,
@@ -109,9 +113,13 @@ export const samplePosts: Post[] = [
   {
     type: PostType.post,
     timestamp: moment().subtract(12, 'h').toISOString(),
-    txid: '83fc80db8971becfb3bd31a9333bc9fb62b57ffaf1a6029793aed2b67e3e7b72',
-    address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
-    content: 'Posting like there aint no tomorrow',
+    nonce: 1,
+    txid: '069aa2f138cbdc6ebd379b1e6d1cb7f86c8770ad58be27006671d528a75ba0e3',
+    refTxid: '',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
+    content: 'Borking like there aint no tomorrow',
+    isThread: false,
+    threadIndex: 0,
     replies: 44,
     reposts: 500,
     likes: 250,
@@ -119,59 +127,91 @@ export const samplePosts: Post[] = [
   {
     type: PostType.post,
     timestamp: moment().subtract(2, 'd').toISOString(),
-    txid: '5c4e82eb1a754aca919d92c7f1c7e1f92445a841123d6e07dd444d911f675fbf',
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    content: 'Ill just go ahead and Post again',
+    nonce: 1,
+    txid: '164af924f859c9936f3bda737a986a1a85b3708c9b2fd150b36b964b11c858a6',
+    refTxid: '',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    content: 'This is a long bork that will take up two whole transactions.',
+    isThread: true,
+    threadIndex: 0,
     replies: 0,
     reposts: 2,
     likes: 15,
+  },
+  {
+    type: PostType.post,
+    timestamp: moment().subtract(2, 'd').toISOString(),
+    nonce: 2,
+    txid: 'e3b3a8bf7e3796d908b731c0d16baba0f1e161b97d917e00cde81ff0f1452fd1',
+    refTxid: '164af924f859c9936f3bda737a986a1a85b3708c9b2fd150b36b964b11c858a6',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    content: 'See, I told you. Bork on. We will actually do one more just to seal the deal.',
+    isThread: true,
+    threadIndex: 1,
+    replies: 1,
+    reposts: 1,
+    likes: 1,
+  },
+  {
+    type: PostType.post,
+    timestamp: moment().subtract(2, 'd').toISOString(),
+    nonce: 3,
+    txid: 'e3b3a8bf7e3796d908b731c0d16baba0f1e161b97d917e00cde81ff0f1452fd1',
+    refTxid: '164af924f859c9936f3bda737a986a1a85b3708c9b2fd150b36b964b11c858a6',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    content: 'Done and done.',
+    isThread: true,
+    threadIndex: 2,
+    replies: 1,
+    reposts: 2,
+    likes: 10,
   },
 ]
 
 export const sampleLikes: Like[] = [
   {
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    txid: '1c8cd0ebe84a81971527e390b0dd9631a14aeb1708428fa1a71914c10930f744',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '8b5ab18a8593ba3f1abae61c07bf02169487c58b0e244922b6c4578eaf6e0d35',
   },
   {
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    txid: '83fc80db8971becfb3bd31a9333bc9fb62b57ffaf1a6029793aed2b67e3e7b72',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '069aa2f138cbdc6ebd379b1e6d1cb7f86c8770ad58be27006671d528a75ba0e3',
   },
 ]
 
 export const sampleProfileUpdates: ProfileUpdate[] = [
   {
     timestamp: moment().subtract(10, 'd').toISOString(),
-    address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
-    txid: '55599a0761029be6f64189cddee2e587d2b92661dee84bcc89da72d186022c80',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
+    txid: '39128e8edacce1ada4e1df9aa5fc91431302ef951df06a78e13f4fbc3759e752',
     field: ProfileFields.name,
     value: 'MattHill',
   },
   {
     timestamp: moment().subtract(14, 'd').toISOString(),
-    address: '34MyMBkDQXdq3yG2tszaZYQUtndKnXBaN4',
-    txid: '447fe55c3b8b38006b2c1842b050e8e1ae2e926a8cf47a973ce62b4416deb32e',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
+    txid: 'd128ab6c2de86559b0dfe408a62a37073a65934eda8c4283bcfacb0cf3da7b56',
     field: ProfileFields.name,
     value: 'MatthewHill',
   },
   {
     timestamp: moment().subtract(2, 'd').toISOString(),
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    txid: '72a5e6bb58ee860fe4ba9d254a13fc319e5f9f6a86a68406fcc39ff558bea287',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '94a10c877bdace5b0ccf17f0b718ba602c9f878f9a4a35fd3e68518accb859c2',
     field: ProfileFields.name,
     value: 'DR-BoneZ',
   },
   {
     timestamp: moment().subtract(7, 'd').toISOString(),
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    txid: '8013bcfc7f4620a82ac7c778e31c2f19a2a7cea43fb76adc9841d24fffb12a58',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '41266e19b39dbba35128f3af72299b4636cb9250d81741b5db1987716043a7af',
     field: ProfileFields.avatar,
     value: avatar2,
   },
   {
     timestamp: moment().subtract(30, 'd').toISOString(),
-    address: '1N3jFnsB8ga85LKyDNxBB6sWLLkqea4zqh',
-    txid: '3b03b3c58c5096cc1b03ecf79af2668fa6e053cb4183d466338259e27e16a441',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '774bef2197e6394112e1ee18246f1a0137ddb19a4d2d4464c1e25217977a0460',
     field: ProfileFields.name,
     value: 'Aiden',
   },
