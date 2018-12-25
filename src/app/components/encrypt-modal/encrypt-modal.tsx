@@ -50,8 +50,8 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
 
     const borkerLib = await import('borker-rs')
 
-    const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer().toString(), this.state.password).toString()
     const address = wallet.childAt([-44, -0, -0, 0, 0]).address(borkerLib.Network.Dogecoin)
+    const encrypted = CryptoJS.AES.encrypt(new Buffer(wallet.toBuffer()).toString('hex'), this.state.password).toString()
 
     await Promise.all([
       Storage.set('wallet', encrypted),
@@ -60,13 +60,9 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
 
     // baseline values
     console.log(wallet.words())
-    console.log('buffer', wallet.toBuffer())
-    console.log('string buffer', wallet.toBuffer().toString())
     // recovered values
     const stringBuffer = CryptoJS.AES.decrypt(encrypted, 'password').toString(CryptoJS.enc.Utf8)
-    const buffer = new TextEncoder().encode(stringBuffer)
-    console.log('string buffer', stringBuffer)
-    console.log('buffer', buffer)
+    const buffer = new Uint8Array(new Buffer(stringBuffer, 'hex'))
     console.log('words', borkerLib.JsWallet.fromBuffer(buffer).words())
 
     this.props.login(address)
