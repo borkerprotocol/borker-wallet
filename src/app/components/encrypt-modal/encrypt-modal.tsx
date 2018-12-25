@@ -58,13 +58,6 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
       Storage.set('address', address),
     ])
 
-    // baseline values
-    console.log(wallet.words())
-    // recovered values
-    const stringBuffer = CryptoJS.AES.decrypt(encrypted, 'password').toString(CryptoJS.enc.Utf8)
-    const buffer = new Uint8Array(new Buffer(stringBuffer, 'hex'))
-    console.log('words', borkerLib.JsWallet.fromBuffer(buffer).words())
-
     this.props.login(address)
   }
 
