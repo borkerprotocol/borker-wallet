@@ -51,7 +51,7 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     const borkerLib = await import('borker-rs')
 
     const address = wallet.childAt([-44, -0, -0, 0, 0]).address(borkerLib.Network.Dogecoin)
-    const encrypted = CryptoJS.AES.encrypt(Buffer.from(wallet.toBuffer()).toString('hex'), this.state.password).toString()
+    const encrypted = CryptoJS.AES.encrypt(new Buffer(wallet.toBuffer()).toString('hex'), this.state.password).toString()
 
     await Promise.all([
       Storage.set('wallet', encrypted),
@@ -60,11 +60,10 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
 
     // baseline values
     console.log(wallet.words())
-    console.log('buffer', wallet.toBuffer())
-    console.log('string buffer', wallet.toBuffer().toString())
     // recovered values
-    const decrypted = CryptoJS.AES.decrypt(encrypted, this.state.password).toString(CryptoJS.enc.Utf8)
-    console.log('words', borkerLib.JsWallet.fromBuffer(new Uint8Array(Buffer.from(decrypted, 'hex'))).words())
+    const stringBuffer = CryptoJS.AES.decrypt(encrypted, 'password').toString(CryptoJS.enc.Utf8)
+    const buffer = new Uint8Array(new Buffer(stringBuffer, 'hex'))
+    console.log('words', borkerLib.JsWallet.fromBuffer(buffer).words())
 
     this.props.login(address)
   }
@@ -98,44 +97,3 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
 }
 
 export default EncryptModal
-
-/*
-wordArray: { words: [..], sigBytes: words.length * 4 }
-*/
-
-// assumes wordArray is Big-Endian (because it comes from CryptoJS which is all BE)
-// From: https://gist.github.com/creationix/07856504cf4d5cede5f9#file-encode-js
-function convertWordArrayToUint8Array (wordArray: CryptoJS.LibWordArray) {
-	var len = wordArray.words.length,
-		u8_array = new Uint8Array(len << 2),
-		offset = 0, word, i
-	;
-	for (i=0; i<len; i++) {
-		word = wordArray.words[i];
-		u8_array[offset++] = word >> 24;
-		u8_array[offset++] = (word >> 16) & 0xff;
-		u8_array[offset++] = (word >> 8) & 0xff;
-		u8_array[offset++] = word & 0xff;
-	}
-	return u8_array;
-}
-
-// create a wordArray that is Big-Endian (because it's used with CryptoJS which is all BE)
-// From: https://gist.github.com/creationix/07856504cf4d5cede5f9#file-encode-js
-function convertUint8ArrayToWordArray (u8Array: Uint8Array): CryptoJS.LibWordArray {
-	var words = [], i = 0, len = u8Array.length;
-
-	while (i < len) {
-		words.push(
-			(u8Array[i++] << 24) |
-			(u8Array[i++] << 16) |
-			(u8Array[i++] << 8)  |
-			(u8Array[i++]),
-		);
-	}
-
-	return {
-		sigBytes: words.length * 4,
-		words: words,
-	};
-}
