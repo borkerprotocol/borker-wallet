@@ -8,6 +8,7 @@ import './post-list.scss'
 export interface PostListProps {
   address: string
   setTitle: (title: string) => void
+  setShowFab: (showFab: boolean) => void
 }
 
 export interface PostListState {
@@ -25,6 +26,7 @@ class PostListPage extends React.Component<PostListProps, PostListState> {
 
   async componentDidMount () {
     this.props.setTitle('Posts')
+    this.props.setShowFab(true)
     this.setState({
       posts: await getPosts(this.props.address),
     })

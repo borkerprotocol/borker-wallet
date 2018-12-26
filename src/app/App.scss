@@ -8,6 +8,21 @@
   font-size: 1.4rem;
 }
 
-.capitalize {
-  text-transform: capitalize;
+.fab {
+  position: fixed;
+  bottom: 50px;
+  right: 40px;
+  border-radius: 50%;
+  background-color: blue;
+  text-decoration: none;
+  text-align: center;
+  border: none;
+  color: white;
+  display: block;
+  height: 60px;
+  width: 60px;
+  font-size: 30px;
+  & svg {
+    padding-top: 10px;
+  }
 }

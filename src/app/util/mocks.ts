@@ -1,10 +1,20 @@
-import { Post, User, PostType, ProfileUpdate, ProfileFields, RelativePost, RelativePostWithUser, Like } from "../../types/types"
+import { Post, User, PostType, ProfileUpdate, ProfileFields, RelativePostWithUser } from "../../types/types"
 import { avatar1, avatar2 } from './avatars'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
 export async function getRates (): Promise<{ txRate: BigNumber, charRate: BigNumber }> {
   return { txRate: new BigNumber(1), charRate: new BigNumber(.01) }
+}
+
+export async function getUsers (txid: string, type: PostType): Promise<User[]> {
+  const samples = type === PostType.repost ? sampleReposts : sampleLikes
+  const posts = samples.filter(p => p.txid === txid)
+  const users = sampleUsers.filter(u => {
+    const post = posts.find(p => p.address === u.address) as Post
+    if (post) return u
+  })
+  return users
 }
 
 export async function getUser (address: string): Promise<User> {
@@ -139,7 +149,7 @@ export const samplePosts: Post[] = [
     likes: 15,
   },
   {
-    type: PostType.post,
+    type: PostType.reply,
     timestamp: moment().subtract(2, 'd').toISOString(),
     nonce: 2,
     txid: 'e3b3a8bf7e3796d908b731c0d16baba0f1e161b97d917e00cde81ff0f1452fd1',
@@ -153,10 +163,10 @@ export const samplePosts: Post[] = [
     likes: 1,
   },
   {
-    type: PostType.post,
+    type: PostType.reply,
     timestamp: moment().subtract(2, 'd').toISOString(),
     nonce: 3,
-    txid: 'e3b3a8bf7e3796d908b731c0d16baba0f1e161b97d917e00cde81ff0f1452fd1',
+    txid: 'ead67d64e2f563400873cbbe47601e89cecfabf5a4c0e05d599cd7ee98388b74',
     refTxid: '164af924f859c9936f3bda737a986a1a85b3708c9b2fd150b36b964b11c858a6',
     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
     content: 'Done and done.',
@@ -168,7 +178,9 @@ export const samplePosts: Post[] = [
   },
 ]
 
-export const sampleLikes: Like[] = [
+export const sampleReposts: Partial<Post>[] = []
+
+export const sampleLikes: Partial<Post>[] = [
   {
     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
     txid: '8b5ab18a8593ba3f1abae61c07bf02169487c58b0e244922b6c4578eaf6e0d35',

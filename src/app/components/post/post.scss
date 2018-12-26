@@ -1,21 +1,14 @@
+.post-header {
+  margin-left: 14px;
+}
+
 .post-avatar {
   position: relative;
   float: left;
-  margin-left: 10px;
-  max-width: 40px;
-  max-height: 40px;
-  border-radius: 48px;
-}
-
-.post-content {
-  margin-left: 60px;
-  margin-bottom: 14px;
-  & table {
-    width: 100%;
-    & tr {
-      color: gray;
-    }
-  }
+  margin-right: 14px;
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50px;
 }
 
 .post-username {
@@ -29,7 +22,38 @@
   color: gray;
 }
 
-.post-body {
+.post-content-main {
+  margin-left: 14px;
+}
+
+.post-content-small {
+  margin-left: 78px
+}
+
+.post-border {
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: lightgray;
+}
+
+.post-body-link {
   text-decoration: none;
   color: black;
+  & h2 {
+    font-weight: 400;
+  }
+}
+
+.post-stats {
+  font-weight: bold;
+  & span {
+    font-weight: normal;
+    color: gray;
+    margin-right: 14px;
+  }
+}
+
+.post-footer {
+  padding-top: 14px;
+  text-align: center;
 }

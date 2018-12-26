@@ -22,12 +22,14 @@ class PostList extends React.Component<PostListProps, PostListState> {
   }
 
   render () {
+    const { posts } = this.state
+
     return (
       <ul className="post-list">
-        {this.state.posts.map(p => {
+        {posts.map(p => {
           return (
             <li key={p.txid}>
-              <PostComponent post={p} />
+              <PostComponent post={p} isMain={false}/>
             </li>
           )
         })}

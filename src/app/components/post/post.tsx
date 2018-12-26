@@ -1,93 +1,103 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { RelativePostWithUser, Post } from '../../../types/types'
-import { fromNow } from '../../util/timestamps'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
-import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
-import { faHeart as heartOutline } from '@fortawesome/free-regular-svg-icons'
-import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
-import { faRetweet } from '@fortawesome/free-solid-svg-icons'
+import { RelativePostWithUser } from '../../../types/types'
+import { fromNow, calendar } from '../../util/timestamps'
 import '../../App.scss'
 import './post.scss'
+import PostButtons from '../post-buttons/post-buttons';
 
 export interface PostComponentProps {
+  isMain: boolean
   post: RelativePostWithUser
 }
 
 class PostComponent extends React.Component<PostComponentProps, {}> {
 
-  constructor (props: PostComponentProps) {
-    super(props)
-    this.state = {
-      posts: props.post,
-    }
-  }
-
-  async reply (post: Post): Promise<void> {
-    alert('replies coming soon')
-  }
-
-  async repost (post: Post): Promise<void> {
-    alert('reposts coming soon')
-  }
-
-  async like (post: Post): Promise<void> {
-    alert('likes coming soon')
-  }
-
   render () {
-    const { post } = this.props
-    return (
-      <div>
-        <Link to={`/profile/${post.address}`}>
-          <img src={`data:image/png;base64,${post.user.avatar}`} className="post-avatar" />
+    const { post, isMain } = this.props
+
+    const avatar = (
+      <Link to={`/profile/${post.address}`}>
+        <img src={`data:image/png;base64,${post.user.avatar}`} className="post-avatar" />
+      </Link>
+    )
+
+    const userName = (
+      <Link to={`/profile/${post.address}`} className="post-username">
+        {post.user.name}
+      </Link>
+    )
+
+    const userAddress = (
+      <Link to={`/profile/${post.address}`} className="post-useraddress">
+        @{post.address.substring(0,11)}
+      </Link>
+    )
+
+    const PostBody = () => {
+      const text = post.isThread ? `/${post.threadIndex + 1} ${post.content}` : post.content
+      return (
+        <Link to={`/posts/${post.txid}`} className="post-body-link">
+          {isMain &&
+            <h2>{text}</h2>
+          }
+          {!isMain &&
+            <p>{text}</p>
+          }
         </Link>
-        <div className="post-content">
+      )
+    }
+
+    return isMain ? (
+      <div className="post-border">
+        <div className="post-header">
+          {avatar}
           <p>
-            <Link to={`/profile/${post.address}`} className="post-username">
-              {post.user.name}
-            </Link>
-              <span> &#183; </span>
-            <Link to={`/profile/${post.address}`} className="post-useraddress">
-              @{post.address.substring(0,11)}
-            </Link>
-            <span> &#183; </span>
+            {userName}<br />
+            {userAddress}
+          </p>
+        </div>
+        <div className="post-content-main">
+          <div className="post-border">
+            <PostBody />
+            <p style={{ color: 'gray' }}>{calendar(post.timestamp)}</p>
+          </div>
+          <div className="post-border">
+            <p className="post-stats">
+              <Link
+                to={`/posts/${post.txid}/reposts`}
+                className="post-body-link"
+              >
+                {post.reposts}<span> Reposts</span>
+              </Link>
+              <Link
+                to={`/posts/${post.txid}/likes`}
+                className="post-body-link"
+              >
+                {post.likes}<span> Likes</span>
+              </Link>
+            </p>
+          </div>
+        </div>
+        <div className="post-footer">
+          <PostButtons post={post} showCount={false}/>
+        </div>
+      </div>
+    ) : (
+      <div>
+        <div className="post-header">
+          {avatar}
+          <p>
+            {userName}<span> &#183; </span>
+            {userAddress}<span> &#183; </span>
             <span style={{color: 'gray'}}>{fromNow(post.timestamp)}</span>
           </p>
-          <Link to={`/posts/${post.txid}`} className="post-body">
-            <p>{post.isThread ? `/${post.threadIndex + 1} ${post.content}` : post.content}</p>
-          </Link>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <a onClick={() => this.reply(post)}>
-                    <FontAwesomeIcon
-                      icon={post.iReply ? commentsSolid : commentsOutline}
-                      style={post.iReply ? {color: 'blue'} : {} }
-                    /> {post.replies}
-                  </a>
-                </td>
-                <td>
-                  <a onClick={() => this.repost(post)}>
-                    <FontAwesomeIcon
-                      icon={faRetweet}
-                      style={post.iRepost ? {color: 'green'} : {} }
-                    /> {post.reposts}
-                  </a>
-                </td>
-                <td>
-                  <a onClick={() => this.like(post)}>
-                    <FontAwesomeIcon
-                      icon={post.iLike ? heartSolid : heartOutline}
-                      style={post.iLike ? {color: 'red'} : {} }
-                    /> {post.likes}
-                  </a>
-                </td>
-              </tr>      
-            </tbody>
-          </table>
+        </div>
+        <div className="post-content-small">
+          <PostBody />
+        </div>
+        <div className="post-footer">
+          <PostButtons post={post} showCount/>
         </div>
       </div>
     )

@@ -16,6 +16,7 @@ export interface ProfileParams {
 export interface ProfileProps extends RouteComponentProps<ProfileParams> {
   address: string
   setTitle: (title: string) => void
+  setShowFab: (showFab: boolean) => void
 }
 
 export interface ProfileState {
@@ -38,6 +39,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
 
   async componentDidMount () {
     this.props.setTitle('Profile')
+    this.props.setShowFab(true)
     const userAddress = this.props.match.params.id
     this.setState({
       user: await getUser(userAddress),

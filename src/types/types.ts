@@ -31,11 +31,6 @@ export interface RelativePostWithUser extends RelativePost {
   user: User
 }
 
-export interface Like {
-  address: string
-  txid: string
-}
-
 export interface FullUser extends User {
   posts: Post[]
   profileUpdates: ProfileUpdate[]
@@ -53,6 +48,7 @@ export enum PostType {
   post = 'post',
   repost = 'repost',
   reply = 'reply',
+  like = 'like',
 }
 
 export enum ProfileFields {

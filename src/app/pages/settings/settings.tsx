@@ -5,6 +5,7 @@ import './settings.scss'
 export interface SettingsProps {
   logout: () => Promise<void>
   setTitle: (title: string) => void
+  setShowFab: (showFab: boolean) => void
 }
 
 export interface SettingsState {}
@@ -17,6 +18,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   }
 
   componentDidMount () {
+    this.props.setShowFab(false)
     this.props.setTitle('Settings')
   }
 

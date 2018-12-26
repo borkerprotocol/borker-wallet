@@ -4,6 +4,7 @@ import Sidebar, { SidebarProps } from "react-sidebar"
 import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faDog } from '@fortawesome/free-solid-svg-icons'
 import PostsPage from './posts/posts-routes'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
@@ -19,6 +20,7 @@ export interface AuthRoutesState {
   title: string
   sidebarOpen: boolean
   sidebarDocked: boolean
+  showFab: boolean
 }
 
 const styles = {
@@ -47,11 +49,13 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
       title: '',
       sidebarDocked: mql.matches,
       sidebarOpen: false,
+      showFab: false,
     }
     this._mediaQueryChanged = this._mediaQueryChanged.bind(this)
     this._onSetSidebarOpen = this._onSetSidebarOpen.bind(this)
     this._toggleSidebar = this._toggleSidebar.bind(this)
     this.setTitle = this.setTitle.bind(this)
+    this.setShowFab = this.setShowFab.bind(this)
   }
 
   componentWillMount () {
@@ -79,15 +83,20 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
     this.setState({ title })
   }
 
+  setShowFab (showFab: boolean) {
+    this.setState({ showFab })
+  }
+
   render () {
     const { address, logout } = this.props
+    const { title, sidebarDocked, sidebarOpen, showFab } = this.state
 
     const contentHeader = (
       <div>
-        {!this.state.sidebarDocked && (
+        {!sidebarDocked && (
           <a onClick={this._toggleSidebar}><FontAwesomeIcon icon={faBars} /></a>
         )}
-        <span style={{ paddingLeft: "12px" }}>{this.state.title}</span>
+        <span style={{ paddingLeft: "12px" }}>{title}</span>
       </div>
     )
 
@@ -96,8 +105,8 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
         address={address}
         toggleSidebar={this._toggleSidebar}
       />,
-      docked: this.state.sidebarDocked,
-      open: this.state.sidebarOpen,
+      docked: sidebarDocked,
+      open: sidebarOpen,
       onSetOpen: this._onSetSidebarOpen,
       styles: styles.sidebar,
     }
@@ -110,26 +119,28 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
         <Switch>
           <Route
             path="/posts"
-            render={props => <PostsPage {...props} setTitle={this.setTitle} address={address} />}
+            render={props => <PostsPage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} address={address} />}
           />
           <Route
             exact
             path="/profile/:id"
-            render={props => <ProfilePage {...props} setTitle={this.setTitle} address={address} />}
+            render={props => <ProfilePage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} address={address} />}
           />
           <Route
             exact
             path="/settings"
-            render={props => <SettingsPage {...props} setTitle={this.setTitle} logout={logout} />}
+            render={props => <SettingsPage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} logout={logout} />}
           />
           <Route
             exact
             path="/wallet"
-            render={props => <WalletPage {...props} setTitle={this.setTitle} address={address} />}
+            render={props => <WalletPage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} address={address} />}
           />
           <Redirect to="/posts" />
         </Switch>
-        <Link to={`/posts/new`} className="fab">+</Link>
+        {showFab &&
+          <Link to={`/posts/new`} className="fab"><FontAwesomeIcon icon={faDog} /></Link>
+        }
       </Sidebar>
     )
   }

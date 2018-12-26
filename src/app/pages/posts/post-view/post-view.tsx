@@ -14,6 +14,7 @@ export interface PostViewParams {
 export interface PostViewProps extends RouteComponentProps<PostViewParams> {
   address: string
   setTitle: (title: string) => void
+  setShowFab: (showFab: boolean) => void
 }
 
 export interface PostViewState {
@@ -33,6 +34,7 @@ class PostViewPage extends React.Component<PostViewProps, PostViewState> {
 
   async componentDidMount () {
     this.props.setTitle('Post')
+    this.props.setShowFab(false)
     const txid = this.props.match.params.id
     const posts = await getPosts(this.props.address, undefined, txid)
     const post = posts.shift() as RelativePostWithUser
@@ -51,7 +53,7 @@ class PostViewPage extends React.Component<PostViewProps, PostViewState> {
       </div>
     ) : (
       <div>
-        <PostComponent post={post} />
+        <PostComponent post={post} isMain/>
         <PostList posts={thread} />
       </div>
     )

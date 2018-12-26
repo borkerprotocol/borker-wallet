@@ -5,6 +5,7 @@ import './wallet.scss'
 export interface WalletProps {
   address: string
   setTitle: (title: string) => void
+  setShowFab: (showFab: boolean) => void
 }
 
 export interface WalletState {
@@ -23,6 +24,7 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
   }
 
   async componentDidMount () {
+    this.props.setShowFab(true)
     this.props.setTitle('Wallet')
   }
 

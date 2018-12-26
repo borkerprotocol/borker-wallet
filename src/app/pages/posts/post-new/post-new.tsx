@@ -7,6 +7,7 @@ import '../../../App.scss'
 
 export interface NewPostProps {
   setTitle: (title: string) => void
+  setShowFab: (showFab: boolean) => void
 }
 
 export interface NewPostState {
@@ -32,6 +33,7 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
 
   async componentDidMount () {
     this.props.setTitle('New Post')
+    this.props.setShowFab(false)
     const { txRate, charRate } = await getRates()
     this.setState({
       txRate,
