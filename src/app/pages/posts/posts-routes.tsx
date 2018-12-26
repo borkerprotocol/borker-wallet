@@ -43,12 +43,12 @@ class PostsPage extends React.Component<PostsProps, {}> {
         <Route
           exact
           path="/posts/:id/reposts"
-          render={props => <UserListPage {...props} setTitle={this.props.setTitle} setShowFab={this.props.setShowFab} title="Reposts" address={this.props.address} />}
+          render={props => <UserListPage {...props} setTitle={this.props.setTitle} setShowFab={this.props.setShowFab} title="Reposted By" address={this.props.address} />}
         />
         <Route
           exact
           path="/posts/:id/likes"
-          render={props => <UserListPage {...props} setTitle={this.props.setTitle} setShowFab={this.props.setShowFab} title="Likes" address={this.props.address} />}
+          render={props => <UserListPage {...props} setTitle={this.props.setTitle} setShowFab={this.props.setShowFab} title="Liked By" address={this.props.address} />}
         />
         <Redirect to="/posts" />
       </Switch>

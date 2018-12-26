@@ -83,6 +83,7 @@ class ProfilePage extends React.Component<ProfileProps, ProfileState> {
                 <b>Birth Block: </b>{user.birthBlock}
               </h4>
             </div>
+            <p className="profile-bio">{user.bio}</p>
             <Tabs>
               <TabList>
                 <Tab>Posts & re:Posts</Tab>

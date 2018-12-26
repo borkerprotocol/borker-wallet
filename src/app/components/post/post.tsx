@@ -23,14 +23,14 @@ class PostComponent extends React.Component<PostComponentProps, {}> {
     )
 
     const userName = (
-      <Link to={`/profile/${post.address}`} className="post-username">
+      <Link to={`/profile/${post.user.address}`} className="post-username">
         {post.user.name}
       </Link>
     )
 
     const userAddress = (
-      <Link to={`/profile/${post.address}`} className="post-useraddress">
-        @{post.address.substring(0,11)}
+      <Link to={`/profile/${post.user.address}`} className="post-useraddress">
+        @{post.user.address.substring(0,11)}
       </Link>
     )
 

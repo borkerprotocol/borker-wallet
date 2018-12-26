@@ -9,3 +9,24 @@
     overflow: hidden;
   }
 }
+
+.user-item {
+  margin: 14px;
+}
+
+.user-item-avatar {
+  position: relative;
+  float: left;
+  margin-right: 14px;
+  margin-bottom: 14px;
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50px;
+}
+
+.user-item-follow {
+  position: relative;
+  float: right;
+  margin-right: 14px;
+  font-size: 1.2rem;
+}
