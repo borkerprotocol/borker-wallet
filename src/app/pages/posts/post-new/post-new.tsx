@@ -60,8 +60,8 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
 
   render () {
     const { body, txRate, charRate, isModalOpen } = this.state
-    const txCount = Math.ceil(body.length / 77) || 1
     const charCount = body.length
+    const txCount = charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
     const cost = txRate.times(txCount).plus(charRate.times(charCount))
     
     return (
@@ -70,7 +70,7 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
           <p>Cost Per Transaction: {txRate.toFormat(8)} DOGE</p>
           <p>Cost Per Character: {charRate.toFormat(8)} DOGE</p>
           <input type="text" value={body} onChange={this._handleBodyChange} />
-          <input type="submit" value="Preview" disabled={!body.length} />
+          <input type="submit" value="Preview" disabled={!charCount} />
         </form>
         <p>Transaction Count: {txCount}</p>
         <p>Character Count: {charCount}</p>

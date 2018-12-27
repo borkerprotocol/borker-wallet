@@ -96,7 +96,7 @@ class PostComponent extends React.Component<PostComponentProps, {}> {
         <div className="post-content-small">
           <PostBody />
         </div>
-        <div className="post-footer">
+        <div className="post-footer-small">
           <PostButtons post={post} showCount/>
         </div>
       </div>
