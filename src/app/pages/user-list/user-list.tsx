@@ -1,19 +1,17 @@
 import React from 'react'
+import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
+import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import { User, PostType } from '../../../types/types'
 import { getUsers } from '../../util/mocks'
 import './user-list.scss'
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
 
 export interface UserListParams {
   id: string
 }
 
-export interface UserListProps extends RouteComponentProps<UserListParams> {
-  address: string
-  title: string
-  setTitle: (title: string) => void
-  setShowFab: (showFab: boolean) => void
+export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
+  filter: PostType.repost | PostType.like
 }
 
 export interface UserListState {
@@ -30,21 +28,21 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   }
 
   async componentDidMount () {
-    this.props.setTitle(this.props.title)
+    const title = this.props.filter === PostType.repost ? 'Reposted By' : 'Liked By'
+    this.props.setTitle(title)
     this.props.setShowFab(false)
-    const filter = this.props.title === 'Reposted By' ? PostType.repost : PostType.like
     this.setState({
-      users: await getUsers(this.props.match.params.id, filter),
+      users: await getUsers(this.props.match.params.id, this.props.filter),
     })
   }
 
   async follow (user: User): Promise<void> {
-    alert('follows coming soon')
+    alert ('follows coming soon')
   }
 
   render () {
     const { users } = this.state
-    const isRepost = this.props.title === 'Reposted By'
+    const isRepost = this.props.filter === PostType.repost
 
     return !users.length ? (
       <p style={{ margin: 14 }}>No {isRepost ? 'Reposts' : 'Likes'}</p>
@@ -70,4 +68,4 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   }
 }
 
-export default UserListPage
+export default withAuthContext(UserListPage)

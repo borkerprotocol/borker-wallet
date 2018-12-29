@@ -1,15 +1,12 @@
 import React from 'react'
+import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { RelativePostWithUser } from '../../../../types/types'
 import PostList from '../../../components/post-list/post-list'
 import { getPosts } from '../../../util/mocks'
 import '../../../App.scss'
 import './post-list.scss'
 
-export interface PostListProps {
-  address: string
-  setTitle: (title: string) => void
-  setShowFab: (showFab: boolean) => void
-}
+export interface PostListProps extends AuthProps {}
 
 export interface PostListState {
   posts: RelativePostWithUser[]
@@ -43,4 +40,4 @@ class PostListPage extends React.Component<PostListProps, PostListState> {
   }
 }
 
-export default PostListPage
+export default withAuthContext(PostListPage)

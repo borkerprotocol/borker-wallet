@@ -1,11 +1,10 @@
 import React from 'react'
+import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import '../../App.scss'
 import './wallet.scss'
 
-export interface WalletProps {
-  address: string
-  setTitle: (title: string) => void
-  setShowFab: (showFab: boolean) => void
+
+export interface WalletProps extends AuthProps {
 }
 
 export interface WalletState {
@@ -40,4 +39,4 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
   }
 }
 
-export default WalletPage
+export default withAuthContext(WalletPage)

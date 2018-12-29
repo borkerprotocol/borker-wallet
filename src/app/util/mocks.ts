@@ -86,7 +86,7 @@ export const sampleUsers: User[] = [
     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
     birthBlock: 421871,
     name: 'DR-BoneZ',
-    bio: 'Hacker extraordinaire, and a mean karaokee singer too.',
+    bio: 'Hacker extraordinaire, and a mean karaoke singer too.',
     avatar: avatar2,
   },
 ]

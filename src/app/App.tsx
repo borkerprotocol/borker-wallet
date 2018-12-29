@@ -2,57 +2,57 @@ import React from 'react'
 import * as Storage from 'idb-keyval'
 import AuthRoutes from './pages/auth-routes'
 import UnauthRotes from './pages/unauth-routes'
+import Modal from './components/modals/modal'
+import { AppContext } from './contexts/app-context'
 import './App.scss'
 
 export interface AppState {
   isLoading: boolean
   address: string
+  modalContent: JSX.Element | null
 }
 
 class App extends React.Component<{}, AppState> {
 
-  constructor (props: {}) {
-    super(props)
-    this.state = {
-      isLoading: true,
-      address: '',
-    }
-    this.login = this.login.bind(this)
-    this.logout = this.logout.bind(this)
+  state = {
+    isLoading: true,
+    address: '',
+    modalContent: null,
   }
 
   async componentDidMount () {
-    const address = await Storage.get<string>('address')
     this.setState({
+      address: await Storage.get<string>('address'),
       isLoading: false,
-      address,
     })
   }
 
-  async login (address: string): Promise<void> {
-    this.setState({ address })
+  login = async (address: string) => {
+    this.setState({ address, modalContent: null })
   }
 
-  async logout (): Promise<void> {
+  logout = async () => {
     await Storage.clear()
     this.setState({ address: '' })
   }
 
+  toggleModal = (modalContent: JSX.Element | null) => {
+    this.setState({ modalContent })
+  }
+
   render () {
-    const { address, isLoading } = this.state
+    const { isLoading, address, modalContent } = this.state
+    const { login, logout, toggleModal } = this
 
     return isLoading ? (
-      <div><p>loading</p></div>
-    ) : address ? (
-      <AuthRoutes
-        address={address}
-        logout={this.logout}
-      />
+      <p>loading...</p>
     ) : (
-      <UnauthRotes
-        login={this.login}
-      />
+      <AppContext.Provider value={{ address, login, logout, toggleModal }}>
+        {address ? <AuthRoutes /> : <UnauthRotes />}
+        <Modal content={modalContent}/>
+      </AppContext.Provider>
     )
+
   }
 }
 

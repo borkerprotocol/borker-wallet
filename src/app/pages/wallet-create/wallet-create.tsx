@@ -1,18 +1,16 @@
 import React from 'react'
-import EncryptModal from '../../components/encrypt-modal/encrypt-modal'
+import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
+import { withUnauthContext, UnauthProps } from '../../contexts/unauth-context'
 import { JsWallet } from 'borker-rs'
 import { sampleWords } from '../../util/mocks'
 import '../../App.scss'
 import './wallet-create.scss'
 
-export interface WalletCreateProps {
-  login: (address: string) => Promise<void>
-}
+export interface WalletCreateProps extends UnauthProps {}
 
 export interface WalletCreateState {
   wallet: JsWallet | null
   mnemonic: string,
-  isModalOpen: boolean
 }
 
 class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateState> {
@@ -22,9 +20,7 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
     this.state = {
       wallet: null,
       mnemonic: '',
-      isModalOpen: false,
     }
-    this.toggleModal = this.toggleModal.bind(this)
   }
 
   async componentDidMount () {
@@ -33,30 +29,22 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
     this.setState({ wallet, mnemonic: wallet.words().join(' ') })
   }
 
-  toggleModal () {
-    this.setState({ isModalOpen: !this.state.isModalOpen })
-  }
-
   render () {
-    const { isModalOpen, wallet, mnemonic } = this.state
+    const { wallet, mnemonic } = this.state
+
+    const modal = (
+      <EncryptModal wallet={wallet as JsWallet} />
+    )
 
     return (
       <div className="page-content">
         <code>{mnemonic}</code>
-        <button onClick={this.toggleModal}>
+        <button onClick={() => this.props.toggleModal(modal)}>
           I've Written Down My Mnemonic Phrase
         </button>
-        {isModalOpen && wallet &&
-          <EncryptModal
-            isOpen={isModalOpen}
-            toggleModal={this.toggleModal}
-            login={this.props.login}
-            wallet={wallet}
-          />
-        }
       </div>
     )
   }
 }
 
-export default WalletCreatePage
+export default withUnauthContext(WalletCreatePage)

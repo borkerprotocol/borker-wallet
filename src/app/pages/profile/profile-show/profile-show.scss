@@ -3,7 +3,8 @@
 }
 
 .profile-bio {
-  margin-bottom: 28px;
+  text-align: center;
+  margin-bottom: 44px;
 }
 
 .profile-avatar {
@@ -23,4 +24,19 @@
   border-bottom-width: 1px;
   border-color: darkgray;
   overflow: hidden;
+}
+
+.edit-profile-link {
+  margin-top: 8px;
+  text-align: right;
+  & a {
+    text-decoration: none;
+    font-weight: 400;
+    border: solid;
+    border-width: 2px;
+    border-color: gray;
+    color: gray;
+    padding: 5px;
+    border-radius: 8%;
+  }
 }

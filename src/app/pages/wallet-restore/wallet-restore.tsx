@@ -1,19 +1,20 @@
 import React from 'react'
-import EncryptModal from '../../components/encrypt-modal/encrypt-modal'
 import { JsWallet } from 'borker-rs'
+import { UnauthProps, withUnauthContext } from '../../contexts/unauth-context'
+import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 import { sampleWords } from '../../util/mocks'
 import '../../App.scss'
 import './wallet-restore.scss'
 
-export interface WalletRestoreProps {
+export interface WalletRestoreProps extends UnauthProps {
   login: (address: string) => Promise<void>
+  toggleModal: (content: JSX.Element | null) => void
 }
 
 export interface WalletRestoreState {
   mnemonic: string
   wallet: JsWallet | null
   isMnemonicEntered: boolean
-  isModalOpen: boolean
 }
 
 class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestoreState> {
@@ -24,11 +25,9 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
       mnemonic: '',
       wallet: null,
       isMnemonicEntered: false,
-      isModalOpen: false,
     }
     this._handleMnemonicChange = this._handleMnemonicChange.bind(this)
     this._genWallet = this._genWallet.bind(this)
-    this.toggleModal = this.toggleModal.bind(this)
   }
 
   _handleMnemonicChange (e: any) {
@@ -39,17 +38,21 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
   }
 
   async _genWallet () {
-    const borkerLib = await import('borker-rs')
-    const wallet = new borkerLib.JsWallet(sampleWords)
-    this.setState({ wallet, isModalOpen: true })
-  }
+    if (!this.state.wallet) {
+      const borkerLib = await import('borker-rs')
+      const wallet = new borkerLib.JsWallet(sampleWords)
+      await this.setState({ wallet })
+    }
 
-  toggleModal () {
-    this.setState({ isModalOpen: !this.state.isModalOpen })
+    const modal = (
+      <EncryptModal wallet={this.state.wallet as JsWallet} />
+    )
+
+    this.props.toggleModal(modal)
   }
 
   render () {
-    const { isModalOpen, isMnemonicEntered, wallet, mnemonic } = this.state
+    const { isMnemonicEntered, mnemonic } = this.state
 
     return (
       <div className="page-content">
@@ -64,17 +67,9 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
         <button onClick={this._genWallet} disabled={!isMnemonicEntered}>
           Restore
         </button>
-        {isModalOpen && wallet &&
-          <EncryptModal
-            isOpen={isModalOpen}
-            toggleModal={this.toggleModal}
-            login={this.props.login}
-            wallet={wallet}
-          />
-        }
       </div>
     )
   }
 }
 
-export default WalletRestorePage
+export default withUnauthContext(WalletRestorePage)

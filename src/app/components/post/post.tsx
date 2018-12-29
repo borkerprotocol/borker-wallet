@@ -1,17 +1,17 @@
 import React from 'react'
 import { Link } from "react-router-dom"
 import { RelativePostWithUser } from '../../../types/types'
+import PostButtons from '../post-buttons/post-buttons'
 import { fromNow, calendar } from '../../util/timestamps'
 import '../../App.scss'
 import './post.scss'
-import PostButtons from '../post-buttons/post-buttons';
 
 export interface PostComponentProps {
   isMain: boolean
   post: RelativePostWithUser
 }
 
-class PostComponent extends React.Component<PostComponentProps, {}> {
+class PostComponent extends React.PureComponent<PostComponentProps> {
 
   render () {
     const { post, isMain } = this.props

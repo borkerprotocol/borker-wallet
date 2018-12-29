@@ -1,34 +1,17 @@
 import React from 'react'
-import { Redirect } from 'react-router'
-import Modal from 'react-modal'
 import * as CryptoJS from 'crypto-js'
 import { JsWallet } from 'borker-rs'
 import * as Storage from 'idb-keyval'
-import '../../App.scss'
+import { withAppContext, AppProps } from '../../../contexts/app-context'
+import '../../../App.scss'
 import './encrypt-modal.scss'
 
-export interface EncryptModalProps {
-  isOpen: boolean
+export interface EncryptModalProps extends AppProps {
   wallet: JsWallet
-  toggleModal: (e: any) => void
-  login: (address: string) => Promise<void>
 }
 
 export interface EncryptModalState {
-  isOpen: boolean
   password: string
-  isSaved: boolean
-}
-
-const modalStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-40%',
-    transform: 'translate(-50%, -50%)',
-  },
 }
 
 class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState> {
@@ -36,12 +19,11 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
   constructor (props: EncryptModalProps) {
     super(props)
     this.state = {
-      isOpen: props.isOpen,
       password: '',
-      isSaved: false,
     }
     this._handlePasswordChange = this._handlePasswordChange.bind(this)
     this._saveWallet = this._saveWallet.bind(this)
+    console.log(this.props)
   }
 
   async _saveWallet (e: any): Promise<void> {
@@ -66,27 +48,16 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
   }
 
   render () {
-    const { isOpen, toggleModal } = this.props
-    const { password, isSaved } = this.state
+    const { password } = this.state
 
-    if (isSaved) {
-      return <Redirect to="/posts" />
-    }
     return (
-      <Modal
-        ariaHideApp={false}
-        isOpen={isOpen}
-        style={modalStyles}
-      >
-        <button onClick={toggleModal}>x</button>
-        <form onSubmit={this._saveWallet} className="password-form">
-          <p>Please enter a password to encrypt your mnemonic phrase on this device.</p>
-          <input type="password" value={password} onChange={this._handlePasswordChange} />
-          <input type="submit" value="Save" />
-        </form>
-      </Modal>
+      <form onSubmit={this._saveWallet} className="password-form">
+        <p>Please enter a password to encrypt your mnemonic phrase on this device.</p>
+        <input type="password" value={password} onChange={this._handlePasswordChange} />
+        <input type="submit" value="Save" />
+      </form>
     )
   }
 }
 
-export default EncryptModal
+export default withAppContext(EncryptModal)

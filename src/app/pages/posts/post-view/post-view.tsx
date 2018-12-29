@@ -1,4 +1,5 @@
 import React from 'react'
+import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { RelativePostWithUser } from '../../../../types/types'
 import PostList from '../../../components/post-list/post-list'
 import { RouteComponentProps } from 'react-router'
@@ -11,11 +12,7 @@ export interface PostViewParams {
   id: string
 }
 
-export interface PostViewProps extends RouteComponentProps<PostViewParams> {
-  address: string
-  setTitle: (title: string) => void
-  setShowFab: (showFab: boolean) => void
-}
+export interface PostViewProps extends AuthProps, RouteComponentProps<PostViewParams> {}
 
 export interface PostViewState {
   post: RelativePostWithUser | null
@@ -60,4 +57,4 @@ class PostViewPage extends React.Component<PostViewProps, PostViewState> {
   }
 }
 
-export default PostViewPage
+export default withAuthContext(PostViewPage)

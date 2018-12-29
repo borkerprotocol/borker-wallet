@@ -8,19 +8,14 @@ import { faDog } from '@fortawesome/free-solid-svg-icons'
 import PostsPage from './posts/posts-routes'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
-import ProfilePage from './profile/profile'
-
-export interface AuthRoutesProps {
-  address: string
-  logout: () => Promise<void>
-}
+import ProfileRoutes from './profile/profile-routes'
+import { AuthContext } from '../contexts/auth-context'
 
 export interface AuthRoutesState {
-  address: string
   title: string
+  showFab: boolean
   sidebarOpen: boolean
   sidebarDocked: boolean
-  showFab: boolean
 }
 
 const styles = {
@@ -40,25 +35,21 @@ const styles = {
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
-class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
+class AuthRoutes extends React.Component<{}, AuthRoutesState> {
 
-  constructor (props: AuthRoutesProps) {
+  constructor (props: {}) {
     super(props)
     this.state = {
-      address: props.address,
       title: '',
+      showFab: false,
       sidebarDocked: mql.matches,
       sidebarOpen: false,
-      showFab: false,
     }
     this._mediaQueryChanged = this._mediaQueryChanged.bind(this)
     this._onSetSidebarOpen = this._onSetSidebarOpen.bind(this)
-    this._toggleSidebar = this._toggleSidebar.bind(this)
-    this.setTitle = this.setTitle.bind(this)
-    this.setShowFab = this.setShowFab.bind(this)
   }
 
-  componentWillMount () {
+  componentDidMount () {
     mql.addListener(this._mediaQueryChanged)
   }
 
@@ -74,27 +65,26 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
     this.setState({ sidebarOpen: open })
   }
 
-  _toggleSidebar (ev: any) {
-    ev.preventDefault()
+  toggleSidebar = (e: React.FormEvent) => {
+    e.preventDefault()
     this._onSetSidebarOpen(!this.state.sidebarOpen)
   }
 
-  setTitle (title: string) {
+  setTitle = (title: string) => {
     this.setState({ title })
   }
 
-  setShowFab (showFab: boolean) {
+  setShowFab = (showFab: boolean) => {
     this.setState({ showFab })
   }
 
   render () {
-    const { address, logout } = this.props
     const { title, sidebarDocked, sidebarOpen, showFab } = this.state
 
     const contentHeader = (
       <div>
         {!sidebarDocked && (
-          <a onClick={this._toggleSidebar}><FontAwesomeIcon icon={faBars} /></a>
+          <a onClick={this.toggleSidebar}><FontAwesomeIcon icon={faBars} /></a>
         )}
         <span style={{ paddingLeft: "12px" }}>{title}</span>
       </div>
@@ -102,8 +92,7 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
 
     const sidebarProps: SidebarProps = {
       sidebar: <SidebarContent
-        address={address}
-        toggleSidebar={this._toggleSidebar}
+        toggleSidebar={this.toggleSidebar}
       />,
       docked: sidebarDocked,
       open: sidebarOpen,
@@ -112,36 +101,37 @@ class AuthRoutes extends React.Component<AuthRoutesProps, AuthRoutesState> {
     }
 
     return (
-      <Sidebar {...sidebarProps}>
-        <div style={styles.header}>
-          {contentHeader}
-        </div>
-        <Switch>
-          <Route
-            path="/posts"
-            render={props => <PostsPage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} address={address} />}
-          />
-          <Route
-            exact
-            path="/profile/:id"
-            render={props => <ProfilePage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} address={address} />}
-          />
-          <Route
-            exact
-            path="/settings"
-            render={props => <SettingsPage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} logout={logout} />}
-          />
-          <Route
-            exact
-            path="/wallet"
-            render={props => <WalletPage {...props} setTitle={this.setTitle} setShowFab={this.setShowFab} address={address} />}
-          />
-          <Redirect to="/posts" />
-        </Switch>
-        {showFab &&
-          <Link to={`/posts/new`} className="fab"><FontAwesomeIcon icon={faDog} /></Link>
-        }
-      </Sidebar>
+      <AuthContext.Provider value={{ setTitle: this.setTitle, setShowFab: this.setShowFab }}>
+        <Sidebar {...sidebarProps}>
+          <div style={styles.header}>
+            {contentHeader}
+          </div>
+          <Switch>
+            <Route
+              path="/posts"
+              component={PostsPage}
+            />
+            <Route
+              path="/profile/:id"
+              component={ProfileRoutes}
+            />
+            <Route
+              exact
+              path="/settings"
+              component={SettingsPage}
+            />
+            <Route
+              exact
+              path="/wallet"
+              component={WalletPage}
+            />
+            <Redirect to="/posts" />
+          </Switch>
+          {showFab &&
+            <Link to={`/posts/new`} className="fab"><FontAwesomeIcon icon={faDog} /></Link>
+          }
+        </Sidebar>
+      </AuthContext.Provider>
     )
   }
 }

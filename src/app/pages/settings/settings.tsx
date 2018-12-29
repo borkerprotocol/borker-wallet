@@ -1,21 +1,11 @@
 import React from 'react'
+import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import '../../App.scss'
 import './settings.scss'
 
-export interface SettingsProps {
-  logout: () => Promise<void>
-  setTitle: (title: string) => void
-  setShowFab: (showFab: boolean) => void
-}
+export interface SettingsProps extends AuthProps {}
 
-export interface SettingsState {}
-
-class SettingsPage extends React.Component<SettingsProps, SettingsState> {
-
-  constructor (props: SettingsProps) {
-    super(props)
-    this.state = {}
-  }
+class SettingsPage extends React.PureComponent<SettingsProps> {
 
   componentDidMount () {
     this.props.setShowFab(false)
@@ -31,4 +21,4 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   }
 }
 
-export default SettingsPage
+export default withAuthContext(SettingsPage)

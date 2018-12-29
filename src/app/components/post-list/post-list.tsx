@@ -8,21 +8,10 @@ export interface PostListProps {
   posts: RelativePostWithUser[]
 }
 
-export interface PostListState {
-  posts: RelativePostWithUser[]
-}
-
-class PostList extends React.Component<PostListProps, PostListState> {
-
-  constructor (props: PostListProps) {
-    super(props)
-    this.state = {
-      posts: props.posts,
-    }
-  }
+class PostList extends React.PureComponent<PostListProps> {
 
   render () {
-    const { posts } = this.state
+    const { posts } = this.props
 
     return (
       <ul className="post-list">

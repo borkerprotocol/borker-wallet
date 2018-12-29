@@ -14,7 +14,7 @@ export interface PostButtonsProps {
   showCount: boolean
 }
 
-class PostButtons extends React.Component<PostButtonsProps, {}> {
+class PostButtons extends React.PureComponent<PostButtonsProps> {
 
   async reply (post: Post): Promise<void> {
     alert('replies coming soon')

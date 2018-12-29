@@ -1,13 +1,9 @@
 import React from 'react'
 import { Link } from "react-router-dom"
+import { withAuthContext, AuthProps } from '../contexts/auth-context'
 
-export interface SidebarContentProps {
-  address: string
-  toggleSidebar: (ev: any) => void
-}
-
-export interface SidebarContentState {
-  address: string
+export interface SidebarContentProps extends AuthProps {
+  toggleSidebar: (e: React.FormEvent) => void
 }
 
 const styles = {
@@ -26,30 +22,23 @@ const styles = {
   },
 }
 
-class SidebarContent extends React.Component<SidebarContentProps, SidebarContentState> {
-
-  constructor (props: SidebarContentProps) {
-    super(props)
-    this.state = {
-      address: props.address,
-    }
-  }
+class SidebarContent extends React.Component<SidebarContentProps> {
 
   render () {
-    const { address } = this.state
+    const { address, toggleSidebar } = this.props
     
     return (
       <div style={styles.content}>
-        <span onClick={this.props.toggleSidebar}>
+        <span onClick={toggleSidebar}>
           <Link to={`/profile/${address}`} style={styles.link}>Profile</Link>
         </span>
-        <span onClick={this.props.toggleSidebar}>
+        <span onClick={toggleSidebar}>
           <Link to="/posts" style={styles.link}>Posts</Link>
         </span>
-        <span onClick={this.props.toggleSidebar}>
+        <span onClick={toggleSidebar}>
         <Link to={`/wallet`} style={styles.link}>Wallet</Link>
         </span>
-        <span onClick={this.props.toggleSidebar}>
+        <span onClick={toggleSidebar}>
           <Link to="/settings" style={styles.link}>Settings</Link>
         </span>
       </div>
@@ -57,4 +46,4 @@ class SidebarContent extends React.Component<SidebarContentProps, SidebarContent
   }
 }
 
-export default SidebarContent
+export default withAuthContext(SidebarContent)

@@ -1,20 +1,16 @@
 import React from 'react'
+import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { getRates } from '../../../util/mocks'
 import BigNumber from 'bignumber.js'
-import BroadcastModal from '../../../components/broadcast-modal/broadcast-modal'
 import './post-new.scss'
 import '../../../App.scss'
 
-export interface NewPostProps {
-  setTitle: (title: string) => void
-  setShowFab: (showFab: boolean) => void
-}
+export interface NewPostProps extends AuthProps {}
 
 export interface NewPostState {
   body: string
   txRate: BigNumber
   charRate: BigNumber
-  isModalOpen: boolean
 }
 
 class NewPostPage extends React.Component<NewPostProps, NewPostState> {
@@ -25,10 +21,8 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
       body: '',
       txRate: new BigNumber(0),
       charRate: new BigNumber(0),
-      isModalOpen: false,
     }
     this._handleBodyChange = this._handleBodyChange.bind(this)
-    this.toggleModal = this.toggleModal.bind(this)
   }
 
   async componentDidMount () {
@@ -47,47 +41,39 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
     })
   }
 
-  toggleModal (e: any) {
-    e.preventDefault()
-    this.setState({
-      isModalOpen: !this.state.isModalOpen,
-    })
-  }
-
-  async broadcast (): Promise<void> {
-    alert('broadcasts coming soon!')
+  async _broadcast (): Promise<void> {
+    alert ('broadcasts coming soon!')
   }
 
   render () {
-    const { body, txRate, charRate, isModalOpen } = this.state
+    const { body, txRate, charRate } = this.state
     const charCount = body.length
     const txCount = charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
     const cost = txRate.times(txCount).plus(charRate.times(charCount))
+
+    const modal = (
+      <div>
+        <p>Transaction Count: {txCount}</p>
+        <p>Character Count: {charCount}</p>
+        <p>Total Cost: {cost.toFormat(8)} DOGE</p>
+        <button onClick={this._broadcast}>Broadcast!</button>
+      </div>
+    )
     
     return (
       <div className="page-content">
-        <form onSubmit={this.toggleModal} className="post-form">
+        <form onSubmit={() => this.props.toggleModal(modal) } className="post-form">
           <p>Cost Per Transaction: {txRate.toFormat(8)} DOGE</p>
-          <p>Cost Per Character: {charRate.toFormat(8)} DOGE</p>
-          <input type="text" value={body} onChange={this._handleBodyChange} />
+          <p>Cost Per Added Character: {charRate.toFormat(8)} DOGE</p>
+          <textarea value={body} onChange={this._handleBodyChange} />
           <input type="submit" value="Preview" disabled={!charCount} />
         </form>
         <p>Transaction Count: {txCount}</p>
         <p>Character Count: {charCount}</p>
-        <p>Total Cost: {cost.toFormat(8)} DOGE</p>
-        {isModalOpen &&
-          <BroadcastModal
-            isOpen={isModalOpen}
-            txCount={txCount}
-            charCount={charCount}
-            cost={cost}
-            toggleModal={this.toggleModal}
-            broadcast={this.broadcast}
-          />
-        }
+        <b>Total Cost: {cost.toFormat(8)} DOGE</b>
       </div>
     )
   }
 }
 
-export default NewPostPage
+export default withAuthContext(NewPostPage)
