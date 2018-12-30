@@ -27,8 +27,6 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
       txRate: new BigNumber(0),
       charRate: new BigNumber(0),
     }
-    this._handleNameChange = this._handleNameChange.bind(this)
-    this._handleBioChange = this._handleBioChange.bind(this)
   }
 
   async componentDidMount () {
@@ -36,26 +34,25 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     this.props.setShowFab(false)
 
     const { txRate, charRate } = await getRates()
-
     this.setState({
       txRate,
       charRate,
     })
   }
 
-  _handleNameChange (e: any) {
+  handleNameChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
       name: e.target.value,
     })
   }
 
-  _handleBioChange (e: any) {
+  handleBioChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
       bio: e.target.value,
     })
   }
 
-  async _broadcast (): Promise<void> {
+  broadcast = () => {
     alert ('broadcasts coming soon!')
   }
 
@@ -74,11 +71,10 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
 
     const modal = (
       <div>
-        <button onClick={() => this.props.toggleModal(null)}>x</button>
         <p>Transaction Count: {txCount}</p>
         <p>Character Count: {charCount}</p>
         <p>Total Cost: {cost.toFormat(8)} DOGE</p>
-        <button onClick={this._broadcast}>Broadcast!</button>
+        <button onClick={this.broadcast}>Broadcast!</button>
       </div>
     )
 
@@ -89,9 +85,9 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
 
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="profile-edit-form">
           <label>Name</label>
-          <input type="text" value={name} onChange={this._handleNameChange} />
+          <input type="text" value={name} onChange={this.handleNameChange} />
           <label>Bio</label>
-          <textarea value={bio} onChange={this._handleBioChange} />
+          <textarea value={bio} onChange={this.handleBioChange} />
           <input type="submit" value="Checkout" />
         </form>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { RelativePostWithUser, Post } from '../../../types/types'
+import { RelativePostWithUser } from '../../../types/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
 import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
@@ -16,15 +16,15 @@ export interface PostButtonsProps {
 
 class PostButtons extends React.PureComponent<PostButtonsProps> {
 
-  async reply (post: Post): Promise<void> {
+  reply = () => {
     alert('replies coming soon')
   }
 
-  async repost (post: Post): Promise<void> {
+  repost = () => {
     alert('reposts coming soon')
   }
 
-  async like (post: Post): Promise<void> {
+  like = () => {
     alert('likes coming soon')
   }
 
@@ -35,7 +35,7 @@ class PostButtons extends React.PureComponent<PostButtonsProps> {
         <tbody>
           <tr>
             <td>
-              <a onClick={() => this.reply(post)}>
+              <a onClick={this.reply}>
                 <FontAwesomeIcon
                   icon={post.iReply ? commentsSolid : commentsOutline}
                   style={post.iReply ? {color: 'blue'} : {} }
@@ -43,7 +43,7 @@ class PostButtons extends React.PureComponent<PostButtonsProps> {
               </a>
             </td>
             <td>
-              <a onClick={() => this.repost(post)}>
+              <a onClick={this.repost}>
                 <FontAwesomeIcon
                   icon={faRetweet}
                   style={post.iRepost ? {color: 'green'} : {} }
@@ -51,7 +51,7 @@ class PostButtons extends React.PureComponent<PostButtonsProps> {
               </a>
             </td>
             <td>
-              <a onClick={() => this.like(post)}>
+              <a onClick={this.like}>
                 <FontAwesomeIcon
                   icon={post.iLike ? heartSolid : heartOutline}
                   style={post.iLike ? {color: 'red'} : {} }

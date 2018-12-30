@@ -15,12 +15,9 @@ export interface WalletCreateState {
 
 class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateState> {
 
-  constructor (props: WalletCreateProps) {
-    super(props)
-    this.state = {
-      wallet: null,
-      mnemonic: '',
-    }
+  state = {
+    wallet: null as any,
+    mnemonic: '',
   }
 
   async componentDidMount () {
@@ -33,16 +30,18 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
     const { wallet, mnemonic } = this.state
 
     const modal = (
-      <EncryptModal wallet={wallet as JsWallet} />
+      <EncryptModal wallet={wallet} />
     )
 
-    return (
+    return mnemonic ? (
       <div className="page-content">
         <code>{mnemonic}</code>
         <button onClick={() => this.props.toggleModal(modal)}>
           I've Written Down My Mnemonic Phrase
         </button>
       </div>
+    ) : (
+      null
     )
   }
 }

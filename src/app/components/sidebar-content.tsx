@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { withAuthContext, AuthProps } from '../contexts/auth-context'
 
 export interface SidebarContentProps extends AuthProps {
-  toggleSidebar: (e: React.FormEvent) => void
+  toggleSidebar: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
 const styles = {

@@ -36,7 +36,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     })
   }
 
-  async follow (user: User): Promise<void> {
+  follow = async (user: User) => {
     alert ('follows coming soon')
   }
 

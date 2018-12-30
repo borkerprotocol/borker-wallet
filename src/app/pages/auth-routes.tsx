@@ -45,29 +45,27 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
       sidebarDocked: mql.matches,
       sidebarOpen: false,
     }
-    this._mediaQueryChanged = this._mediaQueryChanged.bind(this)
-    this._onSetSidebarOpen = this._onSetSidebarOpen.bind(this)
   }
 
   componentDidMount () {
-    mql.addListener(this._mediaQueryChanged)
+    mql.addListener(this.mediaQueryChanged)
   }
 
   componentWillUnmount () {
-    mql.removeListener(this._mediaQueryChanged)
+    mql.removeListener(this.mediaQueryChanged)
   }
 
-  _mediaQueryChanged () {
+  mediaQueryChanged = () => {
     this.setState({ sidebarDocked: mql.matches, sidebarOpen: false })
   }
 
-  _onSetSidebarOpen (open: boolean) {
+  onSetSidebarOpen = (open: boolean) => {
     this.setState({ sidebarOpen: open })
   }
 
-  toggleSidebar = (e: React.FormEvent) => {
+  toggleSidebar = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
-    this._onSetSidebarOpen(!this.state.sidebarOpen)
+    this.onSetSidebarOpen(!this.state.sidebarOpen)
   }
 
   setTitle = (title: string) => {
@@ -96,7 +94,7 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
       />,
       docked: sidebarDocked,
       open: sidebarOpen,
-      onSetOpen: this._onSetSidebarOpen,
+      onSetOpen: this.onSetSidebarOpen,
       styles: styles.sidebar,
     }
 

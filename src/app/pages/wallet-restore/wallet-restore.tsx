@@ -6,10 +6,7 @@ import { sampleWords } from '../../util/mocks'
 import '../../App.scss'
 import './wallet-restore.scss'
 
-export interface WalletRestoreProps extends UnauthProps {
-  login: (address: string) => Promise<void>
-  toggleModal: (content: JSX.Element | null) => void
-}
+export interface WalletRestoreProps extends UnauthProps {}
 
 export interface WalletRestoreState {
   mnemonic: string
@@ -19,25 +16,20 @@ export interface WalletRestoreState {
 
 class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestoreState> {
 
-  constructor (props: WalletRestoreProps) {
-    super(props)
-    this.state = {
-      mnemonic: '',
-      wallet: null,
-      isMnemonicEntered: false,
-    }
-    this._handleMnemonicChange = this._handleMnemonicChange.bind(this)
-    this._genWallet = this._genWallet.bind(this)
+  state = {
+    wallet: null as any,
+    mnemonic: '',
+    isMnemonicEntered: false,
   }
 
-  _handleMnemonicChange (e: any) {
+  handleMnemonicChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
       mnemonic: e.target.value,
       isMnemonicEntered: e.target.value.trim().replace(/ +/g, " ").split(' ').length === 12,
     })
   }
 
-  async _genWallet () {
+  genWallet = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (!this.state.wallet) {
       const borkerLib = await import('borker-rs')
       const wallet = new borkerLib.JsWallet(sampleWords)
@@ -45,7 +37,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
     }
 
     const modal = (
-      <EncryptModal wallet={this.state.wallet as JsWallet} />
+      <EncryptModal wallet={this.state.wallet} />
     )
 
     this.props.toggleModal(modal)
@@ -60,11 +52,11 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
         <textarea
           placeholder="word1 word2 word3"
           value={mnemonic}
-          onChange={this._handleMnemonicChange}
+          onChange={this.handleMnemonicChange}
           className="textarea"
         />
         <br></br>
-        <button onClick={this._genWallet} disabled={!isMnemonicEntered}>
+        <button onClick={this.genWallet} disabled={!isMnemonicEntered}>
           Restore
         </button>
       </div>

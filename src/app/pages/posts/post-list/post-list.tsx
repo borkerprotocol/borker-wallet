@@ -14,12 +14,7 @@ export interface PostListState {
 
 class PostListPage extends React.Component<PostListProps, PostListState> {
 
-  constructor (props: PostListProps) {
-    super(props)
-    this.state = {
-      posts: [],
-    }
-  }
+  state = { posts: [] }
 
   async componentDidMount () {
     this.props.setTitle('Posts')

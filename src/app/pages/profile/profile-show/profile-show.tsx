@@ -37,7 +37,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     this.props.setTitle('Profile')
     this.props.setShowFab(true)
 
-    await this._getData(this.props.user.address)
+    await this.getData(this.props.user.address)
   }
 
   async componentWillReceiveProps (nextProps: ProfileShowProps) {
@@ -46,11 +46,11 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
 
     if (oldAddress !== newAddress) {
       this.setState({ loading: true })
-      await this._getData(newAddress)
+      await this.getData(newAddress)
     }
   }
 
-  async _getData (address: string) {
+  getData = async (address: string) => {
     const [ posts, likes, profileUpdates ] = await Promise.all([
       getPosts(this.props.address, address),
       getLikes(address),

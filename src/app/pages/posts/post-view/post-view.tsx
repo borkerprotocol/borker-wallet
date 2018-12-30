@@ -21,12 +21,9 @@ export interface PostViewState {
 
 class PostViewPage extends React.Component<PostViewProps, PostViewState> {
 
-  constructor (props: PostViewProps) {
-    super(props)
-    this.state = {
-      post: null,
-      thread: [],
-    }
+  state = {
+    post: null,
+    thread: [],
   }
 
   async componentDidMount () {

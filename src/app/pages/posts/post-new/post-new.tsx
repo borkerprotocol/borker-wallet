@@ -15,19 +15,16 @@ export interface NewPostState {
 
 class NewPostPage extends React.Component<NewPostProps, NewPostState> {
 
-  constructor (props: NewPostProps) {
-    super(props)
-    this.state = {
-      body: '',
-      txRate: new BigNumber(0),
-      charRate: new BigNumber(0),
-    }
-    this._handleBodyChange = this._handleBodyChange.bind(this)
+  state = {
+    body: '',
+    txRate: new BigNumber(0),
+    charRate: new BigNumber(0),
   }
 
   async componentDidMount () {
     this.props.setTitle('New Post')
     this.props.setShowFab(false)
+
     const { txRate, charRate } = await getRates()
     this.setState({
       txRate,
@@ -35,13 +32,13 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
     })
   }
 
-  _handleBodyChange (e: any) {
+  handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState({
       body: e.target.value,
     })
   }
 
-  async _broadcast (): Promise<void> {
+  broadcast = async () => {
     alert ('broadcasts coming soon!')
   }
 
@@ -56,16 +53,16 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
         <p>Transaction Count: {txCount}</p>
         <p>Character Count: {charCount}</p>
         <p>Total Cost: {cost.toFormat(8)} DOGE</p>
-        <button onClick={this._broadcast}>Broadcast!</button>
+        <button onClick={this.broadcast}>Broadcast!</button>
       </div>
     )
-    
+
     return (
       <div className="page-content">
-        <form onSubmit={() => this.props.toggleModal(modal) } className="post-form">
+        <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="post-form">
           <p>Cost Per Transaction: {txRate.toFormat(8)} DOGE</p>
           <p>Cost Per Added Character: {charRate.toFormat(8)} DOGE</p>
-          <textarea value={body} onChange={this._handleBodyChange} />
+          <textarea value={body} onChange={this.handleBodyChange} />
           <input type="submit" value="Preview" disabled={!charCount} />
         </form>
         <p>Transaction Count: {txCount}</p>

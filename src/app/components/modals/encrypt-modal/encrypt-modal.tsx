@@ -21,12 +21,9 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     this.state = {
       password: '',
     }
-    this._handlePasswordChange = this._handlePasswordChange.bind(this)
-    this._saveWallet = this._saveWallet.bind(this)
-    console.log(this.props)
   }
 
-  async _saveWallet (e: any): Promise<void> {
+  saveWallet = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const { wallet } = this.props
 
@@ -43,7 +40,7 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     this.props.login(address)
   }
 
-  _handlePasswordChange (e: any) {
+  handlePasswordChange = (e: React.BaseSyntheticEvent) => {
     this.setState({ password: e.target.value })
   }
 
@@ -51,9 +48,9 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     const { password } = this.state
 
     return (
-      <form onSubmit={this._saveWallet} className="password-form">
+      <form onSubmit={this.saveWallet} className="password-form">
         <p>Please enter a password to encrypt your mnemonic phrase on this device.</p>
-        <input type="password" value={password} onChange={this._handlePasswordChange} />
+        <input type="password" value={password} onChange={this.handlePasswordChange} />
         <input type="submit" value="Save" />
       </form>
     )
