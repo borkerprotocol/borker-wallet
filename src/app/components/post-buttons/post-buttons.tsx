@@ -1,31 +1,37 @@
 import React from 'react'
-import { RelativePostWithUser } from '../../../types/types'
+import { Link } from 'react-router-dom'
+import { RelativePostWithUser, PostType } from '../../../types/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
 import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as heartOutline } from '@fortawesome/free-regular-svg-icons'
 import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
 import { faRetweet } from '@fortawesome/free-solid-svg-icons'
+import CheckoutModal from '../modals/checkout-modal/checkout-modal'
+import BigNumber from 'bignumber.js'
+import { withAppContext, AppProps } from '../../contexts/app-context'
 import '../../App.scss'
 import './post-buttons.scss'
 
-export interface PostButtonsProps {
+export interface PostButtonsProps extends AppProps {
   post: RelativePostWithUser
   showCount: boolean
 }
 
 class PostButtons extends React.PureComponent<PostButtonsProps> {
 
-  reply = () => {
-    alert('replies coming soon')
-  }
-
   repost = () => {
-    alert('reposts coming soon')
+    const modal = (
+      <CheckoutModal type={PostType.repost} txCount={1} cost={new BigNumber(1)} />
+    )
+    this.props.toggleModal(modal)
   }
 
   like = () => {
-    alert('likes coming soon')
+    const modal = (
+      <CheckoutModal type={PostType.like} txCount={1} cost={new BigNumber(1)} />
+    )
+    this.props.toggleModal(modal)
   }
 
   render () {
@@ -35,12 +41,12 @@ class PostButtons extends React.PureComponent<PostButtonsProps> {
         <tbody>
           <tr>
             <td>
-              <a onClick={this.reply}>
+              <Link to={`/posts/${post.txid}/reply`}>
                 <FontAwesomeIcon
                   icon={post.iReply ? commentsSolid : commentsOutline}
                   style={post.iReply ? {color: 'blue'} : {} }
                 /> {showCount && post.replies}
-              </a>
+              </Link>
             </td>
             <td>
               <a onClick={this.repost}>
@@ -65,4 +71,4 @@ class PostButtons extends React.PureComponent<PostButtonsProps> {
   }
 }
 
-export default PostButtons
+export default withAppContext(PostButtons)

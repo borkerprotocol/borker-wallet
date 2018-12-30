@@ -1,6 +1,7 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { User } from '../../../../types/types'
+import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
+import { User, PostType } from '../../../../types/types'
 import BigNumber from 'bignumber.js'
 import { getRates } from '../../../util/mocks'
 import './profile-edit.scss'
@@ -70,12 +71,7 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     const cost = txRate.times(txCount).plus(charRate.times(charCount))
 
     const modal = (
-      <div>
-        <p>Transaction Count: {txCount}</p>
-        <p>Character Count: {charCount}</p>
-        <p>Total Cost: {cost.toFormat(8)} DOGE</p>
-        <button onClick={this.broadcast}>Broadcast!</button>
-      </div>
+      <CheckoutModal type={PostType.profileUpdate} txCount={txCount} charCount={charCount} cost={cost} />
     )
 
     return (

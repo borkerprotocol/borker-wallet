@@ -2,6 +2,8 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
+import CheckoutModal from '../../components/modals/checkout-modal/checkout-modal'
+import BigNumber from 'bignumber.js'
 import { User, PostType } from '../../../types/types'
 import { getUsers } from '../../util/mocks'
 import './user-list.scss'
@@ -36,13 +38,13 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     })
   }
 
-  follow = async (user: User) => {
-    alert ('follows coming soon')
-  }
-
   render () {
     const { users } = this.state
     const isRepost = this.props.filter === PostType.repost
+
+    const modal = (
+      <CheckoutModal type={PostType.follow} txCount={1} cost={new BigNumber(1)}/>
+    )
 
     return !users.length ? (
       <p style={{ margin: 14 }}>No {isRepost ? 'Reposts' : 'Likes'}</p>
@@ -52,7 +54,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
           return (
             <li key={user.address}>
               <div className="user-item">
-                <button className="user-item-follow" onClick={() => this.follow(user)}>Follow</button>
+                <button className="user-item-follow" onClick={() => this.props.toggleModal(modal)}>Follow</button>
                 <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
                   <img src={`data:image/png;base64,${user.avatar}`} className="user-item-avatar" />
                   <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />

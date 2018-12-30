@@ -21,7 +21,6 @@ class Modal extends React.PureComponent<ModalProps> {
         className="Modal"
         overlayClassName="Modal-Overlay"
       >
-        <button onClick={() => toggleModal(null)} className="close-modal-button">x</button>
         {content}
       </ReactModal> 
     )

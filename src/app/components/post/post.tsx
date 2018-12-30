@@ -8,13 +8,14 @@ import './post.scss'
 
 export interface PostComponentProps {
   isMain: boolean
+  showButtons: boolean
   post: RelativePostWithUser
 }
 
 class PostComponent extends React.PureComponent<PostComponentProps> {
 
   render () {
-    const { post, isMain } = this.props
+    const { post, isMain, showButtons } = this.props
 
     const avatar = (
       <Link to={`/profile/${post.address}`}>
@@ -60,6 +61,7 @@ class PostComponent extends React.PureComponent<PostComponentProps> {
         <div className="post-content-main">
           <div className="post-border">
             <PostBody />
+            <p><a href={`https://live.blockcypher.com/doge/tx/${post.txid}/`} target="_blank">{post.txid.substr(0, 30)}</a></p>
             <p style={{ color: 'gray' }}>{calendar(post.timestamp)}</p>
           </div>
           <div className="post-border">
@@ -79,9 +81,11 @@ class PostComponent extends React.PureComponent<PostComponentProps> {
             </p>
           </div>
         </div>
-        <div className="post-footer">
-          <PostButtons post={post} showCount={false}/>
-        </div>
+        {showButtons &&
+          <div className="post-footer">
+            <PostButtons post={post} showCount={false}/>
+          </div>
+        }
       </div>
     ) : (
       <div>
@@ -96,9 +100,11 @@ class PostComponent extends React.PureComponent<PostComponentProps> {
         <div className="post-content-small">
           <PostBody />
         </div>
-        <div className="post-footer-small">
-          <PostButtons post={post} showCount/>
-        </div>
+        {showButtons &&
+          <div className="post-footer-small">
+            <PostButtons post={post} showCount/>
+          </div>
+        }
       </div>
     )
   }

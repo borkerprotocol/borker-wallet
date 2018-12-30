@@ -29,9 +29,11 @@ class PostViewPage extends React.Component<PostViewProps, PostViewState> {
   async componentDidMount () {
     this.props.setTitle('Post')
     this.props.setShowFab(false)
+
     const txid = this.props.match.params.id
     const posts = await getPosts(this.props.address, undefined, txid)
     const post = posts.shift() as RelativePostWithUser
+    
     this.setState({
       post,
       thread: posts,
@@ -47,7 +49,7 @@ class PostViewPage extends React.Component<PostViewProps, PostViewState> {
       </div>
     ) : (
       <div>
-        <PostComponent post={post} isMain/>
+        <PostComponent post={post} isMain showButtons/>
         <PostList posts={thread} />
       </div>
     )

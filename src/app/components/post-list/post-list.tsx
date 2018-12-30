@@ -18,7 +18,7 @@ class PostList extends React.PureComponent<PostListProps> {
         {posts.map(p => {
           return (
             <li key={p.txid}>
-              <PostComponent post={p} isMain={false}/>
+              <PostComponent post={p} isMain={false} showButtons />
             </li>
           )
         })}

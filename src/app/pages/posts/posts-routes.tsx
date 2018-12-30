@@ -30,6 +30,11 @@ class PostsPage extends React.Component<{}, {}> {
         />
         <Route
           exact
+          path="/posts/:id/reply"
+          component={PostNewPage} />}
+        />
+        <Route
+          exact
           path="/posts/:id/reposts"
           render={props => <UserListPage {...props} filter={PostType.repost} />}
         />

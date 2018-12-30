@@ -1,34 +1,53 @@
 import React from 'react'
+import { RouteComponentProps } from 'react-router'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { getRates } from '../../../util/mocks'
+import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
+import PostComponent from '../../../components/post/post'
+import { getRates, getPosts } from '../../../util/mocks'
+import { PostType, RelativePostWithUser } from '../../../../types/types'
 import BigNumber from 'bignumber.js'
 import './post-new.scss'
 import '../../../App.scss'
 
-export interface NewPostProps extends AuthProps {}
+export interface NewPostParams {
+  id: string
+}
+
+export interface NewPostProps extends AuthProps, RouteComponentProps<NewPostParams> {} 
 
 export interface NewPostState {
   body: string
   txRate: BigNumber
   charRate: BigNumber
+  referencePost: RelativePostWithUser | null
 }
 
 class NewPostPage extends React.Component<NewPostProps, NewPostState> {
 
-  state = {
-    body: '',
-    txRate: new BigNumber(0),
-    charRate: new BigNumber(0),
+  constructor (props: NewPostProps) {
+    super(props)
+    this.state ={
+      body: '',
+      txRate: new BigNumber(0),
+      charRate: new BigNumber(0),
+      referencePost: null,
+    }
   }
 
   async componentDidMount () {
     this.props.setTitle('New Post')
     this.props.setShowFab(false)
 
+    const txid = this.props.match.params.id
+    const posts = await getPosts(this.props.address, undefined, txid)
+    const referencePost = posts.shift() as RelativePostWithUser
+
     const { txRate, charRate } = await getRates()
+
     this.setState({
       txRate,
       charRate,
+      referencePost,
     })
   }
 
@@ -38,27 +57,24 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
     })
   }
 
-  broadcast = async () => {
-    alert ('broadcasts coming soon!')
-  }
-
   render () {
-    const { body, txRate, charRate } = this.state
+    const { body, txRate, charRate, referencePost } = this.state
     const charCount = body.length
     const txCount = charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
     const cost = txRate.times(txCount).plus(charRate.times(charCount))
 
     const modal = (
-      <div>
-        <p>Transaction Count: {txCount}</p>
-        <p>Character Count: {charCount}</p>
-        <p>Total Cost: {cost.toFormat(8)} DOGE</p>
-        <button onClick={this.broadcast}>Broadcast!</button>
-      </div>
+      <CheckoutModal type={referencePost ? PostType.reply : PostType.post} txCount={txCount} charCount={charCount} cost={cost} />
     )
 
     return (
       <div className="page-content">
+        {referencePost &&
+          <div className="replying-to">
+            <b>Replying To:</b>
+            <PostComponent isMain={false} showButtons={false} post={referencePost} />
+          </div>
+        }
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="post-form">
           <p>Cost Per Transaction: {txRate.toFormat(8)} DOGE</p>
           <p>Cost Per Added Character: {charRate.toFormat(8)} DOGE</p>

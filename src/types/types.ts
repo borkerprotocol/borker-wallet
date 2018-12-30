@@ -47,10 +47,12 @@ export interface ProfileUpdate {
 }
 
 export enum PostType {
-  post = 'post',
-  repost = 'repost',
-  reply = 'reply',
-  like = 'like',
+  post = 'POST',
+  repost = 'REPOST',
+  reply = 'REPLY',
+  like = 'LIKE',
+  follow = 'FOLLOW',
+  profileUpdate = 'PROFILE UPDATE',
 }
 
 export enum ProfileFields {
