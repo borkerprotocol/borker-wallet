@@ -31,7 +31,7 @@ class PostButtons extends React.PureComponent<PostButtonsProps> {
   render () {
     const { post, showCount } = this.props
     return (
-      <table>
+      <table className="buttons-table">
         <tbody>
           <tr>
             <td>

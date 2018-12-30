@@ -1,0 +1,9 @@
+.deposit-modal {
+  text-align: center;
+  & canvas {
+    margin: 20px;
+  }
+  & .deposit-modal-address {
+    font-size: small;
+  }
+}

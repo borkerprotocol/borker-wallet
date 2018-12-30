@@ -1,5 +1,8 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
+import DepositModal from '../../components/modals/deposit-modal/deposit-modal'
+// import WithdrawalModal from '../../components/modals/withdrawal-modal/withdrawal-modal'
+import BigNumber from 'bignumber.js'
 import '../../App.scss'
 import './wallet.scss'
 
@@ -9,7 +12,7 @@ export interface WalletProps extends AuthProps {
 
 export interface WalletState {
   address: string
-  balance: number
+  balance: BigNumber
 }
 
 class WalletPage extends React.Component<WalletProps, WalletState> {
@@ -18,7 +21,7 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
     super(props)
     this.state = {
       address: props.address,
-      balance: 0,
+      balance: new BigNumber(0),
     }
   }
 
@@ -28,12 +31,13 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
   }
 
   render () {
-    const { address, balance } = this.state
+    const { balance } = this.state
 
     return (
       <div className="page-content">
-        <p><b>Address: </b>{address}</p>
-        <p><b>Balance: </b>{balance}</p>
+        <p><b>Balance: </b>{balance.toFormat(8)} DOGE</p>
+        <button onClick={() => this.props.toggleModal(<DepositModal />)}>Deposit</button><br />
+        <button onClick={() => alert('withdrawals coming soon')}>Withdrawal</button>
       </div>
     )
   }

@@ -1,0 +1,10 @@
+.words-table {
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 14px;
+  & td {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: black;
+  }
+}

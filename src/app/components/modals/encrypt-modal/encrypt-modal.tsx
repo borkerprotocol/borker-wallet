@@ -49,9 +49,9 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
 
     return (
       <form onSubmit={this.saveWallet} className="password-form">
-        <p>Please enter a password to encrypt your mnemonic phrase on this device.</p>
-        <input type="password" value={password} onChange={this.handlePasswordChange} />
-        <input type="submit" value="Save" />
+        <p>Encrypt wallet on device. (recommended)</p>
+        <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
+        <input type="submit" value="Encrypt Wallet" />
       </form>
     )
   }

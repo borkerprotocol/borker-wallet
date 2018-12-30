@@ -88,7 +88,7 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
           <input type="text" value={name} onChange={this.handleNameChange} />
           <label>Bio</label>
           <textarea value={bio} onChange={this.handleBioChange} />
-          <input type="submit" value="Checkout" />
+          <input type="submit" value="Checkout" disabled={!txCount} />
         </form>
 
         <p>Transaction Count: {txCount}</p>
