@@ -48,8 +48,7 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
       <div className="page-content">
         <div className="wallet-balance">
           <h1>
-            {balance.toFormat()}<br />
-            DOGE
+            {balance.toFormat()}
           </h1>
         </div>
         <table className="wallet-buttons">
