@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import PostComponent from '../../../components/post/post'
-import { getRates, getPosts } from '../../../util/mocks'
+import { getRates, getPosts, getPost } from '../../../util/mocks'
 import { PostType, RelativePostWithUser } from '../../../../types/types'
 import BigNumber from 'bignumber.js'
 import './post-new.scss'
@@ -19,7 +19,7 @@ export interface NewPostState {
   body: string
   txRate: BigNumber
   charRate: BigNumber
-  referencePost: RelativePostWithUser | null
+  referencePost: RelativePostWithUser | undefined
 }
 
 class NewPostPage extends React.Component<NewPostProps, NewPostState> {
@@ -30,7 +30,7 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
       body: '',
       txRate: new BigNumber(0),
       charRate: new BigNumber(0),
-      referencePost: null,
+      referencePost: undefined,
     }
   }
 
@@ -38,16 +38,12 @@ class NewPostPage extends React.Component<NewPostProps, NewPostState> {
     this.props.setTitle('New Post')
     this.props.setShowFab(false)
 
-    const txid = this.props.match.params.id
-    const posts = await getPosts(this.props.address, undefined, txid)
-    const referencePost = posts.shift() as RelativePostWithUser
-
     const { txRate, charRate } = await getRates()
 
     this.setState({
       txRate,
       charRate,
-      referencePost,
+      referencePost: await getPost(this.props.match.params.id, this.props.address),
     })
   }
 

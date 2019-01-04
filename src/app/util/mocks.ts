@@ -1,4 +1,4 @@
-import { Post, User, PostType, ProfileUpdate, ProfileFields, RelativePostWithUser } from "../../types/types"
+import { Post, User, PostType, ProfileUpdate, ProfileFields, RelativePostWithUser, Transaction, WalletInfo } from "../../types/types"
 import { avatar1, avatar2 } from './avatars'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
@@ -19,6 +19,20 @@ export async function getUsers (txid: string, type: PostType): Promise<User[]> {
 
 export async function getUser (address: string): Promise<User> {
   return sampleUsers.find(u => u.address === address) as User
+}
+
+export async function getPost (txid: string, myAddress: string): Promise<RelativePostWithUser | undefined> {
+  const post = samplePosts.find(p => p.txid === txid)
+
+  if (post) {
+    return {
+      ...post,
+      user: sampleUsers.find(u => u.address === post.address) as User,
+      iReply: false,
+      iRepost: false,
+      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === post.txid),
+    }
+  }
 }
 
 export async function getPosts (myAddress: string, userAddress?: string, txid?: string): Promise<RelativePostWithUser[]> {
@@ -57,6 +71,18 @@ export async function getLikes (address: string): Promise<RelativePostWithUser[]
 
 export async function getProfileUpdates (address: string): Promise<ProfileUpdate[]> {
   return sampleProfileUpdates.filter(p => p.address === address)
+}
+
+export async function getWallet (address: string): Promise<WalletInfo> {
+  const transactions = sampleTransactions.filter(t => t.address === address)
+  const balance = transactions.reduce((total, tx) => {
+      return total.plus(tx.amount)
+  }, new BigNumber(0))
+
+  return {
+    balance,
+    transactions,
+  }
 }
 
 export const sampleWords = [
@@ -228,3 +254,25 @@ export const sampleProfileUpdates: ProfileUpdate[] = [
     value: 'Aiden',
   },
 ]
+
+export const sampleTransactions: Transaction[] = [
+  {
+    timestamp: moment().subtract(1, 'd').toISOString(),
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '0f467db8c94d2ffeb99a0ed432f831cb3d60e7b171da5cd43c5689f1c2651fb1',
+    amount: new BigNumber('1000.6742384'),
+  },
+  {
+    timestamp: moment().subtract(10.5, 'd').toISOString(),
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '77364b1aab0dc0e811d15a12a14ff77821143f404a9fa13bd95e94a3fdbc516a',
+    amount: new BigNumber('-250.3468'),
+  },
+  {
+    timestamp: moment().subtract(25.5, 'd').toISOString(),
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    txid: '39128e8edacce1ada4e1df9aa5fc91431302ef951df06a78e13f4fbc3759e752',
+    amount: new BigNumber('20000'),
+  },
+]
+

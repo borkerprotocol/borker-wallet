@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export interface User {
@@ -44,6 +46,18 @@ export interface ProfileUpdate {
   txid: string
   field: ProfileFields
   value: string
+}
+
+export interface Transaction {
+  txid: string
+  timestamp: string
+  amount: BigNumber
+  address: string
+}
+
+export interface WalletInfo {
+  balance: BigNumber
+  transactions: Transaction[]
 }
 
 export enum PostType {

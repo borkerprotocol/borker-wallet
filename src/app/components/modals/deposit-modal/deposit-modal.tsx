@@ -22,7 +22,7 @@ class DepositModal extends React.Component<DepositModalProps, DepositModalState>
 
   copyToClipboard = () => {
     this.setState({ isCopied: true })
-    setTimeout(() => this.setState({ isCopied: false }), 2000)
+    setTimeout(() => this.setState({ isCopied: false }), 1000)
   }
 
   render () {

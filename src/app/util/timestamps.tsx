@@ -17,3 +17,7 @@ export function fromNow (timestamp: string) {
 export function calendar (timestamp: string) {
   return moment(timestamp).calendar()
 }
+
+export function formatShort (timestamp: string) {
+  return moment().format("MMM D YYYY, h:mm a")
+}
