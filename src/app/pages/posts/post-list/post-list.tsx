@@ -5,6 +5,7 @@ import PostList from '../../../components/post-list/post-list'
 import { getPosts } from '../../../util/mocks'
 import '../../../App.scss'
 import './post-list.scss'
+import { getRandomInt } from '../../../web-service';
 
 export interface PostListProps extends AuthProps {}
 
@@ -19,6 +20,9 @@ class PostListPage extends React.Component<PostListProps, PostListState> {
   async componentDidMount () {
     this.props.setTitle('Posts')
     this.props.setShowFab(true)
+
+    // await getRandomInt()
+
     this.setState({
       posts: await getPosts(this.props.address),
     })
