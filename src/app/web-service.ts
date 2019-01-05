@@ -33,7 +33,7 @@ export async function getRandomInt () {
       method: 'generateIntegers',
       id: 'test1',
       params: {
-        apiKey: '533c25bf-388e-42cd-ba43-18a1078c79a4',
+        apiKey: config.randomOrgApiKey,
         n: 1,
         min: 1,
         max: 10,
