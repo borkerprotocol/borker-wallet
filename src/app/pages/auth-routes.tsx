@@ -5,7 +5,7 @@ import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { faDog } from '@fortawesome/free-solid-svg-icons'
-import PostsPage from './posts/posts-routes'
+import BorksPage from './borks/bork-routes'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
 import ProfileRoutes from './profile/profile-routes'
@@ -106,8 +106,8 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
           </div>
           <Switch>
             <Route
-              path="/posts"
-              component={PostsPage}
+              path="/borks"
+              component={BorksPage}
             />
             <Route
               path="/profile/:id"
@@ -123,10 +123,10 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
               path="/wallet"
               component={WalletPage}
             />
-            <Redirect to="/posts" />
+            <Redirect to="/borks" />
           </Switch>
           {showFab &&
-            <Link to={`/posts/new`} className="fab"><FontAwesomeIcon icon={faDog} /></Link>
+            <Link to={`/borks/new`} className="fab"><FontAwesomeIcon icon={faDog} /></Link>
           }
         </Sidebar>
       </AuthContext.Provider>

@@ -10,8 +10,8 @@ export interface User {
   avatar: string
 }
 
-export interface Post {
-  type: PostType
+export interface Bork {
+  type: BorkType
   timestamp: string
   nonce: number
   txid: string
@@ -21,22 +21,22 @@ export interface Post {
   isThread: boolean
   threadIndex: number
   replies: number
-  reposts: number
+  reborks: number
   likes: number
 }
 
-export interface RelativePost extends Post {
+export interface RelativeBork extends Bork {
   iReply: boolean
-  iRepost: boolean
+  iRebork: boolean
   iLike: boolean
 }
 
-export interface RelativePostWithUser extends RelativePost {
+export interface RelativeBorkWithUser extends RelativeBork {
   user: User
 }
 
 export interface FullUser extends User {
-  posts: Post[]
+  borks: Bork[]
   profileUpdates: ProfileUpdate[]
 }
 
@@ -60,9 +60,9 @@ export interface WalletInfo {
   transactions: Transaction[]
 }
 
-export enum PostType {
-  post = 'POST',
-  repost = 'REPOST',
+export enum BorkType {
+  bork = 'BORK',
+  rebork = 're:BORK',
   reply = 'REPLY',
   like = 'LIKE',
   follow = 'FOLLOW',

@@ -2,13 +2,14 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { ProfileUpdate, ProfileFields, RelativePostWithUser, User } from '../../../../types/types'
-import { getPosts, getLikes, getProfileUpdates } from '../../../util/mocks'
-import PostList from '../../../components/post-list/post-list'
+import { ProfileUpdate, ProfileFields, RelativeBorkWithUser, User, BorkType } from '../../../../types/types'
+import { getBorks, getLikes, getProfileUpdates } from '../../../util/mocks'
+import BorkList from '../../../components/bork-list/bork-list'
 import { calendar } from '../../../util/timestamps'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
+import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal';
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -16,8 +17,8 @@ export interface ProfileShowProps extends AuthProps {
 
 export interface ProfileShowState {
   loading: boolean
-  posts: RelativePostWithUser[]
-  likes: RelativePostWithUser[]
+  borks: RelativeBorkWithUser[]
+  likes: RelativeBorkWithUser[]
   profileUpdates: ProfileUpdate[]
 }
 
@@ -27,7 +28,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     super(props)
     this.state = {
       loading: true,
-      posts: [],
+      borks: [],
       likes: [],
       profileUpdates: [],
     }
@@ -51,27 +52,33 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
   }
 
   getData = async (address: string) => {
-    const [ posts, likes, profileUpdates ] = await Promise.all([
-      getPosts(this.props.address, address),
+    const [ borks, likes, profileUpdates ] = await Promise.all([
+      getBorks(this.props.address, address),
       getLikes(address),
       getProfileUpdates(address),
     ])
 
-    this.setState({ loading: false, posts, likes, profileUpdates })
+    this.setState({ loading: false, borks, likes, profileUpdates })
   }
 
   render () {
-    const { loading, posts, likes, profileUpdates } = this.state
+    const { loading, borks, likes, profileUpdates } = this.state
     const { user } = this.props
 
     return (
       <div className="page-content">
         <div>
-          {user.address === this.props.address &&
-            <div className="edit-profile-link">
-              <Link to={`/profile/${user.address}/edit`}>Edit Profile</Link>
-            </div>
-          }
+          <div className="align-right">
+            {user.address === this.props.address ? (
+              <div>
+                <Link to={`/profile/${user.address}/edit`}>
+                  <button>Edit Profile</button>
+                </Link>
+              </div>
+            ) : (
+                <button onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.follow} txCount={1} />)}>Follow</button>   
+            )}
+          </div>
           <div className="profile-header">
             <img src={`data:image/png;base64,${user.avatar}`} className="profile-avatar" alt="avatar" />
             <h4>
@@ -85,7 +92,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           <p className="profile-bio">{user.bio}</p>
           <Tabs>
             <TabList>
-              <Tab>Posts & re:Posts</Tab>
+              <Tab>Borks & re:Borks</Tab>
               <Tab>Likes</Tab>
               <Tab>Profile Updates</Tab>
             </TabList>
@@ -93,13 +100,13 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             <TabPanel>
               {!loading &&
                 <div>
-                  {posts.length > 0 &&
-                    <PostList posts={posts.map(p => {
+                  {borks.length > 0 &&
+                    <BorkList borks={borks.map(p => {
                       return { ...p }
                     })} />
                   }
-                  {!posts.length &&
-                    <p>No Posts</p>
+                  {!borks.length &&
+                    <p>No Borks</p>
                   }
                 </div>
               }
@@ -109,7 +116,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
               {!loading &&
                 <div>
                   {likes.length > 0 &&
-                    <PostList posts={likes.map(p => {
+                    <BorkList borks={likes.map(p => {
                       return { ...p }
                     })} />
                   }

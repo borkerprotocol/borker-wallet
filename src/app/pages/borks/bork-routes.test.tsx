@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import NewPostPage from './post-new'
+import BorksPage from './bork-routes'
 
 // it('renders without crashing', () => {
 //   const div = document.createElement('div')
-//   ReactDOM.render(<NewPostPage />, div)
+//   ReactDOM.render(<BorksPage />, div)
 //   ReactDOM.unmountComponentAtNode(div)
 // })

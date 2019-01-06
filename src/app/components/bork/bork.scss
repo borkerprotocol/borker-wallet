@@ -1,8 +1,8 @@
-.post-header {
+.bork-header {
   margin-left: 14px;
 }
 
-.post-avatar {
+.bork-avatar {
   position: relative;
   float: left;
   margin-right: 14px;
@@ -11,32 +11,32 @@
   border-radius: 50px;
 }
 
-.post-username {
+.bork-username {
   text-decoration: none;
   font-weight: bold;
   color: black;
 }
 
-.post-useraddress {
+.bork-useraddress {
   text-decoration: none;
   color: gray;
 }
 
-.post-content-main {
+.bork-content-main {
   margin-left: 14px;
 }
 
-.post-content-small {
+.bork-content-small {
   margin-left: 78px
 }
 
-.post-border {
+.bork-border {
   border-bottom: solid;
   border-width: 1px;
   border-color: lightgray;
 }
 
-.post-body-link {
+.bork-body-link {
   text-decoration: none;
   color: black;
   & h2 {
@@ -44,7 +44,7 @@
   }
 }
 
-.post-stats {
+.bork-stats {
   font-weight: bold;
   & span {
     font-weight: normal;
@@ -53,12 +53,12 @@
   }
 }
 
-.post-footer {
+.bork-footer {
   padding-top: 14px;
   text-align: center;
 }
 
-.post-footer-small {
+.bork-footer-small {
   margin-left: 78px;
   padding-top: 14px;
 }

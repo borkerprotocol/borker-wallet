@@ -26,17 +26,7 @@
   overflow: hidden;
 }
 
-.edit-profile-link {
+.align-right {
   margin-top: 8px;
   text-align: right;
-  & a {
-    text-decoration: none;
-    font-weight: 400;
-    border: solid;
-    border-width: 2px;
-    border-color: gray;
-    color: gray;
-    padding: 5px;
-    border-radius: 8%;
-  }
 }

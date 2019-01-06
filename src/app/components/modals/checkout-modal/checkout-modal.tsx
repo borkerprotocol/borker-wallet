@@ -1,32 +1,42 @@
 import React from 'react'
-import { PostType } from '../../../../types/types'
+import { BorkType } from '../../../../types/types'
+import { getTxFee } from '../../../util/mocks'
 import BigNumber from 'bignumber.js'
 import '../../../App.scss'
 import './checkout-modal.scss'
 
 export interface CheckoutModalProps {
   txCount: number
-  charCount?: number
-  cost: BigNumber
-  type: PostType
+  type: BorkType
 }
 
-class CheckoutModal extends React.PureComponent<CheckoutModalProps, {}> {
+export interface CheckoutModalState {
+  txFee: BigNumber
+}
+
+class CheckoutModal extends React.Component<CheckoutModalProps, {}> {
+
+  state = { txFee: new BigNumber(0) }
+
+  async componentDidMount () {
+    this.setState({ txFee: await getTxFee() })
+  }
 
   broadcast = async () => {
     alert ('broadcasts coming soon!')
   }
 
   render () {
-    const { txCount, charCount, cost, type } = this.props
+    const { txCount, type } = this.props
+    const { txFee } = this.state
+    const cost = txFee.times(txCount).integerValue(BigNumber.ROUND_CEIL).toString()
 
     return (
       <div className="checkout-modal-content">
         <h1>Order Summary</h1>
         <p>Transaction Type: <b>{type}</b></p>
         <p>Total Transactions: {txCount}</p>
-        {charCount ? <p>Characters: {charCount}</p> : null}<br />
-        <p>Total Cost: <b>{cost.toFormat(8)} DOGE</b></p>
+        <p>Total Cost: <b>{cost} DOGE</b></p>
         <button onClick={this.broadcast}>Broadcast!</button>
       </div>
     )

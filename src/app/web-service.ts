@@ -1,5 +1,17 @@
 import rp from 'request-promise'
-import { config } from '../../config'
+import { config } from '../config/config'
+
+export async function getNetworkInfo () {
+  const options: rp.Options = {
+    method: 'GET',
+    url: 'https://chain.so/api/v2/get_info/DOGE',
+  }
+  try {
+    return rp(options)
+  } catch (e) {
+    console.error('error: ', e)
+  }
+}
 
 export async function getBestBlockHash () {
   const options: rp.Options = {

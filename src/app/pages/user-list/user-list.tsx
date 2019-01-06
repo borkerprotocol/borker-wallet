@@ -3,8 +3,7 @@ import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import CheckoutModal from '../../components/modals/checkout-modal/checkout-modal'
-import BigNumber from 'bignumber.js'
-import { User, PostType } from '../../../types/types'
+import { User, BorkType } from '../../../types/types'
 import { getUsers } from '../../util/mocks'
 import './user-list.scss'
 
@@ -13,7 +12,7 @@ export interface UserListParams {
 }
 
 export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
-  filter: PostType.repost | PostType.like
+  filter: BorkType.rebork | BorkType.like
 }
 
 export interface UserListState {
@@ -30,7 +29,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   }
 
   async componentDidMount () {
-    const title = this.props.filter === PostType.repost ? 'Reposted By' : 'Liked By'
+    const title = this.props.filter === BorkType.rebork ? 're:Borked By' : 'Liked By'
     this.props.setTitle(title)
     this.props.setShowFab(false)
     this.setState({
@@ -40,14 +39,14 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
 
   render () {
     const { users } = this.state
-    const isRepost = this.props.filter === PostType.repost
+    const isRebork = this.props.filter === BorkType.rebork
 
     const modal = (
-      <CheckoutModal type={PostType.follow} txCount={1} cost={new BigNumber(1)}/>
+      <CheckoutModal type={BorkType.follow} txCount={1} />
     )
 
     return !users.length ? (
-      <p style={{ margin: 14 }}>No {isRepost ? 'Reposts' : 'Likes'}</p>
+      <p style={{ margin: 14 }}>No {isRebork ? 're:Borks' : 'Likes'}</p>
     ) : (
       <ul className="user-list">
         {users.map(user => {

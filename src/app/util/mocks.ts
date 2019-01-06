@@ -1,18 +1,18 @@
-import { Post, User, PostType, ProfileUpdate, ProfileFields, RelativePostWithUser, Transaction, WalletInfo } from "../../types/types"
+import { Bork, User, BorkType, ProfileUpdate, ProfileFields, RelativeBorkWithUser, Transaction, WalletInfo } from "../../types/types"
 import { avatar1, avatar2 } from './avatars'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
-export async function getRates (): Promise<{ txRate: BigNumber, charRate: BigNumber }> {
-  return { txRate: new BigNumber(1), charRate: new BigNumber(.01) }
+export async function getTxFee (): Promise<BigNumber> {
+  return new BigNumber(1)
 }
 
-export async function getUsers (txid: string, type: PostType): Promise<User[]> {
-  const samples = type === PostType.repost ? sampleReposts : sampleLikes
-  const posts = samples.filter(p => p.txid === txid)
+export async function getUsers (txid: string, type: BorkType): Promise<User[]> {
+  const samples = type === BorkType.rebork ? sampleReborks : sampleLikes
+  const borks = samples.filter(p => p.txid === txid)
   const users = sampleUsers.filter(u => {
-    const post = posts.find(p => p.address === u.address) as Post
-    if (post) return u
+    const bork = borks.find(p => p.address === u.address) as Bork
+    if (bork) return u
   })
   return users
 }
@@ -21,51 +21,51 @@ export async function getUser (address: string): Promise<User> {
   return sampleUsers.find(u => u.address === address) as User
 }
 
-export async function getPost (txid: string, myAddress: string): Promise<RelativePostWithUser | undefined> {
-  const post = samplePosts.find(p => p.txid === txid)
+export async function getBork (txid: string, myAddress: string): Promise<RelativeBorkWithUser | undefined> {
+  const bork = sampleBorks.find(p => p.txid === txid)
 
-  if (post) {
+  if (bork) {
     return {
-      ...post,
-      user: sampleUsers.find(u => u.address === post.address) as User,
+      ...bork,
+      user: sampleUsers.find(u => u.address === bork.address) as User,
       iReply: false,
-      iRepost: false,
-      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === post.txid),
+      iRebork: false,
+      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === bork.txid),
     }
   }
 }
 
-export async function getPosts (myAddress: string, userAddress?: string, txid?: string): Promise<RelativePostWithUser[]> {
-  let postsToMap: Post[] = []
+export async function getBorks (myAddress: string, userAddress?: string, txid?: string): Promise<RelativeBorkWithUser[]> {
+  let borksToMap: Bork[] = []
   if (userAddress) {
-    postsToMap = samplePosts.filter(p => p.address === userAddress && !p.refTxid)
+    borksToMap = sampleBorks.filter(p => p.address === userAddress && !p.refTxid)
   } else if (txid) {
-    postsToMap = samplePosts.filter(p => p.txid === txid || p.refTxid === txid)
+    borksToMap = sampleBorks.filter(p => p.txid === txid || p.refTxid === txid)
   } else {
-    postsToMap = samplePosts.filter(p => !p.refTxid)
+    borksToMap = sampleBorks.filter(p => !p.refTxid)
   }
 
-  return postsToMap.map(p => {
+  return borksToMap.map(b => {
     return {
-      ...p,
-      user: sampleUsers.find(u => u.address === p.address) as User,
+      ...b,
+      user: sampleUsers.find(u => u.address === b.address) as User,
       iReply: false,
-      iRepost: false,
-      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === p.txid),
+      iRebork: false,
+      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === b.txid),
   }})
 }
 
-export async function getLikes (address: string): Promise<RelativePostWithUser[]> {
+export async function getLikes (address: string): Promise<RelativeBorkWithUser[]> {
   const likes = sampleLikes.filter(l => l.address === address)
   return likes.map(l => {
-    const post = samplePosts.find(p => p.txid === l.txid) as Post
-    const user = sampleUsers.find(u => u.address === post.address) as User
+    const bork = sampleBorks.find(p => p.txid === l.txid) as Bork
+    const user = sampleUsers.find(u => u.address === bork.address) as User
     return {
-      ...post,
+      ...bork,
       user,
       iReply: false,
-      iRepost: false,
-      iLike: !!likes.find(l => l.txid === post.txid),
+      iRebork: false,
+      iLike: !!likes.find(l => l.txid === bork.txid),
     }})
 }
 
@@ -117,9 +117,9 @@ export const sampleUsers: User[] = [
   },
 ]
 
-export const samplePosts: Post[] = [
+export const sampleBorks: Bork[] = [
   {
-    type: PostType.post,
+    type: BorkType.bork,
     timestamp: moment().subtract(30, 's').toISOString(),
     nonce: 0,
     txid: '8b5ab18a8593ba3f1abae61c07bf02169487c58b0e244922b6c4578eaf6e0d35',
@@ -129,11 +129,11 @@ export const samplePosts: Post[] = [
     isThread: false,
     threadIndex: 0,
     replies: 2,
-    reposts: 4,
+    reborks: 4,
     likes: 20,
   },
   {
-    type: PostType.post,
+    type: BorkType.bork,
     timestamp: moment().subtract(30, 'm').toISOString(),
     nonce: 0,
     txid: '43873bcc83d6d811df6bff1909a5cd3fc98eb84bbaded5a44443fc86f9ef0e3b',
@@ -143,11 +143,11 @@ export const samplePosts: Post[] = [
     isThread: false,
     threadIndex: 0,
     replies: 4,
-    reposts: 20,
+    reborks: 20,
     likes: 100,
   },
   {
-    type: PostType.post,
+    type: BorkType.bork,
     timestamp: moment().subtract(12, 'h').toISOString(),
     nonce: 1,
     txid: '069aa2f138cbdc6ebd379b1e6d1cb7f86c8770ad58be27006671d528a75ba0e3',
@@ -157,11 +157,11 @@ export const samplePosts: Post[] = [
     isThread: false,
     threadIndex: 0,
     replies: 44,
-    reposts: 500,
+    reborks: 500,
     likes: 250,
   },
   {
-    type: PostType.post,
+    type: BorkType.bork,
     timestamp: moment().subtract(2, 'd').toISOString(),
     nonce: 1,
     txid: '164af924f859c9936f3bda737a986a1a85b3708c9b2fd150b36b964b11c858a6',
@@ -171,11 +171,11 @@ export const samplePosts: Post[] = [
     isThread: true,
     threadIndex: 0,
     replies: 0,
-    reposts: 2,
+    reborks: 2,
     likes: 15,
   },
   {
-    type: PostType.reply,
+    type: BorkType.reply,
     timestamp: moment().subtract(2, 'd').toISOString(),
     nonce: 2,
     txid: 'e3b3a8bf7e3796d908b731c0d16baba0f1e161b97d917e00cde81ff0f1452fd1',
@@ -185,11 +185,11 @@ export const samplePosts: Post[] = [
     isThread: true,
     threadIndex: 1,
     replies: 1,
-    reposts: 1,
+    reborks: 1,
     likes: 1,
   },
   {
-    type: PostType.reply,
+    type: BorkType.reply,
     timestamp: moment().subtract(2, 'd').toISOString(),
     nonce: 3,
     txid: 'ead67d64e2f563400873cbbe47601e89cecfabf5a4c0e05d599cd7ee98388b74',
@@ -199,14 +199,14 @@ export const samplePosts: Post[] = [
     isThread: true,
     threadIndex: 2,
     replies: 1,
-    reposts: 2,
+    reborks: 2,
     likes: 10,
   },
 ]
 
-export const sampleReposts: Partial<Post>[] = []
+export const sampleReborks: Partial<Bork>[] = []
 
-export const sampleLikes: Partial<Post>[] = [
+export const sampleLikes: Partial<Bork>[] = [
   {
     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
     txid: '8b5ab18a8593ba3f1abae61c07bf02169487c58b0e244922b6c4578eaf6e0d35',

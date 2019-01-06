@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PostListPage from './post-list'
+import BorkViewPage from './bork-view'
 
 // it('renders without crashing', () => {
 //   const div = document.createElement('div')
-//   ReactDOM.render(<PostViewPage />, div)
+//   ReactDOM.render(<BorkViewPage />, div)
 //   ReactDOM.unmountComponentAtNode(div)
 // })
