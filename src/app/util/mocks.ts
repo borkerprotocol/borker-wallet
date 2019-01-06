@@ -1,89 +1,7 @@
-import { Bork, User, BorkType, ProfileUpdate, ProfileFields, RelativeBorkWithUser, Transaction, WalletInfo } from "../../types/types"
+import { Bork, User, BorkType, ProfileUpdate, ProfileFields, Transaction } from "../../types/types"
 import { avatar1, avatar2 } from './avatars'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
-
-export async function getTxFee (): Promise<BigNumber> {
-  return new BigNumber(1)
-}
-
-export async function getUsers (txid: string, type: BorkType): Promise<User[]> {
-  const samples = type === BorkType.rebork ? sampleReborks : sampleLikes
-  const borks = samples.filter(p => p.txid === txid)
-  const users = sampleUsers.filter(u => {
-    const bork = borks.find(p => p.address === u.address) as Bork
-    if (bork) return u
-  })
-  return users
-}
-
-export async function getUser (address: string): Promise<User> {
-  return sampleUsers.find(u => u.address === address) as User
-}
-
-export async function getBork (txid: string, myAddress: string): Promise<RelativeBorkWithUser | undefined> {
-  const bork = sampleBorks.find(p => p.txid === txid)
-
-  if (bork) {
-    return {
-      ...bork,
-      user: sampleUsers.find(u => u.address === bork.address) as User,
-      iReply: false,
-      iRebork: false,
-      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === bork.txid),
-    }
-  }
-}
-
-export async function getBorks (myAddress: string, userAddress?: string, txid?: string): Promise<RelativeBorkWithUser[]> {
-  let borksToMap: Bork[] = []
-  if (userAddress) {
-    borksToMap = sampleBorks.filter(p => p.address === userAddress && !p.refTxid)
-  } else if (txid) {
-    borksToMap = sampleBorks.filter(p => p.txid === txid || p.refTxid === txid)
-  } else {
-    borksToMap = sampleBorks.filter(p => !p.refTxid)
-  }
-
-  return borksToMap.map(b => {
-    return {
-      ...b,
-      user: sampleUsers.find(u => u.address === b.address) as User,
-      iReply: false,
-      iRebork: false,
-      iLike: !!sampleLikes.filter(l => l.address === myAddress).find(l => l.txid === b.txid),
-  }})
-}
-
-export async function getLikes (address: string): Promise<RelativeBorkWithUser[]> {
-  const likes = sampleLikes.filter(l => l.address === address)
-  return likes.map(l => {
-    const bork = sampleBorks.find(p => p.txid === l.txid) as Bork
-    const user = sampleUsers.find(u => u.address === bork.address) as User
-    return {
-      ...bork,
-      user,
-      iReply: false,
-      iRebork: false,
-      iLike: !!likes.find(l => l.txid === bork.txid),
-    }})
-}
-
-export async function getProfileUpdates (address: string): Promise<ProfileUpdate[]> {
-  return sampleProfileUpdates.filter(p => p.address === address)
-}
-
-export async function getWallet (address: string): Promise<WalletInfo> {
-  const transactions = sampleTransactions.filter(t => t.address === address)
-  const balance = transactions.reduce((total, tx) => {
-      return total.plus(tx.amount)
-  }, new BigNumber(0))
-
-  return {
-    balance,
-    transactions,
-  }
-}
 
 export const sampleWords = [
   'blade',
@@ -201,6 +119,48 @@ export const sampleBorks: Bork[] = [
     replies: 1,
     reborks: 2,
     likes: 10,
+  },
+  {
+    type: BorkType.bork,
+    timestamp: moment().subtract(8.75, 'd').toISOString(),
+    nonce: 0,
+    txid: 'cd18094f57a4bf32bfcb38d1354fa5a2d5b553a5fb13a42ccffca75c09f8c4f4',
+    refTxid: '',
+    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+    content: 'This bork is a little older',
+    isThread: false,
+    threadIndex: 0,
+    replies: 0,
+    reborks: 1,
+    likes: 1,
+  },
+  {
+    type: BorkType.bork,
+    timestamp: moment().subtract(9.25, 'd').toISOString(),
+    nonce: 0,
+    txid: '81575afa892de8e41d7a6ce89c38d075da46f65f391a4ca5242691eb3e5e4c75',
+    refTxid: '',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
+    content: 'And this one is even older.',
+    isThread: false,
+    threadIndex: 0,
+    replies: 3,
+    reborks: 2,
+    likes: 10,
+  },
+  {
+    type: BorkType.bork,
+    timestamp: moment().subtract(12.5, 'd').toISOString(),
+    nonce: 0,
+    txid: '138c3e7c2fe40f2e1b73e85406af06ec924053ef173521d76cdab71b321cde8d',
+    refTxid: '',
+    address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
+    content: 'One final bork to end them all.',
+    isThread: false,
+    threadIndex: 0,
+    replies: 10,
+    reborks: 13,
+    likes: 1000,
   },
 ]
 

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import CheckoutModal from '../../components/modals/checkout-modal/checkout-modal'
 import { User, BorkType } from '../../../types/types'
-import { getUsers } from '../../util/mocks'
+import { getUsers } from '../../web-service'
 import './user-list.scss'
 
 export interface UserListParams {

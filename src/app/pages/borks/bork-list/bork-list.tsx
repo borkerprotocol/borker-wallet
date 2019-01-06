@@ -2,10 +2,9 @@ import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { RelativeBorkWithUser } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
-import { getBorks } from '../../../util/mocks'
+import { getBorks } from '../../../web-service'
 import '../../../App.scss'
 import './bork-list.scss'
-import { getRandomInt } from '../../../web-service';
 
 export interface BorkListProps extends AuthProps {}
 
@@ -20,8 +19,6 @@ class BorkListPage extends React.Component<BorkListProps, BorkListState> {
   async componentDidMount () {
     this.props.setTitle('Borks')
     this.props.setShowFab(true)
-
-    // await getRandomInt()
 
     this.setState({
       borks: await getBorks(this.props.address),

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BorkType } from '../../../../types/types'
-import { getTxFee } from '../../../util/mocks'
+import { getTxFee } from '../../../web-service'
 import BigNumber from 'bignumber.js'
 import '../../../App.scss'
 import './checkout-modal.scss'

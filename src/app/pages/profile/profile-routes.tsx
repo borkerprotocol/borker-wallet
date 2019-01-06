@@ -3,9 +3,8 @@ import { Switch, Route, RouteComponentProps } from 'react-router'
 import ProfileShowPage from './profile-show/profile-show'
 import ProfileEditPage from './profile-edit/profile-edit'
 import { User } from '../../../types/types'
-import { getUser } from '../../util/mocks'
+import { getUser } from '../../web-service'
 import '../../App.scss'
-import { AuthProps } from '../../contexts/auth-context';
 
 export interface ProfileRoutesParams {
   id: string

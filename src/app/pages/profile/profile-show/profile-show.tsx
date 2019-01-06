@@ -3,13 +3,13 @@ import { Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { ProfileUpdate, ProfileFields, RelativeBorkWithUser, User, BorkType } from '../../../../types/types'
-import { getBorks, getLikes, getProfileUpdates } from '../../../util/mocks'
+import { getBorks, getLikes, getProfileUpdates } from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
+import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import { calendar } from '../../../util/timestamps'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
-import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal';
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -38,7 +38,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     this.props.setTitle('Profile')
     this.props.setShowFab(true)
 
-    await this.getData(this.props.user.address)
+    this.getUserData(this.props.user.address)
   }
 
   async componentWillReceiveProps (nextProps: ProfileShowProps) {
@@ -47,11 +47,11 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
 
     if (oldAddress !== newAddress) {
       this.setState({ loading: true })
-      await this.getData(newAddress)
+      this.getUserData(newAddress)
     }
   }
 
-  getData = async (address: string) => {
+  getUserData = async (address: string) => {
     const [ borks, likes, profileUpdates ] = await Promise.all([
       getBorks(this.props.address, address),
       getLikes(address),
