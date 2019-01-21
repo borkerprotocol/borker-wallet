@@ -1,11 +1,11 @@
 import React from 'react'
-import { RelativeBorkWithUser, Bork } from '../../../types/types'
+import { Bork } from '../../../types/types'
 import BorkComponent from '../bork/bork'
 import '../../App.scss'
 import './bork-list.scss'
 
 export interface BorkListProps {
-  borks: RelativeBorkWithUser[]
+  borks: Bork[]
 }
 
 class BorkList extends React.PureComponent<BorkListProps> {

@@ -12,27 +12,21 @@ export interface User {
 
 export interface Bork {
   type: BorkType
-  timestamp: string
+  createdAt: string
   nonce: number
   txid: string
-  refTxid: string
   content: string
-  address: string
-  isThread: boolean
-  threadIndex: number
-  replies: number
-  reborks: number
-  likes: number
-}
-
-export interface RelativeBork extends Bork {
-  iReply: boolean
+  fee: string
+  value: string
+  commentsCount: number
+  reborksCount: number
+  likesCount: number
+  sender: User
+  recipient: User
+  parent: Bork
+  iComment: boolean
   iRebork: boolean
   iLike: boolean
-}
-
-export interface RelativeBorkWithUser extends RelativeBork {
-  user: User
 }
 
 export interface FullUser extends User {
@@ -61,12 +55,16 @@ export interface WalletInfo {
 }
 
 export enum BorkType {
-  bork = 'BORK',
-  rebork = 're:BORK',
-  reply = 'REPLY',
-  like = 'LIKE',
-  follow = 'FOLLOW',
-  profileUpdate = 'PROFILE UPDATE',
+  bork = 'bork',
+  comment = 'comment',
+  extension = 'extension',
+  follow = 'follow',
+  like = 'like',
+  rebork = 'rebork',
+  setName = 'set_name',
+  setBio = 'set_bio',
+  setAvatar = 'set_avatar',
+  unfollow = 'unfollow',
 }
 
 export enum ProfileFields {

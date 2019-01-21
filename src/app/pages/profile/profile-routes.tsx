@@ -3,39 +3,44 @@ import { Switch, Route, RouteComponentProps } from 'react-router'
 import ProfileShowPage from './profile-show/profile-show'
 import ProfileEditPage from './profile-edit/profile-edit'
 import { User } from '../../../types/types'
-import { getUser } from '../../web-service'
+import WebService from '../../web-service'
 import '../../App.scss'
+import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 
 export interface ProfileRoutesParams {
-  id: string
+  address: string
 }
 
-export interface ProfileRoutesProps extends RouteComponentProps<ProfileRoutesParams> {}
+export interface ProfileRoutesProps extends RouteComponentProps<ProfileRoutesParams>, AuthProps {}
 
 export interface ProfileRoutesState {
   user: User | null
 }
 
 class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesState> {
+  public webService: WebService
 
   constructor (props: ProfileRoutesProps) {
     super(props)
     this.state = {
       user: null,
     }
+    this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
-    this.setState({ user: await getUser(this.props.match.params.id) })
+    this.setState({
+      user: await this.webService.getUser(this.props.match.params.address),
+    })
   }
 
   async componentWillReceiveProps (nextProps: ProfileRoutesProps) {
-    const oldAddress = this.props.match.params.id
-    const newAddress = nextProps.match.params.id
+    const oldAddress = this.props.match.params.address
+    const newAddress = nextProps.match.params.address
 
     if (oldAddress !== newAddress) {
       this.setState({
-        user: await getUser(newAddress),
+        user: await this.webService.getUser(newAddress),
       })
     }
   }
@@ -49,12 +54,12 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
       <Switch>
         <Route
           exact
-          path="/profile/:id"
+          path="/profile/:address"
           render={props => <ProfileShowPage {...props} user={user} />}
         />
         <Route
           exact
-          path="/profile/:id/edit"
+          path="/profile/:address/edit"
           render={props => <ProfileEditPage {...props} user={user} />}
         />
       </Switch>
@@ -62,4 +67,4 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
   }
 }
 
-export default ProfileRoutes
+export default withAuthContext(ProfileRoutes)

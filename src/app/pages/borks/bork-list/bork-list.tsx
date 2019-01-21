@@ -1,27 +1,34 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { RelativeBorkWithUser } from '../../../../types/types'
+import { Bork, BorkType } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
-import { getBorks } from '../../../web-service'
+import WebService from '../../../web-service'
 import '../../../App.scss'
 import './bork-list.scss'
 
 export interface BorkListProps extends AuthProps {}
 
 export interface BorkListState {
-  borks: RelativeBorkWithUser[]
+  borks: Bork[]
 }
 
 class BorkListPage extends React.Component<BorkListProps, BorkListState> {
+  public webService: WebService
 
-  state = { borks: [] }
+  constructor (props: BorkListProps) {
+    super(props)
+    this.state = { borks: [] }
+    this.webService = new WebService(props.address)
+  }
 
   async componentDidMount () {
     this.props.setTitle('Borks')
     this.props.setShowFab(true)
 
     this.setState({
-      borks: await getBorks(this.props.address),
+      borks: await this.webService.getBorks({
+        types: [BorkType.bork, BorkType.rebork],
+      }),
     })
   }
 

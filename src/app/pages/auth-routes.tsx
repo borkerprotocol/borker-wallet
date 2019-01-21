@@ -110,7 +110,7 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
               component={BorksPage}
             />
             <Route
-              path="/profile/:id"
+              path="/profile/:address"
               component={ProfileRoutes}
             />
             <Route

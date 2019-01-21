@@ -54,7 +54,7 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     const txCount = nameTxCount + bioTxCount
 
     const modal = (
-      <CheckoutModal type={BorkType.profileUpdate} txCount={txCount} />
+      <CheckoutModal type={BorkType.setName} txCount={txCount} />
     )
 
     return (

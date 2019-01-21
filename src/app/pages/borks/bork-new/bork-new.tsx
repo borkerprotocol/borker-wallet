@@ -3,30 +3,32 @@ import { RouteComponentProps } from 'react-router'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import BorkComponent from '../../../components/bork/bork'
-import { getBork } from '../../../web-service'
-import { BorkType, RelativeBorkWithUser } from '../../../../types/types'
+import WebService from '../../../web-service'
+import { BorkType, Bork } from '../../../../types/types'
 import './bork-new.scss'
 import '../../../App.scss'
 
 export interface NewBorkParams {
-  id: string
+  txid: string
 }
 
 export interface NewBorkProps extends AuthProps, RouteComponentProps<NewBorkParams> {} 
 
 export interface NewBorkState {
   body: string
-  referenceBork: RelativeBorkWithUser | undefined
+  parent: Bork | undefined
 }
 
 class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
+  public webService: WebService
 
   constructor (props: NewBorkProps) {
     super(props)
     this.state ={
       body: '',
-      referenceBork: undefined,
+      parent: undefined,
     }
+    this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
@@ -34,7 +36,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     this.props.setShowFab(false)
 
     this.setState({
-      referenceBork: await getBork(this.props.match.params.id, this.props.address),
+      parent: await this.webService.getBork(this.props.match.params.txid),
     })
   }
 
@@ -45,20 +47,20 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
   }
 
   render () {
-    const { body, referenceBork } = this.state
+    const { body, parent } = this.state
     const charCount = body.length
     const txCount = charCount === 0 ? 0 : charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
 
     const modal = (
-      <CheckoutModal type={referenceBork ? BorkType.reply : BorkType.bork} txCount={txCount} />
+      <CheckoutModal type={parent ? BorkType.comment : BorkType.bork} txCount={txCount} />
     )
 
     return (
       <div className="page-content">
-        {referenceBork &&
-          <div className="replying-to">
-            <b>Replying To:</b>
-            <BorkComponent isMain={false} showButtons={false} bork={referenceBork} />
+        {parent &&
+          <div className="commenting-on">
+            <b>Commenting On:</b>
+            <BorkComponent isMain={false} showButtons={false} bork={parent} />
           </div>
         }
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="bork-form">

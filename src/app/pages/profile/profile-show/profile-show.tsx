@@ -2,11 +2,12 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { ProfileUpdate, ProfileFields, RelativeBorkWithUser, User, BorkType } from '../../../../types/types'
-import { getBorks, getLikes, getProfileUpdates } from '../../../web-service'
+import { Bork, User, BorkType } from '../../../../types/types'
+import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import { calendar } from '../../../util/timestamps'
+import { avatar1 } from '../../../util/avatars'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
@@ -17,12 +18,13 @@ export interface ProfileShowProps extends AuthProps {
 
 export interface ProfileShowState {
   loading: boolean
-  borks: RelativeBorkWithUser[]
-  likes: RelativeBorkWithUser[]
-  profileUpdates: ProfileUpdate[]
+  borks: Bork[]
+  likes: Bork[]
+  profileUpdates: Bork[]
 }
 
 class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState> {
+  public webService: WebService
 
   constructor (props: ProfileShowProps) {
     super(props)
@@ -32,6 +34,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
       likes: [],
       profileUpdates: [],
     }
+    this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
@@ -51,11 +54,17 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     }
   }
 
-  getUserData = async (address: string) => {
+  getUserData = async (senderAddress: string) => {
     const [ borks, likes, profileUpdates ] = await Promise.all([
-      getBorks(this.props.address, address),
-      getLikes(address),
-      getProfileUpdates(address),
+      this.webService.getBorks({
+        senderAddress,
+        types: [BorkType.bork, BorkType.rebork],
+      }),
+      this.webService.getBorks({
+        senderAddress,
+        types: [BorkType.like],
+      }),
+      this.webService.getProfileUpdates(senderAddress),
     ])
 
     this.setState({ loading: false, borks, likes, profileUpdates })
@@ -80,7 +89,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             )}
           </div>
           <div className="profile-header">
-            <img src={`data:image/png;base64,${user.avatar}`} className="profile-avatar" alt="avatar" />
+            <img src={user.avatar || `data:image/png;base64,${avatar1}`} className="profile-avatar" />
             <h4>
               {user.name}
               <br></br>
@@ -116,8 +125,8 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
               {!loading &&
                 <div>
                   {likes.length > 0 &&
-                    <BorkList borks={likes.map(p => {
-                      return { ...p }
+                    <BorkList borks={likes.map(l => {
+                      return l.parent
                     })} />
                   }
                   {!likes.length &&
@@ -136,9 +145,11 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
                       {profileUpdates.map(p => {
                         return (
                           <li key={p.txid}>
-                            <p style={{ color: 'gray' }}>{calendar(p.timestamp)}</p>
+                            <p style={{ color: 'gray' }}>{calendar(p.createdAt)}</p>
 
-                            <p>Changed {p.field}{p.field === ProfileFields.name ? ` to ${p.value}` : ''}</p>
+                            <p>
+                              Changed <b style={{ textTransform: 'capitalize' }}>{p.type.split('_')[1]}</b> to: "{p.content}"
+                            </p>
                           </li>
                         )
                       })}

@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import CheckoutModal from '../../components/modals/checkout-modal/checkout-modal'
 import { User, BorkType } from '../../../types/types'
-import { getUsers } from '../../web-service'
+import WebService from '../../web-service'
 import './user-list.scss'
 
 export interface UserListParams {
-  id: string
+  txid: string
 }
 
 export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
@@ -20,20 +20,25 @@ export interface UserListState {
 }
 
 class UserListPage extends React.Component<UserListProps, UserListState> {
+  public webService: WebService
 
   constructor (props: UserListProps) {
     super(props)
     this.state = {
       users: [],
     }
+    this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
-    const title = this.props.filter === BorkType.rebork ? 're:Borked By' : 'Liked By'
+    const title = this.props.filter === BorkType.rebork ? 'Reborked By' : 'Liked By'
     this.props.setTitle(title)
     this.props.setShowFab(false)
     this.setState({
-      users: await getUsers(this.props.match.params.id, this.props.filter),
+      users: await this.webService.getUsers({
+        txid: this.props.match.params.txid,
+        types: [this.props.filter],
+      }),
     })
   }
 

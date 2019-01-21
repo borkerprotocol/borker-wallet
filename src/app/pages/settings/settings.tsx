@@ -2,7 +2,6 @@ import React from 'react'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import '../../App.scss'
 import './settings.scss'
-import { getNetworkInfo } from '../../web-service'
 
 export interface SettingsProps extends AuthProps {}
 
@@ -15,9 +14,6 @@ class SettingsPage extends React.PureComponent<SettingsProps> {
   async componentDidMount () {
     this.props.setShowFab(false)
     this.props.setTitle('Settings')
-
-    // const res = await getNetworkInfo()
-    // console.log(res)
   }
 
   render () {

@@ -3,7 +3,7 @@ import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import DepositModal from '../../components/modals/deposit-modal/deposit-modal'
 // import WithdrawalModal from '../../components/modals/withdrawal-modal/withdrawal-modal'
 import { Transaction } from '../../../types/types'
-import { getWallet } from '../../web-service'
+import WebService from '../../web-service'
 import { formatShort } from '../../util/timestamps'
 import BigNumber from 'bignumber.js'
 import '../../App.scss'
@@ -19,6 +19,7 @@ export interface WalletState {
 }
 
 class WalletPage extends React.Component<WalletProps, WalletState> {
+  public webService: WebService
 
   constructor (props: WalletProps) {
     super(props)
@@ -27,13 +28,14 @@ class WalletPage extends React.Component<WalletProps, WalletState> {
       balance: new BigNumber(0),
       transactions: [],
     }
+    this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
     this.props.setShowFab(true)
     this.props.setTitle('Wallet')
 
-    const walletInfo = await getWallet(this.props.address)
+    const walletInfo = await this.webService.getWallet(this.props.address)
 
     this.setState({
       balance: walletInfo.balance,

@@ -1,15 +1,16 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { RelativeBorkWithUser } from '../../../types/types'
+import { Bork } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { fromNow, calendar } from '../../util/timestamps'
+import { avatar1 } from '../../util/avatars'
 import '../../App.scss'
 import './bork.scss'
 
 export interface BorkComponentProps {
   isMain: boolean
   showButtons: boolean
-  bork: RelativeBorkWithUser
+  bork: Bork
 }
 
 class BorkComponent extends React.PureComponent<BorkComponentProps> {
@@ -18,32 +19,37 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
     const { bork, isMain, showButtons } = this.props
 
     const avatar = (
-      <Link to={`/profile/${bork.address}`}>
-        <img src={`data:image/png;base64,${bork.user.avatar}`} className="bork-avatar" />
+      <Link to={`/profile/${bork.sender.address}`}>
+        <img src={bork.sender.avatar || `data:image/png;base64,${avatar1}`} className="bork-avatar" />
       </Link>
     )
 
     const userName = (
-      <Link to={`/profile/${bork.user.address}`} className="bork-username">
-        {bork.user.name}
+      <Link to={`/profile/${bork.sender.address}`} className="bork-username">
+        {bork.sender.name}
       </Link>
     )
 
     const userAddress = (
-      <Link to={`/profile/${bork.user.address}`} className="bork-useraddress">
-        @{bork.user.address.substring(0,11)}
+      <Link to={`/profile/${bork.sender.address}`} className="bork-useraddress">
+        @{bork.sender.address.substring(0,11)}
       </Link>
     )
 
     const BorkBody = () => {
-      const text = bork.isThread ? `/${bork.threadIndex + 1} ${bork.content}` : bork.content
       return (
-        <Link to={`/borks/${bork.txid}`} className="bork-body-link">
+        <Link 
+          to={{
+            pathname: `/borks/${bork.txid}`,
+            state: { bork },
+          }}
+          className="bork-body-link"
+        >
           {isMain &&
-            <h2>{text}</h2>
+            <h2>{bork.content}</h2>
           }
           {!isMain &&
-            <p>{text}</p>
+            <p>{bork.content}</p>
           }
         </Link>
       )
@@ -62,7 +68,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
           <div className="bork-border">
             <BorkBody />
             <p><a href={`https://live.blockcypher.com/doge/tx/${bork.txid}/`} target="_blank">{bork.txid.substr(0, 30)}</a></p>
-            <p style={{ color: 'gray' }}>{calendar(bork.timestamp)}</p>
+            <p style={{ color: 'gray' }}>{calendar(bork.createdAt)}</p>
           </div>
           <div className="bork-border">
             <p className="bork-stats">
@@ -70,13 +76,13 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
                 to={`/borks/${bork.txid}/reborks`}
                 className="bork-body-link"
               >
-                {bork.reborks}<span> re:Borks</span>
+                {bork.reborksCount || 0}<span> Reborks</span>
               </Link>
               <Link
                 to={`/borks/${bork.txid}/likes`}
                 className="bork-body-link"
               >
-                {bork.likes}<span> Likes</span>
+                {bork.likesCount || 0}<span> Likes</span>
               </Link>
             </p>
           </div>
@@ -94,7 +100,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
           <p>
             {userName}<span> &#183; </span>
             {userAddress}<span> &#183; </span>
-            <span style={{color: 'gray'}}>{fromNow(bork.timestamp)}</span>
+            <span style={{color: 'gray'}}>{fromNow(bork.createdAt)}</span>
           </p>
         </div>
         <div className="bork-content-small">
