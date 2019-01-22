@@ -35,9 +35,11 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     this.props.setTitle('New Bork')
     this.props.setShowFab(false)
 
-    this.setState({
-      parent: await this.webService.getBork(this.props.match.params.txid),
-    })
+    if (this.props.match.params.txid) {
+      this.setState({
+        parent: await this.webService.getBork(this.props.match.params.txid),
+      })
+    }
   }
 
   handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

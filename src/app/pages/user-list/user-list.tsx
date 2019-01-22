@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import CheckoutModal from '../../components/modals/checkout-modal/checkout-modal'
 import { User, BorkType } from '../../../types/types'
+import { avatar1 } from '../../util/avatars'
 import WebService from '../../web-service'
 import './user-list.scss'
 
@@ -60,7 +61,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
               <div className="user-item">
                 <button className="user-item-follow" onClick={() => this.props.toggleModal(modal)}>Follow</button>
                 <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
-                  <img src={`data:image/png;base64,${user.avatar}`} className="user-item-avatar" />
+                  <img src={user.avatar || `data:image/png;base64,${avatar1}`} className="user-item-avatar" />
                   <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
                   <span style={{ color: 'gray' }}>@{user.address.substring(0,11)}</span><br />
                   <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>
