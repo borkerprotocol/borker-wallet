@@ -4,12 +4,12 @@ import Sidebar, { SidebarProps } from "react-sidebar"
 import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import { faDog } from '@fortawesome/free-solid-svg-icons'
 import BorksPage from './borks/bork-routes'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
 import ProfileRoutes from './profile/profile-routes'
 import { AuthContext } from '../contexts/auth-context'
+import borkButton from '../../assets/bork-button.png'
 
 export interface AuthRoutesState {
   title: string
@@ -126,7 +126,9 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
             <Redirect to="/borks" />
           </Switch>
           {showFab &&
-            <Link to={`/borks/new`} className="fab"><FontAwesomeIcon icon={faDog} /></Link>
+            <Link to={`/borks/new`} className="fab">
+              <img src={borkButton} />
+            </Link>
           }
         </Sidebar>
       </AuthContext.Provider>

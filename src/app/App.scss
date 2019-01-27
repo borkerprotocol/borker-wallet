@@ -11,19 +11,9 @@
 
 .fab {
   position: fixed;
-  bottom: 50px;
+  bottom: 40px;
   right: 40px;
-  border-radius: 50%;
-  background-color: blue;
-  text-decoration: none;
-  text-align: center;
-  border: none;
-  color: white;
-  display: block;
-  height: 60px;
-  width: 60px;
-  font-size: 30px;
-  & svg {
-    padding-top: 10px;
+  & img {
+    max-width: 70px;
   }
 }

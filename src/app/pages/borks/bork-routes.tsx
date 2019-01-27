@@ -35,12 +35,12 @@ class BorksPage extends React.Component<{}, {}> {
         />
         <Route
           exact
-          path="/borks/:txid/reborks"
+          path="/borks/:ref/reborks"
           render={props => <UserListPage {...props} filter={BorkType.rebork} />}
         />
         <Route
           exact
-          path="/borks/:txid/likes"
+          path="/borks/:ref/likes"
           render={props => <UserListPage {...props} filter={BorkType.like} />}
         />
         <Redirect to="/borks" />

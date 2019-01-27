@@ -30,3 +30,20 @@
   margin-top: 8px;
   text-align: right;
 }
+
+.user-stats-link {
+  text-decoration: none;
+  color: black;
+  & h2 {
+    font-weight: 400;
+  }
+}
+
+.user-follow-stats {
+  font-weight: bold;
+  & span {
+    font-weight: normal;
+    color: gray;
+    margin-right: 14px;
+  }
+}

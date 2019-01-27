@@ -3,8 +3,14 @@ import { config } from '../config/config'
 import BigNumber from 'bignumber.js'
 import { BorkType, User, Bork, ProfileUpdate, WalletInfo } from '../types/types'
 import { sampleTransactions } from './util/mocks'
+import { FollowsType } from './pages/user-list/user-list'
 
 const url = 'http://localhost:3000'
+
+export enum UserRefType {
+  tx = 'tx',
+  user = 'user',
+}
 
 class WebService {
 
@@ -14,10 +20,10 @@ class WebService {
     return new BigNumber(1)
   }
 
-  async getUsers (txParams?: { txid: string, types: BorkType[] }): Promise<User[]> {
+  async getUsers (ref: string, refType: UserRefType, type: BorkType.rebork | BorkType.like | FollowsType): Promise<User[]> {
 
-    const route = txParams ? `/transactions/${txParams.txid}/users` : `/users`
-    const qs = txParams ? { types: txParams.types } : {}
+    let route = refType === UserRefType.tx ? '/transactions' : '/users'
+    route = `${route}/${ref}/users`
 
     const options: rp.Options = {
       method: 'GET',
@@ -25,7 +31,7 @@ class WebService {
       headers: {
         'myAddress': this.myAddress,
       },
-      qs,
+      qs: { type },
     }
 
     const res = JSON.parse(await rp(options))

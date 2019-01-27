@@ -1,5 +1,4 @@
 import { Bork, User, BorkType, ProfileUpdate, ProfileFields, Transaction } from "../../types/types"
-import { avatar1, avatar2 } from './avatars'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
@@ -24,14 +23,14 @@ export const sampleWords = [
 //     birthBlock: 551973,
 //     name: 'MattHill',
 //     bio: 'Tae Kwon Do master, standing up for freedom of speech.',
-//     avatar: avatar1,
+//     avatar: null,
 //   },
 //   {
 //     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
 //     birthBlock: 421871,
 //     name: 'DR-BoneZ',
 //     bio: 'Hacker extraordinaire, and a mean karaoke singer too.',
-//     avatar: avatar2,
+//     avatar: null,
 //   },
 // ]
 
@@ -198,13 +197,6 @@ export const sampleWords = [
 //     txid: '94a10c877bdace5b0ccf17f0b718ba602c9f878f9a4a35fd3e68518accb859c2',
 //     field: ProfileFields.name,
 //     value: 'DR-BoneZ',
-//   },
-//   {
-//     timestamp: moment().subtract(7, 'd').toISOString(),
-//     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-//     txid: '41266e19b39dbba35128f3af72299b4636cb9250d81741b5db1987716043a7af',
-//     field: ProfileFields.avatar,
-//     value: avatar2,
 //   },
 //   {
 //     timestamp: moment().subtract(30, 'd').toISOString(),

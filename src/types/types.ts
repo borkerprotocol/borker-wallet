@@ -8,6 +8,9 @@ export interface User {
   name: string
   bio: string
   avatar: string
+  followingCount: number
+  followersCount: number
+  iFollow: boolean
 }
 
 export interface Bork {

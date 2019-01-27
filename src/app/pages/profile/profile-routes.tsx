@@ -2,6 +2,7 @@ import React from 'react'
 import { Switch, Route, RouteComponentProps } from 'react-router'
 import ProfileShowPage from './profile-show/profile-show'
 import ProfileEditPage from './profile-edit/profile-edit'
+import UserListPage, { FollowsType } from '../user-list/user-list'
 import { User } from '../../../types/types'
 import WebService from '../../web-service'
 import '../../App.scss'
@@ -61,6 +62,16 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
           exact
           path="/profile/:address/edit"
           render={props => <ProfileEditPage {...props} user={user} />}
+        />
+        <Route
+          exact
+          path="/profile/:ref/following"
+          render={props => <UserListPage {...props} filter={FollowsType.following} />}
+        />
+        <Route
+          exact
+          path="/profile/:ref/followers"
+          render={props => <UserListPage {...props} filter={FollowsType.followers} />}
         />
       </Switch>
     )

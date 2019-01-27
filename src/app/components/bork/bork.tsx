@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Bork } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { fromNow, calendar } from '../../util/timestamps'
-import { avatar1 } from '../../util/avatars'
+import defaultAvatar from '../../../assets/default-avatar.png'
 import '../../App.scss'
 import './bork.scss'
 
@@ -20,7 +20,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
     const avatar = (
       <Link to={`/profile/${bork.sender.address}`}>
-        <img src={bork.sender.avatar || `data:image/png;base64,${avatar1}`} className="bork-avatar" />
+        <img src={bork.sender.avatar || defaultAvatar} className="bork-avatar" />
       </Link>
     )
 

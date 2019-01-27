@@ -5,9 +5,9 @@ import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { Bork, User, BorkType } from '../../../../types/types'
 import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
-import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
+import FollowButton from '../../../components/follow-button/follow-button'
 import { calendar } from '../../../util/timestamps'
-import { avatar1 } from '../../../util/avatars'
+import defaultAvatar from '../../../../assets/default-avatar.png'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
@@ -76,94 +76,106 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
 
     return (
       <div className="page-content">
-        <div>
-          <div className="align-right">
-            {user.address === this.props.address ? (
-              <div>
-                <Link to={`/profile/${user.address}/edit`}>
-                  <button>Edit Profile</button>
-                </Link>
-              </div>
-            ) : (
-                <button onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.follow} txCount={1} />)}>Follow</button>   
-            )}
-          </div>
-          <div className="profile-header">
-            <img src={user.avatar || `data:image/png;base64,${avatar1}`} className="profile-avatar" />
-            <h4>
-              {user.name}
-              <br></br>
-              <a href={`https://live.blockcypher.com/doge/address/${user.address}/`} target="_blank">@{user.address.substr(0, 11)}</a>
-              <br></br>
-              <b>Birth Block: </b>{user.birthBlock}
-            </h4>
-          </div>
-          <p className="profile-bio">{user.bio}</p>
-          <Tabs>
-            <TabList>
-              <Tab>Borks & re:Borks</Tab>
-              <Tab>Likes</Tab>
-              <Tab>Profile Updates</Tab>
-            </TabList>
-
-            <TabPanel>
-              {!loading &&
-                <div>
-                  {borks.length > 0 &&
-                    <BorkList borks={borks.map(p => {
-                      return { ...p }
-                    })} />
-                  }
-                  {!borks.length &&
-                    <p>No Borks</p>
-                  }
-                </div>
-              }
-            </TabPanel>
-
-            <TabPanel>
-              {!loading &&
-                <div>
-                  {likes.length > 0 &&
-                    <BorkList borks={likes.map(l => {
-                      return l.parent
-                    })} />
-                  }
-                  {!likes.length &&
-                    <p>No Likes</p>
-                  }
-                </div>
-              }
-
-            </TabPanel>
-
-            <TabPanel>
-              {!loading &&
-                <div>
-                  {profileUpdates.length > 0 &&
-                    <ul className="profile-update-list">
-                      {profileUpdates.map(p => {
-                        return (
-                          <li key={p.txid}>
-                            <p style={{ color: 'gray' }}>{calendar(p.createdAt)}</p>
-
-                            <p>
-                              Changed <b style={{ textTransform: 'capitalize' }}>{p.type.split('_')[1]}</b> to: "{p.content}"
-                            </p>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  }
-                  {!profileUpdates.length &&
-                    <p>No Profile Updates</p>
-                  }
-                </div>
-              }
-            </TabPanel>
-          </Tabs>
+        <div className="align-right">
+          {user.address === this.props.address ? (
+            <div>
+              <Link to={`/profile/${user.address}/edit`}>
+                <button>Edit Profile</button>
+              </Link>
+            </div>
+          ) : (
+            <FollowButton user={user} />
+          )}
         </div>
-    </div>
+        <div className="profile-header">
+          <img src={user.avatar || defaultAvatar} className="profile-avatar" />
+          <h4>
+            {user.name}
+            <br></br>
+            <a href={`https://live.blockcypher.com/doge/address/${user.address}/`} target="_blank">@{user.address.substr(0, 11)}</a>
+            <br></br>
+            <b>Birth Block: </b>{user.birthBlock}
+          </h4>
+        </div>
+        <p className="profile-bio">{user.bio}</p>
+        <p className="user-follow-stats">
+          <Link
+            to={`/profile/${user.address}/following`}
+            className="user-stats-link"
+          >
+            {user.followingCount || 0}<span> Following</span>
+          </Link>
+          <Link
+            to={`/profile/${user.address}/followers`}
+            className="user-stats-link"
+          >
+            {user.followersCount || 0}<span> Followers</span>
+          </Link>
+        </p>
+        <Tabs>
+          <TabList>
+            <Tab>Borks & Reborks</Tab>
+            <Tab>Likes</Tab>
+            <Tab>Profile Updates</Tab>
+          </TabList>
+
+          <TabPanel>
+            {!loading &&
+              <div>
+                {borks.length > 0 &&
+                  <BorkList borks={borks.map(p => {
+                    return { ...p }
+                  })} />
+                }
+                {!borks.length &&
+                  <p>No Borks</p>
+                }
+              </div>
+            }
+          </TabPanel>
+
+          <TabPanel>
+            {!loading &&
+              <div>
+                {likes.length > 0 &&
+                  <BorkList borks={likes.map(l => {
+                    return l.parent
+                  })} />
+                }
+                {!likes.length &&
+                  <p>No Likes</p>
+                }
+              </div>
+            }
+
+          </TabPanel>
+
+          <TabPanel>
+            {!loading &&
+              <div>
+                {profileUpdates.length > 0 &&
+                  <ul className="profile-update-list">
+                    {profileUpdates.map(p => {
+                      return (
+                        <li key={p.txid}>
+                          <p style={{ color: 'gray' }}>{calendar(p.createdAt)}</p>
+
+                          <p>
+                            Changed <b style={{ textTransform: 'capitalize' }}>{p.type.split('_')[1]}</b> to: "{p.content}"
+                          </p>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                }
+                {!profileUpdates.length &&
+                  <p>No Profile Updates</p>
+                }
+              </div>
+            }
+          </TabPanel>
+        </Tabs>
+      </div>
     )
   }
 }
