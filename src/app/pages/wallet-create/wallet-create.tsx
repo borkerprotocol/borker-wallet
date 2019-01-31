@@ -2,7 +2,7 @@ import React from 'react'
 import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 import { withUnauthContext, UnauthProps } from '../../contexts/unauth-context'
 import { JsWallet } from 'borker-rs'
-import { sampleWords } from '../../util/mocks'
+import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
 import './wallet-create.scss'
 

@@ -52,11 +52,6 @@ export interface Transaction {
   address: string
 }
 
-export interface WalletInfo {
-  balance: BigNumber
-  transactions: Transaction[]
-}
-
 export enum BorkType {
   bork = 'bork',
   comment = 'comment',

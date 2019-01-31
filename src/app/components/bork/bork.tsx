@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { Bork } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
-import { fromNow, calendar } from '../../util/timestamps'
+import { fromNow, calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import '../../App.scss'
 import './bork.scss'

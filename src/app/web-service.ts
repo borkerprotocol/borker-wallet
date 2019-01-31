@@ -1,16 +1,9 @@
 import rp from 'request-promise'
 import { config } from '../config/config'
 import BigNumber from 'bignumber.js'
-import { BorkType, User, Bork, ProfileUpdate, WalletInfo } from '../types/types'
-import { sampleTransactions } from './util/mocks'
+import { BorkType, User, Bork } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
-
-const url = 'http://localhost:3000'
-
-export enum UserRefType {
-  tx = 'tx',
-  user = 'user',
-}
+import { UserFilter } from './pages/sniff-around/sniff-around'
 
 class WebService {
 
@@ -20,14 +13,27 @@ class WebService {
     return new BigNumber(1)
   }
 
-  async getUsers (ref: string, refType: UserRefType, type: BorkType.rebork | BorkType.like | FollowsType): Promise<User[]> {
-
-    let route = refType === UserRefType.tx ? '/transactions' : '/users'
-    route = `${route}/${ref}/users`
+  async getUsers (filter: UserFilter): Promise<User[]> {
 
     const options: rp.Options = {
       method: 'GET',
-      url: url + route,
+      url: config.borker.url + `/users`,
+      headers: {
+        'myAddress': this.myAddress,
+      },
+      qs: { filter },
+    }
+
+    const res = JSON.parse(await rp(options))
+    console.log(res)
+    return res
+  }
+
+  async getUsersByTx (txid: string, type: BorkType.rebork | BorkType.like): Promise<User[]> {
+
+    const options: rp.Options = {
+      method: 'GET',
+      url: config.borker.url + `/transactions/${txid}/users`,
       headers: {
         'myAddress': this.myAddress,
       },
@@ -37,21 +43,29 @@ class WebService {
     const res = JSON.parse(await rp(options))
     console.log(res)
     return res
+  }
 
-    // const samples = type === BorkType.rebork ? sampleReborks : sampleLikes
-    // const borks = samples.filter(b => b.txid === txid)
-    // const users = sampleUsers.filter(u => {
-    //   const bork = borks.find(b => b.address === u.address) as Bork
-    //   if (bork) return u
-    // })
-    // return users
+  async getUsersByUser (address: string, type: FollowsType): Promise<User[]> {
+
+    const options: rp.Options = {
+      method: 'GET',
+      url: config.borker.url + `/users/${address}/users`,
+      headers: {
+        'myAddress': this.myAddress,
+      },
+      qs: { type },
+    }
+
+    const res = JSON.parse(await rp(options))
+    console.log(res)
+    return res
   }
 
   async getUser (address: string): Promise<User> {
 
     const options: rp.Options = {
       method: 'GET',
-      url: url + `/users/${address}`,
+      url: config.borker.url + `/users/${address}`,
       headers: {
         'myAddress': this.myAddress,
       },
@@ -60,15 +74,13 @@ class WebService {
     const res = JSON.parse(await rp(options))
     console.log(res)
     return res
-
-    // return sampleUsers.find(u => u.address === address) as User
   }
 
   async getBork (txid: string): Promise<Bork> {
 
     const options: rp.Options = {
       method: 'GET',
-      url: url + `/transactions/${txid}`,
+      url: config.borker.url + `/transactions/${txid}`,
       headers: {
         'myAddress': this.myAddress,
       },
@@ -77,25 +89,13 @@ class WebService {
     const res = JSON.parse(await rp(options))
     console.log(res)
     return res
-
-    // const bork = sampleBorks.find(b => b.txid === txid)
-
-    // if (bork) {
-    //   return {
-    //     ...bork,
-    //     user: sampleUsers.find(u => u.address === bork.address) as User,
-    //     iComment: false,
-    //     iRebork: false,
-    //     iLike: !!sampleLikes.filter(l => l.address === this.myAddress).find(l => l.txid === bork.txid),
-    //   }
-    // }
   }
 
   async getBorks (params: IndexTxParams = {}): Promise<Bork[]> {
 
     const options: rp.Options = {
       method: 'GET',
-      url: url + '/transactions',
+      url: config.borker.url + '/transactions',
       headers: {
         'myAddress': this.myAddress,
       },
@@ -105,30 +105,12 @@ class WebService {
     const res = JSON.parse(await rp(options))
     console.log(res)
     return res
-
-    // let borksToMap: Bork[] = []
-    // if (address) {
-    //   borksToMap = sampleBorks.filter(b => b.address === address && !b.refTxid)
-    // } else if (txid) {
-    //   borksToMap = sampleBorks.filter(b => b.txid === txid || b.refTxid === txid)
-    // } else {
-    //   borksToMap = sampleBorks.filter(b => !b.refTxid)
-    // }
-  
-    // return borksToMap.map(b => {
-    //   return {
-    //     ...b,
-    //     user: sampleUsers.find(u => u.address === b.address) as User,
-    //     iComment: false,
-    //     iRebork: false,
-    //     iLike: !!sampleLikes.filter(l => l.address === this.props.address).find(l => l.txid === b.txid),
-    // }})
   }
   
   async getProfileUpdates (senderAddress: string): Promise<Bork[]> {
     const options: rp.Options = {
       method: 'GET',
-      url: url + `/transactions`,
+      url: config.borker.url + `/transactions`,
       headers: {
         'myAddress': this.myAddress,
       },
@@ -141,58 +123,16 @@ class WebService {
     const res = JSON.parse(await rp(options))
     console.log(res)
     return res
-
-    // return sampleProfileUpdates.filter(p => p.address === address)
-  }
-  
-  async getWallet (address: string): Promise<WalletInfo> {
-    const transactions = sampleTransactions.filter(t => t.address === address)
-    const balance = transactions.reduce((total, tx) => {
-        return total.plus(tx.amount)
-    }, new BigNumber(0))
-  
-    return {
-      balance,
-      transactions,
-    }
-  }
-  
-  async getNetworkInfo () {
-    const options: rp.Options = {
-      method: 'GET',
-      url: 'https://chain.so/api/v2/get_info/DOGE',
-    }
-    try {
-      return rp(options)
-    } catch (e) {
-      console.error('error: ', e)
-    }
-  }
-  
-  private async rpcRequest (method: string, params: {} = {}) {
-
-    const options: rp.Options = {
-      method: 'POST',
-      url: 'https://bitcoin.captjakk.com',
-      auth: {
-        user: config.rpcusername,
-        password: config.rpcpassword,
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method, // 'getbestblockhash'
-        id: 'test1',
-        params,
-      }),
-    }
-
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
   }
 }
 
 export default WebService
+
+export interface Response {
+  result: string
+  error: string | null
+  id: string
+}
 
 export interface IndexParams {
   page?: number

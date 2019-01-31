@@ -1,4 +1,11 @@
 export const config = {
-  rpcusername: '',
-  rpcpassword: '',
+  borker: {
+    url: '',
+  },
+  dogecoin: {
+    externalip: '',
+    rpcuser: '',
+    rpcpassword: '',
+    startBlockSync: 17905,
+  },
 }

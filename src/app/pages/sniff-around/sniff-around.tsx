@@ -1,28 +1,22 @@
 import React from 'react'
-import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
-import { User, BorkType } from '../../../types/types'
+import { User } from '../../../types/types'
 import WebService from '../../web-service'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import FollowButton from '../../components/follow-button/follow-button'
-import './user-list.scss'
+import '../user-list/user-list.scss'
 
-export enum FollowsType {
-  following = 'following',
+export enum UserFilter {
+  birth = 'birth',
+  earnings = 'earnings',
   followers = 'followers',
 }
 
-export interface UserListParams {
-  ref: string
-}
-
-export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
-  filter: BorkType.rebork | BorkType.like | FollowsType
-}
+export interface UserListProps extends AuthProps {}
 
 export interface UserListState {
-  title: string
+  filter: UserFilter
   users: User[]
 }
 
@@ -32,31 +26,18 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   constructor (props: UserListProps) {
     super(props)
     this.state = {
-      title: '',
+      filter: UserFilter.followers,
       users: [],
     }
     this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
-    let title = ''
-    let users = []
-    const filter = this.props.filter
-
-    if (filter === BorkType.rebork || filter === BorkType.like) {
-      title = filter === BorkType.rebork ? 'Reborks' : 'Likes'
-      users = await this.webService.getUsersByTx(this.props.match.params.ref, filter)
-    } else {
-      title = filter
-      users = await this.webService.getUsersByUser(this.props.match.params.ref, filter)
-    }
-
-    this.props.setTitle(title)
+    this.props.setTitle('Sniff Around')
     this.props.setShowFab(false)
 
     this.setState({
-      title,
-      users,
+      users: await this.webService.getUsers(this.state.filter),
     })
   }
 
@@ -64,7 +45,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     const { users } = this.state
 
     return !users.length ? (
-      <p style={{ margin: 14 }}>No {this.state.title}</p>
+      null
     ) : (
       <ul className="user-list">
         {users.map(user => {

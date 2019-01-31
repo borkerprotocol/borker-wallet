@@ -1,4 +1,4 @@
-import { Bork, User, BorkType, ProfileUpdate, ProfileFields, Transaction } from "../../types/types"
+import { Bork, User, BorkType, ProfileUpdate, ProfileFields, Transaction } from "../../src/types/types"
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
@@ -206,25 +206,3 @@ export const sampleWords = [
 //     value: 'Aiden',
 //   },
 // ]
-
-export const sampleTransactions: Transaction[] = [
-  {
-    timestamp: moment().subtract(1, 'd').toISOString(),
-    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-    txid: '0f467db8c94d2ffeb99a0ed432f831cb3d60e7b171da5cd43c5689f1c2651fb1',
-    amount: new BigNumber('1000.6742384'),
-  },
-  {
-    timestamp: moment().subtract(10.5, 'd').toISOString(),
-    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-    txid: '77364b1aab0dc0e811d15a12a14ff77821143f404a9fa13bd95e94a3fdbc516a',
-    amount: new BigNumber('-250.3468'),
-  },
-  {
-    timestamp: moment().subtract(25.5, 'd').toISOString(),
-    address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-    txid: '39128e8edacce1ada4e1df9aa5fc91431302ef951df06a78e13f4fbc3759e752',
-    amount: new BigNumber('20000'),
-  },
-]
-

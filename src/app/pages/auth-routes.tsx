@@ -5,7 +5,7 @@ import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import BorksPage from './borks/bork-routes'
-import WalletPage from './wallet/wallet'
+import SniffAroundPage from './sniff-around/sniff-around'
 import SettingsPage from './settings/settings'
 import ProfileRoutes from './profile/profile-routes'
 import { AuthContext } from '../contexts/auth-context'
@@ -120,8 +120,8 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
             />
             <Route
               exact
-              path="/wallet"
-              component={WalletPage}
+              path="/sniff"
+              component={SniffAroundPage}
             />
             <Redirect to="/borks" />
           </Switch>
