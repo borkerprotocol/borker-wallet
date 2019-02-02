@@ -1,9 +1,10 @@
 import rp from 'request-promise'
-import { config } from '../config/config'
+import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
 import { BorkType, User, Bork } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
-import { UserFilter } from './pages/sniff-around/sniff-around'
+import { UserFilter } from './pages/explore/explore'
+import { BorkerConfig } from './pages/settings/settings'
 
 class WebService {
 
@@ -17,112 +18,102 @@ class WebService {
 
     const options: rp.Options = {
       method: 'GET',
-      url: config.borker.url + `/users`,
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: `/users`,
       qs: { filter },
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
   }
 
   async getUsersByTx (txid: string, type: BorkType.rebork | BorkType.like): Promise<User[]> {
 
-    const options: rp.Options = {
+    const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: config.borker.url + `/transactions/${txid}/users`,
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: `/transactions/${txid}/users`,
       qs: { type },
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
   }
 
   async getUsersByUser (address: string, type: FollowsType): Promise<User[]> {
 
-    const options: rp.Options = {
+    const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: config.borker.url + `/users/${address}/users`,
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: `/users/${address}/users`,
       qs: { type },
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
   }
 
   async getUser (address: string): Promise<User> {
 
-    const options: rp.Options = {
+    const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: config.borker.url + `/users/${address}`,
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: `/users/${address}`,
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
   }
 
   async getBork (txid: string): Promise<Bork> {
 
-    const options: rp.Options = {
+    const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: config.borker.url + `/transactions/${txid}`,
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: `/transactions/${txid}`,
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
   }
 
   async getBorks (params: IndexTxParams = {}): Promise<Bork[]> {
 
-    const options: rp.Options = {
+    const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: config.borker.url + '/transactions',
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: '/transactions',
       qs: params,
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
   }
   
   async getProfileUpdates (senderAddress: string): Promise<Bork[]> {
-    const options: rp.Options = {
+    const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: config.borker.url + `/transactions`,
-      headers: {
-        'myAddress': this.myAddress,
-      },
+      url: '/transactions',
       qs: {
         senderAddress,
         types: [BorkType.setName, BorkType.setBio, BorkType.setAvatar],
       },
     }
 
-    const res = JSON.parse(await rp(options))
-    console.log(res)
-    return res
+    return this.request(options)
+  }
+
+  private async request (options: rp.OptionsWithUrl) {
+    const config = await Storage.get<BorkerConfig>('borkerconfig')
+    if (!config || !config.externalip) {
+      alert('please go to "Settings" and provide a Borker IP Address')
+      return
+    }
+
+    Object.assign(options, {
+      url: config.externalip + options.url,
+      headers: { 'myAddress': this.myAddress },
+    })
+
+    try {
+
+      const res = JSON.parse(await rp(options))
+      console.log(res)
+      return res
+
+    } catch (err) {
+
+      console.error(err)
+      alert(err)
+    }
   }
 }
 
@@ -140,6 +131,7 @@ export interface IndexParams {
 }
 
 export interface IndexTxParams extends IndexParams {
+  isFeed?: boolean
   senderAddress?: string
   parentTxid?: string
   types?: BorkType[]

@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import BorkListPage from './bork-list'
+import ExplorePage from './explore'
 
 // it('renders without crashing', () => {
 //   const div = document.createElement('div')
-//   ReactDOM.render(<BorkViewPage />, div)
+//   ReactDOM.render(<ExplorePage />, div)
 //   ReactDOM.unmountComponentAtNode(div)
 // })

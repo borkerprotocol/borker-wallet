@@ -20,7 +20,7 @@ export interface UserListState {
   users: User[]
 }
 
-class UserListPage extends React.Component<UserListProps, UserListState> {
+class ExplorePage extends React.Component<UserListProps, UserListState> {
   public webService: WebService
 
   constructor (props: UserListProps) {
@@ -33,7 +33,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   }
 
   async componentDidMount () {
-    this.props.setTitle('Sniff Around')
+    this.props.setTitle('Explore')
     this.props.setShowFab(false)
 
     this.setState({
@@ -70,4 +70,4 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   }
 }
 
-export default withAuthContext(UserListPage)
+export default withAuthContext(ExplorePage)

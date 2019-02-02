@@ -4,31 +4,32 @@ import { Bork, BorkType } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
 import WebService from '../../../web-service'
 import '../../../App.scss'
-import './bork-list.scss'
+import './feed.scss'
 
-export interface BorkListProps extends AuthProps {}
+export interface FeedProps extends AuthProps {}
 
-export interface BorkListState {
+export interface FeedState {
   borks: Bork[]
 }
 
-class BorkListPage extends React.Component<BorkListProps, BorkListState> {
+class FeedPage extends React.Component<FeedProps, FeedState> {
   public webService: WebService
 
-  constructor (props: BorkListProps) {
+  constructor (props: FeedProps) {
     super(props)
     this.state = { borks: [] }
     this.webService = new WebService(props.address)
   }
 
   async componentDidMount () {
-    this.props.setTitle('Borks')
+    this.props.setTitle('Feed')
     this.props.setShowFab(true)
 
     this.setState({
       borks: await this.webService.getBorks({
+        isFeed: true,
         types: [BorkType.bork, BorkType.rebork],
-      }),
+      }) || [],
     })
   }
 
@@ -43,4 +44,4 @@ class BorkListPage extends React.Component<BorkListProps, BorkListState> {
   }
 }
 
-export default withAuthContext(BorkListPage)
+export default withAuthContext(FeedPage)

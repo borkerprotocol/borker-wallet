@@ -4,8 +4,8 @@ import Sidebar, { SidebarProps } from "react-sidebar"
 import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import BorksPage from './borks/bork-routes'
-import SniffAroundPage from './sniff-around/sniff-around'
+import BorksRoutes from './borks/bork-routes'
+import ExplorePage from './explore/explore'
 import SettingsPage from './settings/settings'
 import ProfileRoutes from './profile/profile-routes'
 import { AuthContext } from '../contexts/auth-context'
@@ -107,7 +107,7 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
           <Switch>
             <Route
               path="/borks"
-              component={BorksPage}
+              component={BorksRoutes}
             />
             <Route
               path="/profile/:address"
@@ -120,8 +120,8 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
             />
             <Route
               exact
-              path="/sniff"
-              component={SniffAroundPage}
+              path="/explore"
+              component={ExplorePage}
             />
             <Redirect to="/borks" />
           </Switch>
