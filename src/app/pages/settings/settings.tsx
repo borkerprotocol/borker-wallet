@@ -11,12 +11,14 @@ export interface BorkerConfig {
 export interface SettingsProps extends AuthProps {}
 
 export interface SettingsState {
+  submitEnabled: boolean
   config: BorkerConfig
 }
 
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
   state = {
+    submitEnabled: false,
     config: {
       externalip: '',
     },
@@ -33,6 +35,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
   handleIpChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
+      submitEnabled: true,
       config: {
         ...this.state.config,
         externalip: e.target.value,
@@ -46,14 +49,14 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   }
 
   render () {
-    const { config } = this.state
+    const { submitEnabled, config } = this.state
 
     return (
       <div className="page-content">
         <form onSubmit={this.saveConfig} className="profile-edit-form">
           <label>Borker IP Address</label>
           <input type="text" value={config.externalip} maxLength={40} onChange={this.handleIpChange} />
-          <input type="submit" value="Save" disabled={!config.externalip} />
+          <input type="submit" value="Save" disabled={!submitEnabled} />
         </form>
         <button onClick={this.props.logout}>Logout</button>
       </div>

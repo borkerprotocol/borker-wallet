@@ -8,7 +8,7 @@ import { BorkerConfig } from './pages/settings/settings'
 
 class WebService {
 
-  constructor (public myAddress?: string) {}
+  constructor () {}
 
   async getTxFee (): Promise<BigNumber> {
     return new BigNumber(1)
@@ -92,15 +92,20 @@ class WebService {
   }
 
   private async request (options: rp.OptionsWithUrl) {
-    const config = await Storage.get<BorkerConfig>('borkerconfig')
+    
+    const [config, address] = await Promise.all([
+      Storage.get<BorkerConfig>('borkerconfig'),
+      Storage.get<string>('address'),
+    ])
+
     if (!config || !config.externalip) {
-      alert('please go to "Settings" and provide a Borker IP Address')
+      alert('please go to "Settings" and provide an IP address of a Borker node.')
       return
     }
 
     Object.assign(options, {
       url: config.externalip + options.url,
-      headers: { 'myAddress': this.myAddress },
+      headers: { 'myAddress': address },
     })
 
     try {
@@ -131,7 +136,7 @@ export interface IndexParams {
 }
 
 export interface IndexTxParams extends IndexParams {
-  isFeed?: boolean
+  filterFollowing?: boolean
   senderAddress?: string
   parentTxid?: string
   types?: BorkType[]

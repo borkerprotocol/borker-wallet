@@ -26,7 +26,7 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
     this.state = {
       user: null,
     }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {

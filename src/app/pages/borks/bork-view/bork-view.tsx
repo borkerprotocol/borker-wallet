@@ -28,13 +28,12 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       extensions: [],
       comments: [],
     }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {
     this.props.setTitle('Bork')
     this.props.setShowFab(false)
-    console.log(this.props.match.params.txid)
 
     const [extensions, comments] = await Promise.all([
       this.webService.getBorks({
@@ -51,6 +50,29 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       extensions,
       comments,
     })
+  }
+
+  async componentWillReceiveProps (nextProps: BorkViewProps) {
+    const oldTxid = this.props.match.params.txid
+    const newTxid = nextProps.match.params.txid
+
+    if (oldTxid !== newTxid) {
+      const [extensions, comments] = await Promise.all([
+        this.webService.getBorks({
+          parentTxid: newTxid,
+          types: [BorkType.extension],
+        }),
+        this.webService.getBorks({
+          parentTxid: newTxid,
+          types: [BorkType.comment],
+        }),
+      ])
+      
+      this.setState({
+        extensions,
+        comments,
+      })
+    }
   }
 
   render () {

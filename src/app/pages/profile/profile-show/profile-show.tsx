@@ -34,7 +34,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
       likes: [],
       profileUpdates: [],
     }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {
@@ -58,7 +58,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     const [ borks, likes, profileUpdates ] = await Promise.all([
       this.webService.getBorks({
         senderAddress,
-        types: [BorkType.bork, BorkType.rebork],
+        types: [BorkType.bork, BorkType.rebork, BorkType.comment],
       }),
       this.webService.getBorks({
         senderAddress,
@@ -92,7 +92,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           <h4>
             {user.name}
             <br></br>
-            <a href={`https://live.blockcypher.com/doge/address/${user.address}/`} target="_blank">@{user.address.substr(0, 11)}</a>
+            <a href={`https://chain.so/address/DOGE/${user.address}`} target="_blank">@{user.address.substr(0, 11)}</a>
             <br></br>
             <b>Birth Block: </b>{user.birthBlock}
           </h4>

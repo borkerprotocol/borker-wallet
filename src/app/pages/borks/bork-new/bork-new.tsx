@@ -28,7 +28,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
       body: '',
       parent: undefined,
     }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {

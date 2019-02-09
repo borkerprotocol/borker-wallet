@@ -18,6 +18,11 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
   render () {
     const { bork, isMain, showButtons } = this.props
 
+    // TODO convert #tags into <Links>
+    function getTags (content: string) {
+      return content
+    }
+
     const avatar = (
       <Link to={`/profile/${bork.sender.address}`}>
         <img src={bork.sender.avatar || defaultAvatar} className="bork-avatar" />
@@ -37,6 +42,8 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
     )
 
     const BorkBody = () => {
+      const content = getTags(bork.content)
+
       return (
         <Link 
           to={{
@@ -46,10 +53,10 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
           className="bork-body-link"
         >
           {isMain &&
-            <h2>{bork.content}</h2>
+            <h2>{content}</h2>
           }
           {!isMain &&
-            <p>{bork.content}</p>
+            <p>{content}</p>
           }
         </Link>
       )
@@ -67,7 +74,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
         <div className="bork-content-main">
           <div className="bork-border">
             <BorkBody />
-            <p><a href={`https://live.blockcypher.com/doge/tx/${bork.txid}/`} target="_blank">{bork.txid.substr(0, 30)}</a></p>
+            <p><a href={`https://chain.so/tx/DOGE/${bork.txid}`} target="_blank">{bork.txid.substr(0, 30)}</a></p>
             <p style={{ color: 'gray' }}>{calendar(bork.createdAt)}</p>
           </div>
           <div className="bork-border">

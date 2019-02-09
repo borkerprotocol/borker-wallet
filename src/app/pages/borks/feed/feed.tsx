@@ -18,7 +18,7 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
   constructor (props: FeedProps) {
     super(props)
     this.state = { borks: [] }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {
@@ -27,8 +27,8 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
 
     this.setState({
       borks: await this.webService.getBorks({
-        isFeed: true,
-        types: [BorkType.bork, BorkType.rebork],
+        filterFollowing: true,
+        types: [BorkType.bork, BorkType.rebork, BorkType.comment],
       }) || [],
     })
   }

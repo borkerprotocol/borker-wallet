@@ -8,9 +8,9 @@ import FollowButton from '../../components/follow-button/follow-button'
 import '../user-list/user-list.scss'
 
 export enum UserFilter {
-  birth = 'birth',
+  birthBlock = 'birthBlock',
   earnings = 'earnings',
-  followers = 'followers',
+  followersCount = 'followersCount',
 }
 
 export interface UserListProps extends AuthProps {}
@@ -26,10 +26,10 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
   constructor (props: UserListProps) {
     super(props)
     this.state = {
-      filter: UserFilter.followers,
+      filter: UserFilter.birthBlock,
       users: [],
     }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {

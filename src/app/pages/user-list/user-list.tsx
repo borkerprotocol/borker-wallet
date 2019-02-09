@@ -35,7 +35,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
       title: '',
       users: [],
     }
-    this.webService = new WebService(props.address)
+    this.webService = new WebService()
   }
 
   async componentDidMount () {
