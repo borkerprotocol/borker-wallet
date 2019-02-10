@@ -114,7 +114,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
         </p>
         <Tabs>
           <TabList>
-            <Tab>Borks & Reborks</Tab>
+            <Tab>Borks</Tab>
             <Tab>Likes</Tab>
             <Tab>Profile Updates</Tab>
           </TabList>
@@ -123,8 +123,8 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             {!loading &&
               <div>
                 {borks.length > 0 &&
-                  <BorkList borks={borks.map(p => {
-                    return { ...p }
+                  <BorkList borks={borks.map(b => {
+                    return { ...b }
                   })} />
                 }
                 {!borks.length &&

@@ -28,8 +28,13 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
     this.setState({
       borks: await this.webService.getBorks({
         filterFollowing: true,
-        types: [BorkType.bork, BorkType.rebork, BorkType.comment],
-      }) || [],
+        types: [
+          BorkType.bork,
+          BorkType.rebork,
+          BorkType.comment,
+          BorkType.like,
+        ],
+      }),
     })
   }
 

@@ -25,8 +25,9 @@ export interface Bork {
   reborksCount: number
   likesCount: number
   sender: User
-  recipient: User
   parent: Bork
+  mentions: User[]
+  extensions: Bork[]
   iComment: boolean
   iRebork: boolean
   iLike: boolean

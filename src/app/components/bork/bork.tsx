@@ -1,14 +1,15 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { Bork } from '../../../types/types'
+import { Bork, BorkType } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
-import { fromNow, calendar } from '../../../util/timestamps'
+import { calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faComments } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
 import './bork.scss'
 
 export interface BorkComponentProps {
-  isMain: boolean
   showButtons: boolean
   bork: Bork
 }
@@ -16,7 +17,7 @@ export interface BorkComponentProps {
 class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
   render () {
-    const { bork, isMain, showButtons } = this.props
+    let { bork, showButtons } = this.props
 
     // TODO convert #tags into <Links>
     function getTags (content: string) {
@@ -45,24 +46,16 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
       const content = getTags(bork.content)
 
       return (
-        <Link 
-          to={{
-            pathname: `/borks/${bork.txid}`,
-            state: { bork },
-          }}
+        <Link
+          to={`/borks/${bork.txid}`}
           className="bork-body-link"
         >
-          {isMain &&
-            <h2>{content}</h2>
-          }
-          {!isMain &&
-            <p>{content}</p>
-          }
+          <h2>{content}</h2>
         </Link>
       )
     }
 
-    return isMain ? (
+    return (
       <div className="bork-border">
         <div className="bork-header">
           {avatar}
@@ -70,6 +63,14 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
             {userName}<br />
             {userAddress}
           </p>
+          {bork.type === BorkType.comment &&
+            <p className="bork-ref">
+              <FontAwesomeIcon
+                icon={faComments}
+              />
+              Replying To {bork.parent.sender.name}
+            </p>
+          }
         </div>
         <div className="bork-content-main">
           <div className="bork-border">
@@ -97,25 +98,6 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
         {showButtons &&
           <div className="bork-footer">
             <BorkButtons bork={bork} showCount={false}/>
-          </div>
-        }
-      </div>
-    ) : (
-      <div>
-        <div className="bork-header">
-          {avatar}
-          <p>
-            {userName}<span> &#183; </span>
-            {userAddress}<span> &#183; </span>
-            <span style={{color: 'gray'}}>{fromNow(bork.createdAt)}</span>
-          </p>
-        </div>
-        <div className="bork-content-small">
-          <BorkBody />
-        </div>
-        {showButtons &&
-          <div className="bork-footer-small">
-            <BorkButtons bork={bork} showCount/>
           </div>
         }
       </div>

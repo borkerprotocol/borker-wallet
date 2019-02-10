@@ -15,7 +15,7 @@ export interface BorkViewParams {
 export interface BorkViewProps extends AuthProps, RouteComponentProps<BorkViewParams> {}
 
 export interface BorkViewState {
-  extensions: Bork[]
+  bork: Bork | null
   comments: Bork[]
 }
 
@@ -24,8 +24,8 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
 
   constructor (props: BorkViewProps) {
     super(props)
-    this.state ={
-      extensions: [],
+    this.state = {
+      bork: null,
       comments: [],
     }
     this.webService = new WebService()
@@ -35,11 +35,8 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     this.props.setTitle('Bork')
     this.props.setShowFab(false)
 
-    const [extensions, comments] = await Promise.all([
-      this.webService.getBorks({
-        parentTxid: this.props.match.params.txid,
-        types: [BorkType.extension],
-      }),
+    const [bork, comments] = await Promise.all([
+      this.webService.getBork(this.props.match.params.txid),
       this.webService.getBorks({
         parentTxid: this.props.match.params.txid,
         types: [BorkType.comment],
@@ -47,7 +44,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     ])
     
     this.setState({
-      extensions,
+      bork,
       comments,
     })
   }
@@ -57,11 +54,8 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     const newTxid = nextProps.match.params.txid
 
     if (oldTxid !== newTxid) {
-      const [extensions, comments] = await Promise.all([
-        this.webService.getBorks({
-          parentTxid: newTxid,
-          types: [BorkType.extension],
-        }),
+      const [bork, comments] = await Promise.all([
+        this.webService.getBork(newTxid),
         this.webService.getBorks({
           parentTxid: newTxid,
           types: [BorkType.comment],
@@ -69,15 +63,14 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       ])
       
       this.setState({
-        extensions,
+        bork,
         comments,
       })
     }
   }
 
   render () {
-    const { extensions, comments } = this.state
-    const { bork } = this.props.location.state
+    const { bork, comments } = this.state
 
     return !bork ? (
       <div>
@@ -85,8 +78,9 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       </div>
     ) : (
       <div>
-        <BorkComponent bork={bork} isMain showButtons/>
-        <BorkList borks={extensions} />
+        <BorkList borks={bork.parent ? [bork.parent] : []} />
+        <BorkComponent bork={bork} showButtons/>
+        <BorkList borks={bork.extensions} />
         <BorkList borks={comments} />
       </div>
     )

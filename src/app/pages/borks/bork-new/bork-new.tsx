@@ -2,7 +2,7 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
-import BorkComponent from '../../../components/bork/bork'
+import BorkPreviewComponent from '../../../components/bork-preview/bork-preview';
 import WebService from '../../../web-service'
 import { BorkType, Bork } from '../../../../types/types'
 import './bork-new.scss'
@@ -62,7 +62,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
         {parent &&
           <div className="commenting-on">
             <b>Commenting On:</b>
-            <BorkComponent isMain={false} showButtons={false} bork={parent} />
+            <BorkPreviewComponent showButtons={false} bork={parent} />
           </div>
         }
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="bork-form">

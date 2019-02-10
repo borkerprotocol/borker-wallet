@@ -1,6 +1,6 @@
 import React from 'react'
 import { Bork } from '../../../types/types'
-import BorkComponent from '../bork/bork'
+import BorkPreviewComponent from '../bork-preview/bork-preview'
 import '../../App.scss'
 import './bork-list.scss'
 
@@ -18,7 +18,10 @@ class BorkList extends React.PureComponent<BorkListProps> {
         {borks.map(b => {
           return (
             <li key={b.txid}>
-              <BorkComponent bork={b} isMain={false} showButtons />
+              <BorkPreviewComponent
+                bork={b}
+                showButtons
+              />
             </li>
           )
         })}

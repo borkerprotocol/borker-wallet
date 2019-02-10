@@ -4,7 +4,8 @@ import { Bork, BorkType } from '../../../types/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
 import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
-import { faBone } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as heartOutline } from '@fortawesome/free-regular-svg-icons'
+import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
 import { faRetweet } from '@fortawesome/free-solid-svg-icons'
 import CheckoutModal from '../modals/checkout-modal/checkout-modal'
 import { withAppContext, AppProps } from '../../contexts/app-context'
@@ -57,8 +58,8 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
             <td>
               <a onClick={this.like}>
                 <FontAwesomeIcon
-                  icon={faBone}
-                  style={bork.iLike ? {color: 'orange'} : {} }
+                  icon={bork.iLike ? heartSolid : heartOutline}
+                  style={bork.iLike ? {color: 'red'} : {} }
                 /> {showCount && (bork.likesCount || 0)}
               </a>
             </td>
