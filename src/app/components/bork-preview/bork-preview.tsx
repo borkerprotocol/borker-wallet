@@ -5,24 +5,29 @@ import BorkButtons from '../bork-buttons/bork-buttons'
 import { fromNow } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, IconDefinition, faRetweet } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
 import './bork-preview.scss'
 
 export interface BorkPreviewComponentProps {
   bork: Bork
-  showButtons: boolean
+  showButtons?: boolean
+  isSubBork?: boolean
 }
 
 class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps> {
 
   render () {
-    let { bork, showButtons } = this.props
+    let { bork, showButtons, isSubBork } = this.props
     let child: Bork | null = null
+    let childText: string = ''
+    let childIcon: any
 
-    if (bork.type === BorkType.like) {
+    if (bork.type === BorkType.like || bork.type === BorkType.rebork) {
       child = bork
       bork = bork.parent
+      childText = child.type === BorkType.like ? 'Liked' : 'Reborked'
+      childIcon = child.type === BorkType.like ? faHeart : faRetweet
     }
 
     // TODO convert #tags into <Links>
@@ -44,7 +49,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
 
     const userAddress = (
       <Link to={`/profile/${bork.sender.address}`} className="bork-useraddress">
-        @{bork.sender.address.substring(0,11)}
+        @{bork.sender.address.substring(0,9)}
       </Link>
     )
 
@@ -67,21 +72,27 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
           {child && 
             <p className="bork-preview-ref">
               <FontAwesomeIcon
-                icon={faHeart}
+                icon={childIcon}
               />
-              Liked by {child.sender.name}
+              {childText} by {child.sender.name}
             </p>
           }
-          {avatar}
+          {!isSubBork && avatar}
           <p>
-            {userName}<span> &#183; </span>
-            {userAddress}<span> &#183; </span>
-            <span style={{color: 'gray'}}>{fromNow(bork.createdAt)}</span>
+            {userName}<span> &#183; </span>{userAddress}
+            {!isSubBork &&
+              <span style={{color: 'gray'}}> &#183; {fromNow(bork.createdAt)}</span>
+            }
           </p>
         </div>
-        <div className="bork-content-small">
+        <div className={isSubBork ? "sub-bork-content" : "bork-content-small"}>
           <BorkBody />
         </div>
+        {bork.type === BorkType.comment && bork.parent &&
+          <div className="sub-bork">
+            <BorkPreviewComponent bork={bork.parent} isSubBork />
+          </div>
+        }
         {showButtons &&
           <div className="bork-footer-small">
             <BorkButtons bork={bork} showCount/>

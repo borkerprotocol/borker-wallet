@@ -92,7 +92,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           <h4>
             {user.name}
             <br></br>
-            <a href={`https://chain.so/address/DOGE/${user.address}`} target="_blank">@{user.address.substr(0, 11)}</a>
+            <a href={`https://chain.so/address/DOGE/${user.address}`} target="_blank">@{user.address.substr(0, 9)}</a>
             <br></br>
             <b>Birth Block: </b>{user.birthBlock}
           </h4>

@@ -1,5 +1,6 @@
 .bork-header {
   margin-left: 14px;
+  margin-right: 14px;
 }
 
 .bork-avatar {
@@ -22,18 +23,13 @@
   color: gray;
 }
 
-.bork-content-main {
-  margin-left: 14px;
-}
-
 .bork-content-small {
   margin-left: 78px
 }
 
-.bork-border {
-  border-bottom: solid;
-  border-width: 1px;
-  border-color: lightgray;
+.sub-bork-content {
+  margin-left: 14px;
+  margin-right: 14px;
 }
 
 .bork-body-link {
@@ -41,15 +37,6 @@
   color: black;
   & h2 {
     font-weight: 400;
-  }
-}
-
-.bork-stats {
-  font-weight: bold;
-  & span {
-    font-weight: normal;
-    color: gray;
-    margin-right: 14px;
   }
 }
 
@@ -61,9 +48,12 @@
   }
 }
 
-.bork-footer {
-  padding-top: 14px;
-  text-align: center;
+.sub-bork {
+  margin-left: 80px;
+  margin-right: 20px;
+  border: solid;
+  border-width: 1px;
+  border-color: lightgray;
 }
 
 .bork-footer-small {

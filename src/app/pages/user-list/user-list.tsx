@@ -77,7 +77,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
                 <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
                   <img src={user.avatar || defaultAvatar} className="user-item-avatar" />
                   <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
-                  <span style={{ color: 'gray' }}>@{user.address.substring(0,11)}</span><br />
+                  <span style={{ color: 'gray' }}>@{user.address.substring(0,9)}</span><br />
                   <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>
                 </Link>
               </div>

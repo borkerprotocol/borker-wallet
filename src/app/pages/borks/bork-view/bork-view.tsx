@@ -79,7 +79,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     ) : (
       <div>
         <BorkList borks={bork.parent ? [bork.parent] : []} />
-        <BorkComponent bork={bork} showButtons/>
+        <BorkComponent bork={bork} showButtons />
         <BorkList borks={bork.extensions} />
         <BorkList borks={comments} />
       </div>

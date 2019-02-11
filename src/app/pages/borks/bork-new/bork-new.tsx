@@ -62,7 +62,9 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
         {parent &&
           <div className="commenting-on">
             <b>Commenting On:</b>
-            <BorkPreviewComponent showButtons={false} bork={parent} />
+            <BorkPreviewComponent
+              bork={parent}
+            />
           </div>
         }
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="bork-form">

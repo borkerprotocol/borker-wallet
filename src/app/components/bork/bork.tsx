@@ -10,8 +10,8 @@ import '../../App.scss'
 import './bork.scss'
 
 export interface BorkComponentProps {
-  showButtons: boolean
   bork: Bork
+  showButtons?: boolean
 }
 
 class BorkComponent extends React.PureComponent<BorkComponentProps> {
@@ -38,7 +38,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
     const userAddress = (
       <Link to={`/profile/${bork.sender.address}`} className="bork-useraddress">
-        @{bork.sender.address.substring(0,11)}
+        @{bork.sender.address.substring(0,9)}
       </Link>
     )
 
@@ -72,10 +72,10 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
             </p>
           }
         </div>
-        <div className="bork-content-main">
+        <div className="bork-content">
           <div className="bork-border">
             <BorkBody />
-            <p><a href={`https://chain.so/tx/DOGE/${bork.txid}`} target="_blank">{bork.txid.substr(0, 30)}</a></p>
+            <p><a href={`https://chain.so/tx/DOGE/${bork.txid}`} target="_blank">{bork.txid.substr(0, 20)}</a></p>
             <p style={{ color: 'gray' }}>{calendar(bork.createdAt)}</p>
           </div>
           <div className="bork-border">
