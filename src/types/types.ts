@@ -9,7 +9,6 @@ export interface User {
   name: string
   bio: string
   avatarLink: string
-  earnings: string
   blockersCount: number
   blockingCount: number
   followingCount: number
@@ -22,7 +21,6 @@ export interface Bork {
   createdAt: string
   nonce: number
   txid: string
-  earnings: string
   content: string
   fee: string
   value: string
@@ -51,11 +49,10 @@ export interface ProfileUpdate {
   value: string
 }
 
-export interface Transaction {
+export interface Utxo {
   txid: string
-  timestamp: string
-  amount: BigNumber
-  address: string
+  index: number
+  value: string
 }
 
 export enum BorkType {

@@ -9,7 +9,6 @@ import '../user-list/user-list.scss'
 
 export enum UserFilter {
   birthBlock = 'birthBlock',
-  earnings = 'earnings',
   followersCount = 'followersCount',
 }
 

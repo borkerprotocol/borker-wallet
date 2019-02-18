@@ -6,13 +6,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import BorksRoutes from './borks/bork-routes'
 import ExplorePage from './explore/explore'
+import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
 import ProfileRoutes from './profile/profile-routes'
 import { AuthContext } from '../contexts/auth-context'
 import borkButton from '../../assets/bork-button.png'
+import BigNumber from 'bignumber.js'
+import { Utxo } from '../../types/types'
+import WebService from '../web-service';
 
 export interface AuthRoutesState {
   title: string
+  balance: BigNumber
+  utxos: Utxo[]
   showFab: boolean
   sidebarOpen: boolean
   sidebarDocked: boolean
@@ -36,19 +42,29 @@ const styles = {
 const mql = window.matchMedia(`(min-width: 800px)`)
 
 class AuthRoutes extends React.Component<{}, AuthRoutesState> {
+  public webService: WebService
 
   constructor (props: {}) {
     super(props)
     this.state = {
       title: '',
+      balance: new BigNumber(0),
+      utxos: [],
       showFab: false,
       sidebarDocked: mql.matches,
       sidebarOpen: false,
     }
+    this.webService = new WebService()
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     mql.addListener(this.mediaQueryChanged)
+    const [balance, utxos] = await Promise.all([
+      this.webService.getBalance(),
+      this.webService.getUtxos(),
+    ])
+
+    this.setState({ balance, utxos })
   }
 
   componentWillUnmount () {
@@ -77,7 +93,7 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
   }
 
   render () {
-    const { title, sidebarDocked, sidebarOpen, showFab } = this.state
+    const { title, balance, utxos, sidebarDocked, sidebarOpen, showFab } = this.state
 
     const contentHeader = (
       <div>
@@ -99,7 +115,12 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
     }
 
     return (
-      <AuthContext.Provider value={{ setTitle: this.setTitle, setShowFab: this.setShowFab }}>
+      <AuthContext.Provider value={{
+        setTitle: this.setTitle,
+        setShowFab: this.setShowFab,
+        balance,
+        utxos,
+      }}>
         <Sidebar {...sidebarProps}>
           <div style={styles.header}>
             {contentHeader}
@@ -110,18 +131,23 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
               component={BorksRoutes}
             />
             <Route
+              exact
+              path="/explore"
+              component={ExplorePage}
+            />
+            <Route
               path="/profile/:address"
               component={ProfileRoutes}
             />
             <Route
               exact
-              path="/settings"
-              component={SettingsPage}
+              path="/wallet"
+              component={WalletPage}
             />
             <Route
               exact
-              path="/explore"
-              component={ExplorePage}
+              path="/settings"
+              component={SettingsPage}
             />
             <Redirect to="/borks" />
           </Switch>

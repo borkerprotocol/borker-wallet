@@ -8,11 +8,9 @@ import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
 import { calendar } from '../../../../util/timestamps'
 import defaultAvatar from '../../../../assets/default-avatar.png'
-import dogecoin from '../../../../assets/dogecoin.png'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
-import BigNumber from 'bignumber.js';
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -78,19 +76,16 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
 
     return (
       <div className="page-content">
-        <div className="top-header">
-          <img style={{ maxWidth: '20px' }} src={dogecoin} /> {new BigNumber(user.earnings).toFormat(8)}
-          <div style={{ float: 'right' }}>
-            {user.address === this.props.address ? (
-              <div>
-                <Link to={`/profile/${user.address}/edit`}>
-                  <button>Edit Profile</button>
-                </Link>
-              </div>
-            ) : (
-              <FollowButton user={user} />
-            )}
-          </div>
+        <div className="follow-edit">
+          {user.address === this.props.address ? (
+            <div>
+              <Link to={`/profile/${user.address}/edit`}>
+                <button>Edit Profile</button>
+              </Link>
+            </div>
+          ) : (
+            <FollowButton user={user} />
+          )}
         </div>
         <div className="profile-header">
           <img src={user.avatarLink || defaultAvatar} className="profile-avatar" />

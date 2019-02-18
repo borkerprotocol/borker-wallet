@@ -6,10 +6,8 @@ import { calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
-import dogecoin from '../../../assets/dogecoin.png'
 import '../../App.scss'
 import './bork.scss'
-import BigNumber from 'bignumber.js';
 
 export interface BorkComponentProps {
   bork: Bork
@@ -79,11 +77,6 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
             <BorkBody />
             <p><a href={`https://chain.so/tx/DOGE/${bork.txid}`} target="_blank">{bork.txid.substr(0, 20)}</a></p>
             <p style={{ color: 'gray' }}>{calendar(bork.createdAt)}</p>
-          </div>
-          <div className="bork-border">
-            <p>
-              <img style={{ maxWidth: '20px' }} src={dogecoin} /> {new BigNumber(bork.earnings).toFormat(8)}
-            </p>
           </div>
           <div className="bork-border">
             <p className="bork-stats">

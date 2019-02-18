@@ -39,6 +39,9 @@ class SidebarContent extends React.Component<SidebarContentProps> {
           <Link to={`/profile/${address}`} style={styles.link}>Profile</Link>
         </span>
         <span onClick={toggleSidebar}>
+          <Link to={`/wallet`} style={styles.link}>Wallet</Link>
+        </span>
+        <span onClick={toggleSidebar}>
           <Link to="/settings" style={styles.link}>Settings</Link>
         </span>
       </div>

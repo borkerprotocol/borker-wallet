@@ -1,4 +1,4 @@
-import { Bork, User, BorkType, ProfileUpdate, ProfileFields, Transaction } from "../../src/types/types"
+import { Bork, User, BorkType, ProfileUpdate, ProfileFields } from "../../src/types/types"
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 

@@ -1,7 +1,7 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { BorkType, User, Bork } from '../types/types'
+import { BorkType, User, Bork, Utxo } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
 import { UserFilter } from './pages/explore/explore'
 import { BorkerConfig } from './pages/settings/settings'
@@ -12,6 +12,25 @@ class WebService {
 
   async getTxFee (): Promise<BigNumber> {
     return new BigNumber(1)
+  }
+
+  async getBalance (): Promise<BigNumber> {
+    const options: rp.Options = {
+      method: 'GET',
+      url: `/users/me/balance`,
+    }
+
+    const res = await this.request(options)
+    return new BigNumber(res)
+  }
+
+  async getUtxos (): Promise<Utxo[]> {
+    const options: rp.Options = {
+      method: 'GET',
+      url: `/users/me/utxos`,
+    }
+
+    return this.request(options)
   }
 
   async getUsers (filter: UserFilter): Promise<User[]> {
@@ -92,7 +111,7 @@ class WebService {
   }
 
   private async request (options: rp.OptionsWithUrl) {
-    
+
     const [config, address] = await Promise.all([
       Storage.get<BorkerConfig>('borkerconfig'),
       Storage.get<string>('address'),
@@ -105,7 +124,7 @@ class WebService {
 
     Object.assign(options, {
       url: config.externalip + options.url,
-      headers: { 'myAddress': address },
+      headers: { 'my-address': address },
     })
 
     try {
