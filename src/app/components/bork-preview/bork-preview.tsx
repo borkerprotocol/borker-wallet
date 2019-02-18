@@ -37,7 +37,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
 
     const avatar = (
       <Link to={`/profile/${bork.sender.address}`}>
-        <img src={bork.sender.avatar || defaultAvatar} className="bork-avatar" />
+        <img src={bork.sender.avatarLink || defaultAvatar} className="bork-avatar" />
       </Link>
     )
 

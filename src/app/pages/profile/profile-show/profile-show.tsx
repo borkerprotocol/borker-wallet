@@ -8,9 +8,11 @@ import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
 import { calendar } from '../../../../util/timestamps'
 import defaultAvatar from '../../../../assets/default-avatar.png'
+import dogecoin from '../../../../assets/dogecoin.png'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
+import BigNumber from 'bignumber.js';
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -76,25 +78,29 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
 
     return (
       <div className="page-content">
-        <div className="align-right">
-          {user.address === this.props.address ? (
-            <div>
-              <Link to={`/profile/${user.address}/edit`}>
-                <button>Edit Profile</button>
-              </Link>
-            </div>
-          ) : (
-            <FollowButton user={user} />
-          )}
+        <div className="top-header">
+          <img style={{ maxWidth: '20px' }} src={dogecoin} /> {new BigNumber(user.earnings).toFormat(8)}
+          <div style={{ float: 'right' }}>
+            {user.address === this.props.address ? (
+              <div>
+                <Link to={`/profile/${user.address}/edit`}>
+                  <button>Edit Profile</button>
+                </Link>
+              </div>
+            ) : (
+              <FollowButton user={user} />
+            )}
+          </div>
         </div>
         <div className="profile-header">
-          <img src={user.avatar || defaultAvatar} className="profile-avatar" />
-          <h4>
+          <img src={user.avatarLink || defaultAvatar} className="profile-avatar" />
+          <h2>
             {user.name}
-            <br></br>
+          </h2>
+          <h4>
             <a href={`https://chain.so/address/DOGE/${user.address}`} target="_blank">@{user.address.substr(0, 9)}</a>
             <br></br>
-            <b>Birth Block: </b>{user.birthBlock}
+            <b>Birth Block: </b><a href={`https://chain.so/block/DOGE/${user.birthBlock}`} target="_blank">{user.birthBlock}</a>
           </h4>
         </div>
         <p className="profile-bio">{user.bio}</p>

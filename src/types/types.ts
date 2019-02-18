@@ -4,10 +4,14 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export interface User {
   address: string
-  birthBlock: number | null
+  createdAt: string
+  birthBlock: number
   name: string
   bio: string
-  avatar: string
+  avatarLink: string
+  earnings: string
+  blockersCount: number
+  blockingCount: number
   followingCount: number
   followersCount: number
   iFollow: boolean
@@ -18,6 +22,7 @@ export interface Bork {
   createdAt: string
   nonce: number
   txid: string
+  earnings: string
   content: string
   fee: string
   value: string
