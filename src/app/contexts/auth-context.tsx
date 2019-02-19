@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Omit, Utxo } from '../../types/types'
+import { Omit } from '../../types/types'
 import { withAppContext, AppContext } from './app-context'
 import BigNumber from 'bignumber.js'
 
@@ -8,7 +8,6 @@ export interface AuthContext {
   setTitle: (title: string) => void
   setShowFab: (showFab: boolean) => void
   balance: BigNumber
-  utxos: Utxo[]
 }
 export const AuthContext = React.createContext({} as AuthContext)
 

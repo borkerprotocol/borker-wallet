@@ -31,7 +31,7 @@ class BorksRoutes extends React.Component<{}, {}> {
         <Route
           exact
           path="/borks/:txid/comment"
-          component={BorkNewPage} />}
+          component={BorkNewPage}
         />
         <Route
           exact

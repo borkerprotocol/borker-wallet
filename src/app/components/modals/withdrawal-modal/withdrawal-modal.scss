@@ -1,0 +1,16 @@
+.withdrawal-form input[type=number], input[type=text] {
+  width: 100%;
+  margin-bottom: 14px;
+  box-sizing: border-box;
+}
+
+.withdrawal-form h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.clickable {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
+}

@@ -12,13 +12,11 @@ import ProfileRoutes from './profile/profile-routes'
 import { AuthContext } from '../contexts/auth-context'
 import borkButton from '../../assets/bork-button.png'
 import BigNumber from 'bignumber.js'
-import { Utxo } from '../../types/types'
-import WebService from '../web-service';
+import WebService from '../web-service'
 
 export interface AuthRoutesState {
   title: string
   balance: BigNumber
-  utxos: Utxo[]
   showFab: boolean
   sidebarOpen: boolean
   sidebarDocked: boolean
@@ -49,7 +47,6 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
     this.state = {
       title: '',
       balance: new BigNumber(0),
-      utxos: [],
       showFab: false,
       sidebarDocked: mql.matches,
       sidebarOpen: false,
@@ -59,12 +56,10 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
 
   async componentDidMount () {
     mql.addListener(this.mediaQueryChanged)
-    const [balance, utxos] = await Promise.all([
-      this.webService.getBalance(),
-      this.webService.getUtxos(),
-    ])
 
-    this.setState({ balance, utxos })
+    this.setState({
+      balance: await this.webService.getBalance(),
+    })
   }
 
   componentWillUnmount () {
@@ -93,7 +88,7 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
   }
 
   render () {
-    const { title, balance, utxos, sidebarDocked, sidebarOpen, showFab } = this.state
+    const { title, balance, sidebarDocked, sidebarOpen, showFab } = this.state
 
     const contentHeader = (
       <div>
@@ -119,7 +114,6 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
         setTitle: this.setTitle,
         setShowFab: this.setShowFab,
         balance,
-        utxos,
       }}>
         <Sidebar {...sidebarProps}>
           <div style={styles.header}>
