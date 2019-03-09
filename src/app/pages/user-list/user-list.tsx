@@ -18,7 +18,7 @@ export interface UserListParams {
 }
 
 export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
-  filter: BorkType.rebork | BorkType.like | FollowsType
+  filter: BorkType.rebork | BorkType.like | BorkType.flag | FollowsType
 }
 
 export interface UserListState {
@@ -39,16 +39,15 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
   }
 
   async componentDidMount () {
-    let title = ''
-    let users = []
     const filter = this.props.filter
+    let title = `${filter.charAt(0).toUpperCase()}${filter.slice(1)}`
+    let users = []
 
-    if (filter === BorkType.rebork || filter === BorkType.like) {
-      title = filter === BorkType.rebork ? 'Reborks' : 'Likes'
-      users = await this.webService.getUsersByTx(this.props.match.params.ref, filter)
-    } else {
-      title = filter
+    if (filter === FollowsType.followers || filter === FollowsType.following) {
       users = await this.webService.getUsersByUser(this.props.match.params.ref, filter)
+    } else {
+      title = `${title}s`
+      users = await this.webService.getUsersByTx(this.props.match.params.ref, filter)
     }
 
     this.props.setTitle(title)

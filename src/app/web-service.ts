@@ -44,7 +44,7 @@ class WebService {
     return this.request(options)
   }
 
-  async getUsersByTx (txid: string, type: BorkType.rebork | BorkType.like): Promise<User[]> {
+  async getUsersByTx (txid: string, type: BorkType.rebork | BorkType.like | BorkType.flag): Promise<User[]> {
 
     const options: rp.OptionsWithUrl = {
       method: 'GET',

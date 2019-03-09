@@ -43,6 +43,11 @@ class BorksRoutes extends React.Component<{}, {}> {
           path="/borks/:ref/likes"
           render={props => <UserListPage {...props} filter={BorkType.like} />}
         />
+        <Route
+          exact
+          path="/borks/:ref/flags"
+          render={props => <UserListPage {...props} filter={BorkType.flag} />}
+        />
         <Redirect to="/borks/feed" />
       </Switch>
     )

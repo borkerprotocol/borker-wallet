@@ -48,6 +48,7 @@ export const sampleWords = [
 //     replies: 2,
 //     reborks: 4,
 //     likes: 20,
+//     flags: 0,
 //   },
 //   {
 //     type: BorkType.bork,
@@ -62,6 +63,7 @@ export const sampleWords = [
 //     replies: 4,
 //     reborks: 20,
 //     likes: 100,
+//     flags: 0,
 //   },
 //   {
 //     type: BorkType.bork,
@@ -76,6 +78,7 @@ export const sampleWords = [
 //     replies: 44,
 //     reborks: 500,
 //     likes: 250,
+//     flags: 1,
 //   },
 //   {
 //     type: BorkType.bork,
@@ -90,6 +93,7 @@ export const sampleWords = [
 //     replies: 0,
 //     reborks: 2,
 //     likes: 15,
+//     flags: 2,
 //   },
 //   {
 //     type: BorkType.comment,
@@ -104,6 +108,7 @@ export const sampleWords = [
 //     replies: 1,
 //     reborks: 1,
 //     likes: 1,
+//     flags: 0,
 //   },
 //   {
 //     type: BorkType.comment,
@@ -118,6 +123,7 @@ export const sampleWords = [
 //     replies: 1,
 //     reborks: 2,
 //     likes: 10,
+//     flags: 0,
 //   },
 //   {
 //     type: BorkType.bork,
@@ -132,6 +138,7 @@ export const sampleWords = [
 //     replies: 0,
 //     reborks: 1,
 //     likes: 1,
+//     flags: 0,
 //   },
 //   {
 //     type: BorkType.bork,
@@ -146,6 +153,7 @@ export const sampleWords = [
 //     replies: 3,
 //     reborks: 2,
 //     likes: 10,
+//     flags: 1,
 //   },
 //   {
 //     type: BorkType.bork,
@@ -160,6 +168,7 @@ export const sampleWords = [
 //     replies: 10,
 //     reborks: 13,
 //     likes: 1000,
+//     flags: 0,
 //   },
 // ]
 

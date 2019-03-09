@@ -1,5 +1,3 @@
-import BigNumber from "bignumber.js";
-
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export interface User {
@@ -9,11 +7,10 @@ export interface User {
   name: string
   bio: string
   avatarLink: string
-  blockersCount: number
-  blockingCount: number
   followingCount: number
   followersCount: number
   iFollow: boolean
+  iBlock: boolean
 }
 
 export interface Bork {
@@ -27,6 +24,7 @@ export interface Bork {
   commentsCount: number
   reborksCount: number
   likesCount: number
+  flagsCount: number
   sender: User
   parent: Bork
   mentions: User[]
@@ -34,6 +32,7 @@ export interface Bork {
   iComment: boolean
   iRebork: boolean
   iLike: boolean
+  iFlag: boolean
 }
 
 export interface FullUser extends User {
@@ -62,6 +61,9 @@ export enum BorkType {
   follow = 'follow',
   like = 'like',
   rebork = 'rebork',
+  block = 'block',
+  unblock = 'unblock',
+  flag = 'flag',
   setName = 'set_name',
   setBio = 'set_bio',
   setAvatar = 'set_avatar',

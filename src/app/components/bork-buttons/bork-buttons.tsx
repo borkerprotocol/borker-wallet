@@ -7,6 +7,7 @@ import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as heartOutline } from '@fortawesome/free-regular-svg-icons'
 import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
 import { faRetweet } from '@fortawesome/free-solid-svg-icons'
+import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons'
 import CheckoutModal from '../modals/checkout-modal/checkout-modal'
 import { withAppContext, AppProps } from '../../contexts/app-context'
 import '../../App.scss'
@@ -29,6 +30,13 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   like = () => {
     const modal = (
       <CheckoutModal type={BorkType.like} txCount={1} />
+    )
+    this.props.toggleModal(modal)
+  }
+
+  flag = () => {
+    const modal = (
+      <CheckoutModal type={BorkType.flag} txCount={1} />
     )
     this.props.toggleModal(modal)
   }
@@ -61,6 +69,14 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
                   icon={bork.iLike ? heartSolid : heartOutline}
                   style={bork.iLike ? {color: 'red'} : {} }
                 /> {showCount && (bork.likesCount || 0)}
+              </a>
+            </td>
+            <td>
+              <a onClick={this.flag}>
+                <FontAwesomeIcon
+                  icon={faSkullCrossbones}
+                  style={bork.iFlag ? {color: 'red'} : {} }
+                /> {showCount && (bork.flagsCount || 0)}
               </a>
             </td>
           </tr>      

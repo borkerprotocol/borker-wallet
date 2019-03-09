@@ -92,6 +92,12 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
               >
                 {bork.likesCount || 0}<span> Likes</span>
               </Link>
+              <Link
+                to={`/borks/${bork.txid}/flags`}
+                className="bork-body-link"
+              >
+                {bork.flagsCount || 0}<span> Flags</span>
+              </Link>
             </p>
           </div>
         </div>

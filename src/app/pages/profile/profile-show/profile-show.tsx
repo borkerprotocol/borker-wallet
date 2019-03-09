@@ -6,6 +6,7 @@ import { Bork, User, BorkType } from '../../../../types/types'
 import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
+import BlockButton from '../../../components/block-button/block-button'
 import { calendar } from '../../../../util/timestamps'
 import defaultAvatar from '../../../../assets/default-avatar.png'
 import 'react-tabs/style/react-tabs.scss'
@@ -84,7 +85,11 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
               </Link>
             </div>
           ) : (
-            <FollowButton user={user} />
+            <div>
+              <FollowButton user={user} />
+              <br></br>
+              <BlockButton user={user} />
+            </div>
           )}
         </div>
         <div className="profile-header">
