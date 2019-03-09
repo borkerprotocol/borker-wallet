@@ -1,9 +1,8 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { BorkType, User, Bork, Utxo } from '../types/types'
+import { BorkType, User, Bork, Utxo, OrderBy } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
-import { UserFilter } from './pages/explore/explore'
 import { BorkerConfig } from './pages/settings/settings'
 
 class WebService {
@@ -33,12 +32,12 @@ class WebService {
     return this.request(options)
   }
 
-  async getUsers (filter: UserFilter): Promise<User[]> {
+  async getUsers (order: OrderBy<User>): Promise<User[]> {
 
     const options: rp.Options = {
       method: 'GET',
       url: `/users`,
-      qs: { filter },
+      qs: { order },
     }
 
     return this.request(options)

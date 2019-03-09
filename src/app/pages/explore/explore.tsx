@@ -1,21 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
-import { User } from '../../../types/types'
+import { User, OrderBy } from '../../../types/types'
 import WebService from '../../web-service'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import FollowButton from '../../components/follow-button/follow-button'
 import '../user-list/user-list.scss'
 
-export enum UserFilter {
-  birthBlock = 'birthBlock',
-  followersCount = 'followersCount',
-}
-
 export interface UserListProps extends AuthProps {}
 
 export interface UserListState {
-  filter: UserFilter
+  order: OrderBy<User>
   users: User[]
 }
 
@@ -25,7 +20,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
   constructor (props: UserListProps) {
     super(props)
     this.state = {
-      filter: UserFilter.birthBlock,
+      order: { followersCount: 'DESC' },
       users: [],
     }
     this.webService = new WebService()
@@ -36,7 +31,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
     this.props.setShowFab(false)
 
     this.setState({
-      users: await this.webService.getUsers(this.state.filter),
+      users: await this.webService.getUsers(this.state.order),
     })
   }
 
