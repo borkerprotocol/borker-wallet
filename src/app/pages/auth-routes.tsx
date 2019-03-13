@@ -13,6 +13,7 @@ import { AuthContext } from '../contexts/auth-context'
 import borkButton from '../../assets/bork-button.png'
 import BigNumber from 'bignumber.js'
 import WebService from '../web-service'
+import { withAppContext, AppProps } from '../contexts/app-context'
 
 export interface AuthRoutesState {
   title: string
@@ -39,10 +40,10 @@ const styles = {
 
 const mql = window.matchMedia(`(min-width: 800px)`)
 
-class AuthRoutes extends React.Component<{}, AuthRoutesState> {
+class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
   public webService: WebService
 
-  constructor (props: {}) {
+  constructor (props: AppProps) {
     super(props)
     this.state = {
       title: '',
@@ -58,7 +59,7 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
     mql.addListener(this.mediaQueryChanged)
 
     this.setState({
-      balance: await this.webService.getBalance(),
+      balance: await this.webService.getBalance(this.props.address),
     })
   }
 
@@ -156,4 +157,4 @@ class AuthRoutes extends React.Component<{}, AuthRoutesState> {
   }
 }
 
-export default AuthRoutes
+export default withAppContext(AuthRoutes)

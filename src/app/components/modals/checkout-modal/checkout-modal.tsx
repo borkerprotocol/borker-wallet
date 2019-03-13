@@ -1,17 +1,24 @@
 import React from 'react'
-import { BorkType } from '../../../../types/types'
+import { BorkType, TxData } from '../../../../types/types'
+import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
 import BigNumber from 'bignumber.js'
-import WebService from '../../../web-service'
+import WebService, { ConstructRequest } from '../../../web-service'
+import { JsWallet } from 'borker-rs'
+import * as CryptoJS from 'crypto-js'
+import * as Storage from 'idb-keyval'
 import '../../../App.scss'
 import './checkout-modal.scss'
 
-export interface CheckoutModalProps {
-  txCount: number
-  type: BorkType
+export interface CheckoutModalProps extends AuthProps {
+  data: ConstructRequest
 }
 
 export interface CheckoutModalState {
-  txFee: BigNumber
+  txDatas: TxData[]
+  fees: BigNumber
+  tip: BigNumber
+  totalCost: BigNumber
+  password: string
 }
 
 class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalState> {
@@ -19,39 +26,79 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
 
   constructor (props: CheckoutModalProps) {
     super(props)
-    this.state = { txFee: new BigNumber(0) }
+    this.state = {
+      txDatas: [],
+      fees: new BigNumber(0),
+      tip: new BigNumber(0),
+      totalCost: new BigNumber(0),
+      password: '',
+    }
     this.webService = new WebService()
   }
 
   async componentDidMount () {
+    const txDatas = await this.webService.construct(this.props.data)
+
+    let tip: BigNumber = new BigNumber(0)
+    if ([BorkType.comment, BorkType.like, BorkType.rebork].includes(this.props.data.type)) {
+      tip = new BigNumber(txDatas[0].outputs[1].value)
+    }
+
+    const fees = txDatas.reduce((sum, txData) => {
+      return sum.plus(txData.fee)
+    }, new BigNumber(0))
+
+    const totalCost = fees.plus(tip)
+
     this.setState({
-      txFee: await this.webService.getTxFee(),
+      txDatas,
+      tip,
+      fees,
+      totalCost,
     })
   }
 
-  broadcast = async () => {
-    alert ('broadcasts coming soon!')
+  handlePasswordChange = (e: React.BaseSyntheticEvent) => {
+    this.setState({ password: e.target.value })
+  }
+
+  signAndBroadcast = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const encrypted = await Storage.get<string>('wallet')
+    const wallet = CryptoJS.AES.decrypt(encrypted, this.state.password)
+
+    const rawTxs = await Promise.all(this.state.txDatas.map(txData => {
+      console.log(wallet)
+      return txData.txHash
+    }))
+
+    this.webService.signAndBroadcastTx(rawTxs)
   }
 
   render () {
-    const { txCount, type } = this.props
-    const { txFee } = this.state
-    const cost = txFee.times(txCount).integerValue(BigNumber.ROUND_CEIL).toString()
-    const newType = type === BorkType.setName ||
-                    type === BorkType.setBio ||
-                    type === BorkType.setAvatar ?
-                    'Profile Update' : type
+    const { data } = this.props
+    const { txDatas, tip, totalCost, fees, password } = this.state
 
-    return (
+    return !txDatas.length ? (
+      <p>Loading</p>
+    ) : (
       <div className="checkout-modal-content">
         <h1>Order Summary</h1>
-        <p>Transaction Type: <b>{newType}</b></p>
-        <p>Total Transactions: {txCount}</p>
-        <p>Total Cost: <b>{cost} DOGE</b></p>
-        <button onClick={this.broadcast}>Broadcast!</button>
+        <p>Transaction Type: <b>{data.type}</b></p>
+        <p>Total Transactions: {txDatas.length}</p>
+        <p>Fees: {fees.toString()} DOGE</p>
+        {tip.isGreaterThan(0) &&
+          <p>Tip: {tip.toString()} DOGE</p>
+        }
+        <br></br>
+        <p>Total Cost: <b>{totalCost.toString()} DOGE</b></p>
+        <form onSubmit={this.signAndBroadcast} className="checkout-form">
+          <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
+          <input type="submit" value="Sign and Broadcast!" />
+        </form>
       </div>
     )
   }
 }
 
-export default CheckoutModal
+export default withAuthContext(CheckoutModal)

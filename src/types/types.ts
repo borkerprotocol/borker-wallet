@@ -2,6 +2,19 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type OrderBy<Entity> = { [P in keyof Entity]?: 'ASC' | 'DESC' }
 
+export interface TxData {
+  inputs: Utxo[],
+  outputs: Output[],
+  fee: string
+  txHash: string
+}
+
+export interface Output {
+  address: string
+  value: string
+  content: string
+}
+
 export interface User {
   address: string
   createdAt: string

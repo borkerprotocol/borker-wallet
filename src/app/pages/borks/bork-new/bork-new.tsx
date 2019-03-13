@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import BorkPreviewComponent from '../../../components/bork-preview/bork-preview';
-import WebService from '../../../web-service'
+import WebService, { ConstructRequest } from '../../../web-service'
 import { BorkType, Bork } from '../../../../types/types'
 import './bork-new.scss'
 import '../../../App.scss'
@@ -53,8 +53,19 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     const charCount = body.length
     const txCount = charCount === 0 ? 0 : charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
 
+    const data: ConstructRequest = {
+      type: parent ? BorkType.comment : BorkType.bork,
+      content: body,
+    }
+    if (parent) {
+      data.parent = {
+        txid: parent.txid,
+        tip: '10',
+      }
+    }
+
     const modal = (
-      <CheckoutModal type={parent ? BorkType.comment : BorkType.bork} txCount={txCount} />
+      <CheckoutModal data={data} />
     )
 
     return (
@@ -62,9 +73,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
         {parent &&
           <div className="commenting-on">
             <b>Commenting On:</b>
-            <BorkPreviewComponent
-              bork={parent}
-            />
+            <BorkPreviewComponent bork={parent} />
           </div>
         }
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="bork-form">

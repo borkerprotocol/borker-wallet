@@ -4,14 +4,20 @@ import CheckoutModal from '../../../components/modals/checkout-modal/checkout-mo
 import { User, BorkType } from '../../../../types/types'
 import './profile-edit.scss'
 import '../../../App.scss'
+import { RouteComponentProps } from 'react-router';
 
-export interface ProfileEditProps extends AuthProps {
+export interface ProfileEditParams {
+  type: BorkType.setName | BorkType.setBio | BorkType.setAvatar
+}
+
+
+export interface ProfileEditProps extends AuthProps, RouteComponentProps<ProfileEditParams> {
   user: User
 }
 
 export interface ProfileEditState {
-  name: string
-  bio: string
+  previousValue: string
+  value: string
 }
 
 class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState> {
@@ -19,25 +25,24 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
   constructor (props: ProfileEditProps) {
     super(props)
     this.state = {
-      name: props.user.name,
-      bio: props.user.bio,
+      previousValue: props.match.params.type === BorkType.setName ? props.user.name :
+                            BorkType.setBio ? props.user.bio :
+                            BorkType.setAvatar ? props.user.avatarLink : '',
+      value: '',
     }
   }
 
   async componentDidMount () {
     this.props.setTitle('Edit Profile')
     this.props.setShowFab(false)
-  }
-
-  handleNameChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
-      name: e.target.value,
+      value: this.state.previousValue,
     })
   }
 
-  handleBioChange = (e: React.BaseSyntheticEvent) => {
+  handleValueChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
-      bio: e.target.value,
+      value: e.target.value,
     })
   }
 
@@ -46,25 +51,19 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
   }
 
   render () {
-    const { name, bio } = this.state
-
-    const nameTxCount = this.props.user.name === name ? 0 : 1
-    const bioTxCount = this.props.user.bio === bio ? 0 : 1
-
-    const txCount = nameTxCount + bioTxCount
+    const { type } = this.props.match.params
+    const { previousValue, value } = this.state
 
     const modal = (
-      <CheckoutModal type={BorkType.setName} txCount={txCount} />
+      <CheckoutModal data={{ type, content: value }} />
     )
 
     return (
       <div className="page-content">
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="profile-edit-form">
-          <label>Name</label>
-          <input type="text" value={name} maxLength={77} onChange={this.handleNameChange} />
-          <label>Bio</label>
-          <input type="text" value={bio} maxLength={77} onChange={this.handleBioChange} />
-          <input type="submit" value="Checkout" disabled={!txCount} />
+          <label>Value</label>
+          <input type="text" value={name} maxLength={77} onChange={this.handleValueChange} />
+          <input type="submit" value="Checkout" disabled={previousValue === value} />
         </form>
       </div>
     )

@@ -80,8 +80,14 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
         <div className="follow-edit">
           {user.address === this.props.address ? (
             <div>
-              <Link to={`/profile/${user.address}/edit`}>
-                <button>Edit Profile</button>
+              <Link to={`/profile/${user.address}/${BorkType.setName}`}>
+                <button>Set Name</button>
+              </Link>
+              <Link to={`/profile/${user.address}/${BorkType.setBio}`}>
+                <button>Set Bio</button>
+              </Link>
+              <Link to={`/profile/${user.address}/${BorkType.setAvatar}`}>
+                <button>Set Avatar</button>
               </Link>
             </div>
           ) : (

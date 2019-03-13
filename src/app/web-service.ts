@@ -1,7 +1,7 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { BorkType, User, Bork, Utxo, OrderBy } from '../types/types'
+import { BorkType, User, Bork, OrderBy, TxData } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
 import { BorkerConfig } from './pages/settings/settings'
 
@@ -9,24 +9,31 @@ class WebService {
 
   constructor () {}
 
-  async getTxFee (): Promise<BigNumber> {
-    return new BigNumber(1)
-  }
-
-  async getBalance (): Promise<BigNumber> {
+  async getBalance (address: string): Promise<BigNumber> {
     const options: rp.Options = {
       method: 'GET',
-      url: `/users/me/balance`,
+      url: `/users/${address}/balance`,
     }
 
     const res = await this.request(options)
     return new BigNumber(res)
   }
 
-  async getUtxos (): Promise<Utxo[]> {
+  async construct (body: ConstructRequest): Promise<TxData[]> {
     const options: rp.Options = {
-      method: 'GET',
-      url: `/users/me/utxos`,
+      method: 'POST',
+      url: `/transactions/construct`,
+      body,
+    }
+
+    return this.request(options)
+  }
+
+  async signAndBroadcastTx (body: string[]): Promise<void> {
+    const options: rp.Options = {
+      method: 'POST',
+      url: `/transactions/broadcast`,
+      body,
     }
 
     return this.request(options)
@@ -122,15 +129,14 @@ class WebService {
     }
 
     Object.assign(options, {
+      json: true,
       url: config.externalip + options.url,
       headers: { 'my-address': address },
     })
 
     try {
 
-      const res = JSON.parse(await rp(options))
-      console.log(res)
-      return res
+      return rp(options)
 
     } catch (err) {
 
@@ -158,4 +164,13 @@ export interface IndexTxParams extends IndexParams {
   senderAddress?: string
   parentTxid?: string
   types?: BorkType[]
+}
+
+export interface ConstructRequest {
+  type: BorkType,
+  content?: string
+  parent?: {
+    txid: string
+    tip: string,
+  }
 }

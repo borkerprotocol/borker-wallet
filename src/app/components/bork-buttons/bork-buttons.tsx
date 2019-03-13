@@ -22,21 +22,42 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
 
   rebork = () => {
     const modal = (
-      <CheckoutModal type={BorkType.rebork} txCount={1} />
+      <CheckoutModal
+        data={{
+          type: BorkType.rebork,
+          parent: {
+            txid: this.props.bork.txid,
+            tip: '10',
+          },
+        }}
+      />
     )
     this.props.toggleModal(modal)
   }
 
   like = () => {
     const modal = (
-      <CheckoutModal type={BorkType.like} txCount={1} />
+      <CheckoutModal
+      data={{
+        type: BorkType.like,
+        parent: {
+          txid: this.props.bork.txid,
+          tip: '10',
+        },
+      }}
+      />
     )
     this.props.toggleModal(modal)
   }
 
   flag = () => {
     const modal = (
-      <CheckoutModal type={BorkType.flag} txCount={1} />
+      <CheckoutModal
+        data={{
+          type: BorkType.flag,
+          content: this.props.bork.txid,
+        }}
+      />
     )
     this.props.toggleModal(modal)
   }
