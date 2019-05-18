@@ -5,6 +5,7 @@ import CheckoutModal from '../../../components/modals/checkout-modal/checkout-mo
 import BorkPreviewComponent from '../../../components/bork-preview/bork-preview';
 import WebService, { ConstructRequest } from '../../../web-service'
 import { BorkType, Bork } from '../../../../types/types'
+import BigNumber from 'bignumber.js'
 import './bork-new.scss'
 import '../../../App.scss'
 
@@ -60,7 +61,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     if (parent) {
       data.parent = {
         txid: parent.txid,
-        tip: '10',
+        tip: new BigNumber(10),
       }
     }
 

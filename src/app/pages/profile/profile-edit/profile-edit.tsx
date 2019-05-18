@@ -2,9 +2,9 @@ import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import { User, BorkType } from '../../../../types/types'
+import { RouteComponentProps } from 'react-router'
 import './profile-edit.scss'
 import '../../../App.scss'
-import { RouteComponentProps } from 'react-router';
 
 export interface ProfileEditParams {
   type: BorkType.setName | BorkType.setBio | BorkType.setAvatar

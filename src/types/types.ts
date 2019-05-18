@@ -66,7 +66,10 @@ export interface ProfileUpdate {
 export interface Utxo {
   txid: string
   index: number
+  createdAt: string
+  address: string
   value: string
+  raw: string
 }
 
 export enum BorkType {

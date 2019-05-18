@@ -1,7 +1,7 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { BorkType, User, Bork, OrderBy, TxData } from '../types/types'
+import { BorkType, User, Bork, OrderBy, TxData, Utxo } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
 import { BorkerConfig } from './pages/settings/settings'
 
@@ -9,7 +9,9 @@ class WebService {
 
   constructor () {}
 
-  async getBalance (address: string): Promise<BigNumber> {
+  async getBalance (): Promise<BigNumber> {
+    const address = await Storage.get<string>('address')
+
     const options: rp.Options = {
       method: 'GET',
       url: `/users/${address}/balance`,
@@ -19,11 +21,13 @@ class WebService {
     return new BigNumber(res)
   }
 
-  async construct (body: ConstructRequest): Promise<TxData[]> {
+  async getUtxos (amount: string): Promise<Utxo[]> {
+    const address = await Storage.get<string>('address')
+
     const options: rp.Options = {
-      method: 'POST',
-      url: `/transactions/construct`,
-      body,
+      method: 'GET',
+      url: `/users/${address}/utxos`,
+      qs: { amount },
     }
 
     return this.request(options)
@@ -168,9 +172,10 @@ export interface IndexTxParams extends IndexParams {
 
 export interface ConstructRequest {
   type: BorkType,
+  txCount?: number
   content?: string
   parent?: {
     txid: string
-    tip: string,
+    tip: BigNumber,
   }
 }

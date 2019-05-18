@@ -21,7 +21,7 @@ class WalletPage extends React.PureComponent<WalletProps> {
       <div className="page-content">
         <div className="wallet-balance">
           <h1>
-            {balance.toFormat(8)}
+            {balance.dividedBy(100000000).toFormat(8)}
           </h1>
         </div>
         <table className="wallet-buttons">

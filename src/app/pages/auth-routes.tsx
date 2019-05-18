@@ -59,7 +59,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
     mql.addListener(this.mediaQueryChanged)
 
     this.setState({
-      balance: await this.webService.getBalance(this.props.address),
+      balance: await this.webService.getBalance(),
     })
   }
 

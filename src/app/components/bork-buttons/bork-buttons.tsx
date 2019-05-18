@@ -10,6 +10,7 @@ import { faRetweet } from '@fortawesome/free-solid-svg-icons'
 import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons'
 import CheckoutModal from '../modals/checkout-modal/checkout-modal'
 import { withAppContext, AppProps } from '../../contexts/app-context'
+import BigNumber from 'bignumber.js'
 import '../../App.scss'
 import './bork-buttons.scss'
 
@@ -27,7 +28,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
           type: BorkType.rebork,
           parent: {
             txid: this.props.bork.txid,
-            tip: '10',
+            tip: new BigNumber(10),
           },
         }}
       />
@@ -42,7 +43,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
         type: BorkType.like,
         parent: {
           txid: this.props.bork.txid,
-          tip: '10',
+          tip: new BigNumber(10),
         },
       }}
       />
@@ -96,7 +97,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
               <a onClick={this.flag}>
                 <FontAwesomeIcon
                   icon={faSkullCrossbones}
-                  style={bork.iFlag ? {color: 'red'} : {} }
+                  style={bork.iFlag ? {color: 'black'} : {} }
                 /> {showCount && (bork.flagsCount || 0)}
               </a>
             </td>

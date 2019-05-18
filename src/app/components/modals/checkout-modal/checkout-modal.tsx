@@ -1,5 +1,4 @@
 import React from 'react'
-import { BorkType, TxData } from '../../../../types/types'
 import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
 import BigNumber from 'bignumber.js'
 import WebService, { ConstructRequest } from '../../../web-service'
@@ -14,7 +13,6 @@ export interface CheckoutModalProps extends AuthProps {
 }
 
 export interface CheckoutModalState {
-  txDatas: TxData[]
   fees: BigNumber
   tip: BigNumber
   totalCost: BigNumber
@@ -27,7 +25,6 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   constructor (props: CheckoutModalProps) {
     super(props)
     this.state = {
-      txDatas: [],
       fees: new BigNumber(0),
       tip: new BigNumber(0),
       totalCost: new BigNumber(0),
@@ -37,24 +34,16 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   }
 
   async componentDidMount () {
-    const txDatas = await this.webService.construct(this.props.data)
+    const { txCount, parent } = this.props.data
 
-    let tip: BigNumber = new BigNumber(0)
-    if ([BorkType.comment, BorkType.like, BorkType.rebork].includes(this.props.data.type)) {
-      tip = new BigNumber(txDatas[0].outputs[1].value)
-    }
+    const fees = txCount ? new BigNumber(txCount).times(1) : new BigNumber(1)
 
-    const fees = txDatas.reduce((sum, txData) => {
-      return sum.plus(txData.fee)
-    }, new BigNumber(0))
-
-    const totalCost = fees.plus(tip)
+    const tip = parent ? parent.tip : new BigNumber(0)
 
     this.setState({
-      txDatas,
-      tip,
       fees,
-      totalCost,
+      tip,
+      totalCost: fees.plus(tip),
     })
   }
 
@@ -64,28 +53,29 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
 
   signAndBroadcast = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    const utxos = await this.webService.getUtxos(this.state.totalCost.toString())
+
     const encrypted = await Storage.get<string>('wallet')
     const wallet = CryptoJS.AES.decrypt(encrypted, this.state.password)
 
-    const rawTxs = await Promise.all(this.state.txDatas.map(txData => {
-      console.log(wallet)
-      return txData.txHash
-    }))
+    const borkerLib = await import('borker-rs')
+
+    // const rawTxs = new borkerLib.construct(this.props.data, utxos)
+    const rawTxs = ['']
 
     this.webService.signAndBroadcastTx(rawTxs)
   }
 
   render () {
     const { data } = this.props
-    const { txDatas, tip, totalCost, fees, password } = this.state
+    const { tip, totalCost, fees, password } = this.state
 
-    return !txDatas.length ? (
-      <p>Loading</p>
-    ) : (
+    return (
       <div className="checkout-modal-content">
         <h1>Order Summary</h1>
         <p>Transaction Type: <b>{data.type}</b></p>
-        <p>Total Transactions: {txDatas.length}</p>
+        <p>Total Transactions: {data.txCount || 1}</p>
         <p>Fees: {fees.toString()} DOGE</p>
         {tip.isGreaterThan(0) &&
           <p>Tip: {tip.toString()} DOGE</p>

@@ -60,7 +60,7 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
         />
         <Route
           exact
-          path="/profile/:address/edit"
+          path="/profile/:address/set_*"
           render={props => <ProfileEditPage {...props} user={user} />}
         />
         <Route
