@@ -1,12 +1,12 @@
 import React from 'react'
 import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 import { withUnauthContext, UnauthProps } from '../../contexts/unauth-context'
-import { JsWallet } from 'borker-rs'
+import { JsWallet } from 'borker-rs-browser'
 import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
 import './wallet-create.scss'
 
-export interface WalletCreateProps extends UnauthProps {}
+export interface WalletCreateProps extends UnauthProps { }
 
 export interface WalletCreateState {
   wallet: JsWallet | null
@@ -18,14 +18,14 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
     wallet: null as unknown as JsWallet,
   }
 
-  async componentDidMount () {
-    const borkerLib = await import('borker-rs')
+  async componentDidMount() {
+    const borkerLib = await import('borker-rs-browser')
     this.setState({
       wallet: new borkerLib.JsWallet(sampleWords),
     })
   }
 
-  render () {
+  render() {
     const { wallet } = this.state
 
     if (!wallet) {
@@ -36,7 +36,7 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
       <EncryptModal wallet={wallet} />
     )
 
-    const words  = wallet.words()
+    const words = wallet.words()
 
     return wallet ? (
       <div className="page-content">
@@ -70,8 +70,8 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
         </button>
       </div>
     ) : (
-      null
-    )
+        null
+      )
   }
 }
 

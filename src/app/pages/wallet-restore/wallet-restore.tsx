@@ -1,12 +1,12 @@
 import React from 'react'
-import { JsWallet } from 'borker-rs'
+import { JsWallet } from 'borker-rs-browser'
 import { UnauthProps, withUnauthContext } from '../../contexts/unauth-context'
 import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
 import './wallet-restore.scss'
 
-export interface WalletRestoreProps extends UnauthProps {}
+export interface WalletRestoreProps extends UnauthProps { }
 
 export interface WalletRestoreState {
   mnemonic: string
@@ -31,7 +31,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
 
   genWallet = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (!this.state.wallet) {
-      const borkerLib = await import('borker-rs')
+      const borkerLib = await import('borker-rs-browser')
       const wallet = new borkerLib.JsWallet(sampleWords)
       await this.setState({ wallet })
     }
@@ -43,7 +43,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
     this.props.toggleModal(modal)
   }
 
-  render () {
+  render() {
     const { isMnemonicEntered, mnemonic } = this.state
 
     return (

@@ -2,7 +2,7 @@ import React from 'react'
 import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
 import BigNumber from 'bignumber.js'
 import WebService, { ConstructRequest } from '../../../web-service'
-import { JsWallet } from 'borker-rs'
+import { JsWallet } from 'borker-rs-browser'
 import * as CryptoJS from 'crypto-js'
 import * as Storage from 'idb-keyval'
 import '../../../App.scss'
@@ -22,7 +22,7 @@ export interface CheckoutModalState {
 class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalState> {
   public webService: WebService
 
-  constructor (props: CheckoutModalProps) {
+  constructor(props: CheckoutModalProps) {
     super(props)
     this.state = {
       fees: new BigNumber(0),
@@ -33,7 +33,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     this.webService = new WebService()
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const { txCount, parent } = this.props.data
 
     const fees = txCount ? new BigNumber(txCount).times(1) : new BigNumber(1)
@@ -59,7 +59,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     const encrypted = await Storage.get<string>('wallet')
     const wallet = CryptoJS.AES.decrypt(encrypted, this.state.password)
 
-    const borkerLib = await import('borker-rs')
+    const borkerLib = await import('borker-rs-browser')
 
     // const rawTxs = new borkerLib.construct(this.props.data, utxos)
     const rawTxs = ['']
@@ -67,7 +67,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     this.webService.signAndBroadcastTx(rawTxs)
   }
 
-  render () {
+  render() {
     const { data } = this.props
     const { tip, totalCost, fees, password } = this.state
 

@@ -62,7 +62,7 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
       <div className="page-content">
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="profile-edit-form">
           <label>Value</label>
-          <input type="text" value={name} maxLength={77} onChange={this.handleValueChange} />
+          <input type="text" value={"name"} maxLength={77} onChange={this.handleValueChange} />
           <input type="submit" value="Checkout" disabled={previousValue === value} />
         </form>
       </div>

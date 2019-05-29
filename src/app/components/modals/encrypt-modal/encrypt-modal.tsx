@@ -1,6 +1,6 @@
 import React from 'react'
 import * as CryptoJS from 'crypto-js'
-import { JsWallet } from 'borker-rs'
+import { JsWallet } from 'borker-rs-browser'
 import * as Storage from 'idb-keyval'
 import { withAppContext, AppProps } from '../../../contexts/app-context'
 import '../../../App.scss'
@@ -16,7 +16,7 @@ export interface EncryptModalState {
 
 class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState> {
 
-  constructor (props: EncryptModalProps) {
+  constructor(props: EncryptModalProps) {
     super(props)
     this.state = {
       password: '',
@@ -27,7 +27,7 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     e.preventDefault()
     const { wallet } = this.props
 
-    const borkerLib = await import('borker-rs')
+    const borkerLib = await import('borker-rs-browser')
 
     const address = wallet.childAt([-44, -0, -0, 0, 0]).address(borkerLib.Network.Dogecoin)
     const encrypted = CryptoJS.AES.encrypt(new Buffer(wallet.toBuffer()).toString('hex'), this.state.password).toString()
@@ -44,7 +44,7 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     this.setState({ password: e.target.value })
   }
 
-  render () {
+  render() {
     const { password } = this.state
 
     return (
