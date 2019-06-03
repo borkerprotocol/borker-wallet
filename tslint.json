@@ -1,17 +1,42 @@
 {
-  "rules": {
+	"rules": {
     "space-before-function-paren": true,
-    "trailing-comma": [
-      true,
-      {
-        "multiline": "always",
-        "singleline": "never"
-      }
-    ]
-  },
-  "linterOptions": {
-    "exclude": [
-        "node_modules/**"
-    ]
-  }
+		"semicolon": [
+			true,
+			"never"
+    ],
+    "no-unused-variable": true,
+    "no-trailing-whitespace": true,
+		"whitespace": [
+			true,
+      "check-branch",
+      "check-decl",
+      "check-module",
+      "check-operator",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock",
+      "check-postbrace"
+		],
+		"trailing-comma": [
+			true,
+			{
+				"multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "always",
+          "typeLiterals": "never"
+        },
+				"singleline": "never"
+			}
+		]
+	},
+	"linterOptions": {
+		"exclude": [
+			"node_modules"
+		]
+	}
 }

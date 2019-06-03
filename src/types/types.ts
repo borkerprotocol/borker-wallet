@@ -1,3 +1,5 @@
+import { BorkType } from "borker-rs-browser"
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type OrderBy<Entity> = { [P in keyof Entity]?: 'ASC' | 'DESC' }
@@ -70,22 +72,6 @@ export interface Utxo {
   address: string
   value: string
   raw: string
-}
-
-export enum BorkType {
-  bork = 'bork',
-  comment = 'comment',
-  extension = 'extension',
-  follow = 'follow',
-  like = 'like',
-  rebork = 'rebork',
-  block = 'block',
-  unblock = 'unblock',
-  flag = 'flag',
-  setName = 'set_name',
-  setBio = 'set_bio',
-  setAvatar = 'set_avatar',
-  unfollow = 'unfollow',
 }
 
 export enum ProfileFields {

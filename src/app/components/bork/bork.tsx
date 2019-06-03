@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { Bork, BorkType } from '../../../types/types'
+import { Bork } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
 import './bork.scss'
+import { BorkType } from 'borker-rs-browser'
 
 export interface BorkComponentProps {
   bork: Bork
@@ -38,7 +39,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
     const userAddress = (
       <Link to={`/profile/${bork.sender.address}`} className="bork-useraddress">
-        @{bork.sender.address.substring(0,9)}
+        @{bork.sender.address.substring(0, 9)}
       </Link>
     )
 
@@ -63,7 +64,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
             {userName}<br />
             {userAddress}
           </p>
-          {bork.type === BorkType.comment &&
+          {bork.type === BorkType.Comment &&
             <p className="bork-ref">
               <FontAwesomeIcon
                 icon={faComments}

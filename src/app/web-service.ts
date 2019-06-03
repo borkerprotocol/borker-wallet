@@ -1,9 +1,10 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { BorkType, User, Bork, OrderBy, TxData, Utxo } from '../types/types'
+import { User, Bork, OrderBy, Utxo } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
 import { BorkerConfig } from './pages/settings/settings'
+import { BorkType } from 'borker-rs-browser'
 
 class WebService {
 
@@ -36,7 +37,7 @@ class WebService {
   async signAndBroadcastTx (body: string[]): Promise<void> {
     const options: rp.Options = {
       method: 'POST',
-      url: `/transactions/broadcast`,
+      url: `/borks/broadcast`,
       body,
     }
 
@@ -54,11 +55,11 @@ class WebService {
     return this.request(options)
   }
 
-  async getUsersByTx (txid: string, type: BorkType.rebork | BorkType.like | BorkType.flag): Promise<User[]> {
+  async getUsersByTx (txid: string, type: BorkType.Comment | BorkType.Rebork | BorkType.Like | BorkType.Flag): Promise<User[]> {
 
     const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: `/transactions/${txid}/users`,
+      url: `/borks/${txid}/users`,
       qs: { type },
     }
 
@@ -90,31 +91,18 @@ class WebService {
 
     const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: `/transactions/${txid}`,
+      url: `/borks/${txid}`,
     }
 
     return this.request(options)
   }
 
-  async getBorks (params: IndexTxParams = {}): Promise<Bork[]> {
+  async getBorks (params: IndexBorkParams = {}): Promise<Bork[]> {
 
     const options: rp.OptionsWithUrl = {
       method: 'GET',
-      url: '/transactions',
+      url: '/borks',
       qs: params,
-    }
-
-    return this.request(options)
-  }
-  
-  async getProfileUpdates (senderAddress: string): Promise<Bork[]> {
-    const options: rp.OptionsWithUrl = {
-      method: 'GET',
-      url: '/transactions',
-      qs: {
-        senderAddress,
-        types: [BorkType.setName, BorkType.setBio, BorkType.setAvatar],
-      },
     }
 
     return this.request(options)
@@ -163,8 +151,8 @@ export interface IndexParams {
   perPage?: number
 }
 
-export interface IndexTxParams extends IndexParams {
-  filterFollowing?: boolean
+export interface IndexBorkParams extends IndexParams {
+  filterFollowing?: 1
   senderAddress?: string
   parentTxid?: string
   types?: BorkType[]
@@ -176,6 +164,6 @@ export interface ConstructRequest {
   content?: string
   parent?: {
     txid: string
-    tip: BigNumber,
+    tip: BigNumber
   }
 }

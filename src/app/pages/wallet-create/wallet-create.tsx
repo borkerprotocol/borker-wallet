@@ -18,14 +18,14 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
     wallet: null as unknown as JsWallet,
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     const borkerLib = await import('borker-rs-browser')
     this.setState({
       wallet: new borkerLib.JsWallet(sampleWords),
     })
   }
 
-  render() {
+  render () {
     const { wallet } = this.state
 
     if (!wallet) {

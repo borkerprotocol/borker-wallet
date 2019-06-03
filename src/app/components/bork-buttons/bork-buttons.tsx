@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Bork, BorkType } from '../../../types/types'
+import { Bork } from '../../../types/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
 import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
@@ -13,6 +13,7 @@ import { withAppContext, AppProps } from '../../contexts/app-context'
 import BigNumber from 'bignumber.js'
 import '../../App.scss'
 import './bork-buttons.scss'
+import { BorkType } from 'borker-rs-browser'
 
 export interface BorkButtonsProps extends AppProps {
   bork: Bork
@@ -25,7 +26,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         data={{
-          type: BorkType.rebork,
+          type: BorkType.Rebork,
           parent: {
             txid: this.props.bork.txid,
             tip: new BigNumber(10),
@@ -40,7 +41,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
       data={{
-        type: BorkType.like,
+        type: BorkType.Like,
         parent: {
           txid: this.props.bork.txid,
           tip: new BigNumber(10),
@@ -55,7 +56,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         data={{
-          type: BorkType.flag,
+          type: BorkType.Flag,
           content: this.props.bork.txid,
         }}
       />
@@ -101,7 +102,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
                 /> {showCount && (bork.flagsCount || 0)}
               </a>
             </td>
-          </tr>      
+          </tr>
         </tbody>
       </table>
     )

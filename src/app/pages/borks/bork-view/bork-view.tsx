@@ -1,12 +1,13 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { Bork, BorkType } from '../../../../types/types'
+import { Bork } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
 import { RouteComponentProps } from 'react-router'
 import WebService from '../../../web-service'
 import BorkComponent from '../../../components/bork/bork'
 import '../../../App.scss'
 import './bork-view.scss'
+import { BorkType } from 'borker-rs-browser'
 
 export interface BorkViewParams {
   txid: string
@@ -39,10 +40,10 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       this.webService.getBork(this.props.match.params.txid),
       this.webService.getBorks({
         parentTxid: this.props.match.params.txid,
-        types: [BorkType.comment],
+        types: [BorkType.Comment],
       }),
     ])
-    
+
     this.setState({
       bork,
       comments,
@@ -58,10 +59,10 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
         this.webService.getBork(newTxid),
         this.webService.getBorks({
           parentTxid: newTxid,
-          types: [BorkType.comment],
+          types: [BorkType.Comment],
         }),
       ])
-      
+
       this.setState({
         bork,
         comments,

@@ -1,6 +1,7 @@
-import { Bork, User, BorkType, ProfileUpdate, ProfileFields } from "../../src/types/types"
+import { Bork, User, ProfileUpdate, ProfileFields } from "../../src/types/types"
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+import { BorkType } from "borker-rs-browser"
 
 export const sampleWords = [
   'blade',
@@ -36,7 +37,7 @@ export const sampleWords = [
 
 // export const sampleBorks: Bork[] = [
 //   {
-//     type: BorkType.bork,
+//     type: BorkType.Bork,
 //     timestamp: moment().subtract(30, 's').toISOString(),
 //     nonce: 0,
 //     txid: '8b5ab18a8593ba3f1abae61c07bf02169487c58b0e244922b6c4578eaf6e0d35',
@@ -51,22 +52,22 @@ export const sampleWords = [
 //     flags: 0,
 //   },
 //   {
-//     type: BorkType.bork,
-//     timestamp: moment().subtract(30, 'm').toISOString(),
-//     nonce: 0,
-//     txid: '43873bcc83d6d811df6bff1909a5cd3fc98eb84bbaded5a44443fc86f9ef0e3b',
-//     refTxid: '',
-//     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-//     content: 'Bork some more. Bork some more.',
-//     isThread: false,
-//     threadIndex: 0,
-//     replies: 4,
-//     reborks: 20,
-//     likes: 100,
-//     flags: 0,
-//   },
+  //   type: BorkType.Bork,
+  //   timestamp: moment().subtract(30, 'm').toISOString(),
+  //   nonce: 0,
+  //   txid: '43873bcc83d6d811df6bff1909a5cd3fc98eb84bbaded5a44443fc86f9ef0e3b',
+  //   refTxid: '',
+  //   address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
+  //   content: 'Bork some more. Bork some more.',
+  //   isThread: false,
+  //   threadIndex: 0,
+  //   replies: 4,
+  //   reborks: 20,
+  //   likes: 100,
+  //   flags: 0,
+  // },
 //   {
-//     type: BorkType.bork,
+//     type: BorkType.Bork,
 //     timestamp: moment().subtract(12, 'h').toISOString(),
 //     nonce: 1,
 //     txid: '069aa2f138cbdc6ebd379b1e6d1cb7f86c8770ad58be27006671d528a75ba0e3',
@@ -81,7 +82,7 @@ export const sampleWords = [
 //     flags: 1,
 //   },
 //   {
-//     type: BorkType.bork,
+//     type: BorkType.Bork,
 //     timestamp: moment().subtract(2, 'd').toISOString(),
 //     nonce: 1,
 //     txid: '164af924f859c9936f3bda737a986a1a85b3708c9b2fd150b36b964b11c858a6',
@@ -96,7 +97,7 @@ export const sampleWords = [
 //     flags: 2,
 //   },
 //   {
-//     type: BorkType.comment,
+//     type: BorkType.Comment,
 //     timestamp: moment().subtract(2, 'd').toISOString(),
 //     nonce: 2,
 //     txid: 'e3b3a8bf7e3796d908b731c0d16baba0f1e161b97d917e00cde81ff0f1452fd1',
@@ -111,7 +112,7 @@ export const sampleWords = [
 //     flags: 0,
 //   },
 //   {
-//     type: BorkType.comment,
+//     type: BorkType.Comment,
 //     timestamp: moment().subtract(2, 'd').toISOString(),
 //     nonce: 3,
 //     txid: 'ead67d64e2f563400873cbbe47601e89cecfabf5a4c0e05d599cd7ee98388b74',
@@ -126,7 +127,7 @@ export const sampleWords = [
 //     flags: 0,
 //   },
 //   {
-//     type: BorkType.bork,
+//     type: BorkType.Bork,
 //     timestamp: moment().subtract(8.75, 'd').toISOString(),
 //     nonce: 0,
 //     txid: 'cd18094f57a4bf32bfcb38d1354fa5a2d5b553a5fb13a42ccffca75c09f8c4f4',
@@ -141,7 +142,7 @@ export const sampleWords = [
 //     flags: 0,
 //   },
 //   {
-//     type: BorkType.bork,
+//     type: BorkType.Bork,
 //     timestamp: moment().subtract(9.25, 'd').toISOString(),
 //     nonce: 0,
 //     txid: '81575afa892de8e41d7a6ce89c38d075da46f65f391a4ca5242691eb3e5e4c75',
@@ -156,7 +157,7 @@ export const sampleWords = [
 //     flags: 1,
 //   },
 //   {
-//     type: BorkType.bork,
+//     type: BorkType.Bork,
 //     timestamp: moment().subtract(12.5, 'd').toISOString(),
 //     nonce: 0,
 //     txid: '138c3e7c2fe40f2e1b73e85406af06ec924053ef173521d76cdab71b321cde8d',

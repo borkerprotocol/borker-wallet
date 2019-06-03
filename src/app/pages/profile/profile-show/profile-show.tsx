@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { Bork, User, BorkType } from '../../../../types/types'
+import { Bork, User } from '../../../../types/types'
 import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
@@ -12,6 +12,7 @@ import defaultAvatar from '../../../../assets/default-avatar.png'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
+import { BorkType } from 'borker-rs-browser'
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -21,7 +22,7 @@ export interface ProfileShowState {
   loading: boolean
   borks: Bork[]
   likes: Bork[]
-  profileUpdates: Bork[]
+  flags: Bork[]
 }
 
 class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState> {
@@ -33,7 +34,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
       loading: true,
       borks: [],
       likes: [],
-      profileUpdates: [],
+      flags: [],
     }
     this.webService = new WebService()
   }
@@ -56,23 +57,26 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
   }
 
   getUserData = async (senderAddress: string) => {
-    const [ borks, likes, profileUpdates ] = await Promise.all([
+    const [ borks, likes, flags ] = await Promise.all([
       this.webService.getBorks({
         senderAddress,
-        types: [BorkType.bork, BorkType.rebork, BorkType.comment],
+        types: [BorkType.Bork, BorkType.Rebork, BorkType.Comment],
       }),
       this.webService.getBorks({
         senderAddress,
-        types: [BorkType.like],
+        types: [BorkType.Like],
       }),
-      this.webService.getProfileUpdates(senderAddress),
+      this.webService.getBorks({
+        senderAddress,
+        types: [BorkType.Flag],
+      }),
     ])
 
-    this.setState({ loading: false, borks, likes, profileUpdates })
+    this.setState({ loading: false, borks, likes, flags })
   }
 
   render () {
-    const { loading, borks, likes, profileUpdates } = this.state
+    const { loading, borks, likes, flags } = this.state
     const { user } = this.props
 
     return (
@@ -80,13 +84,13 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
         <div className="follow-edit">
           {user.address === this.props.address ? (
             <div>
-              <Link to={`/profile/${user.address}/${BorkType.setName}`}>
+              <Link to={`/profile/${user.address}/${BorkType.SetName}`}>
                 <button>Set Name</button>
               </Link>
-              <Link to={`/profile/${user.address}/${BorkType.setBio}`}>
+              <Link to={`/profile/${user.address}/${BorkType.SetBio}`}>
                 <button>Set Bio</button>
               </Link>
-              <Link to={`/profile/${user.address}/${BorkType.setAvatar}`}>
+              <Link to={`/profile/${user.address}/${BorkType.SetAvatar}`}>
                 <button>Set Avatar</button>
               </Link>
             </div>
@@ -128,7 +132,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           <TabList>
             <Tab>Borks</Tab>
             <Tab>Likes</Tab>
-            <Tab>Profile Updates</Tab>
+            <Tab>Flags</Tab>
           </TabList>
 
           <TabPanel>
@@ -165,26 +169,17 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           <TabPanel>
             {!loading &&
               <div>
-                {profileUpdates.length > 0 &&
-                  <ul className="profile-update-list">
-                    {profileUpdates.map(p => {
-                      return (
-                        <li key={p.txid}>
-                          <p style={{ color: 'gray' }}>{calendar(p.createdAt)}</p>
-
-                          <p>
-                            Changed <b style={{ textTransform: 'capitalize' }}>{p.type.split('_')[1]}</b> to: "{p.content}"
-                          </p>
-                        </li>
-                      )
-                    })}
-                  </ul>
+                {likes.length > 0 &&
+                  <BorkList borks={flags.map(l => {
+                    return l.parent
+                  })} />
                 }
-                {!profileUpdates.length &&
-                  <p>No Profile Updates</p>
+                {!flags.length &&
+                  <p>No Flags</p>
                 }
               </div>
             }
+
           </TabPanel>
         </Tabs>
       </div>

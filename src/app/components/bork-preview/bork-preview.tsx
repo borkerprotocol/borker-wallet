@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { Bork, BorkType } from '../../../types/types'
+import { Bork } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { fromNow } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, IconDefinition, faRetweet } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
 import './bork-preview.scss'
+import { BorkType } from 'borker-rs-browser'
 
 export interface BorkPreviewComponentProps {
   bork: Bork
@@ -23,11 +24,11 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
     let childText: string = ''
     let childIcon: any
 
-    if (bork.type === BorkType.like || bork.type === BorkType.rebork) {
+    if (bork.type === BorkType.Like || bork.type === BorkType.Rebork) {
       child = bork
       bork = bork.parent
-      childText = child.type === BorkType.like ? 'Liked' : 'Reborked'
-      childIcon = child.type === BorkType.like ? faHeart : faRetweet
+      childText = child.type === BorkType.Like ? 'Liked' : 'Reborked'
+      childIcon = child.type === BorkType.Like ? faHeart : faRetweet
     }
 
     // TODO convert #tags into <Links>
@@ -49,7 +50,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
 
     const userAddress = (
       <Link to={`/profile/${bork.sender.address}`} className="bork-useraddress">
-        @{bork.sender.address.substring(0,9)}
+        @{bork.sender.address.substring(0, 9)}
       </Link>
     )
 
@@ -69,7 +70,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
     return (
       <div>
         <div className="bork-header">
-          {child && 
+          {child &&
             <p className="bork-preview-ref">
               <FontAwesomeIcon
                 icon={childIcon}
@@ -88,7 +89,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
         <div className={isSubBork ? "sub-bork-content" : "bork-content-small"}>
           <BorkBody />
         </div>
-        {bork.type === BorkType.comment && bork.parent &&
+        {bork.type === BorkType.Comment && bork.parent &&
           <div className="sub-bork">
             <BorkPreviewComponent bork={bork.parent} isSubBork />
           </div>

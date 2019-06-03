@@ -16,7 +16,7 @@ export interface EncryptModalState {
 
 class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState> {
 
-  constructor(props: EncryptModalProps) {
+  constructor (props: EncryptModalProps) {
     super(props)
     this.state = {
       password: '',
@@ -44,7 +44,7 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     this.setState({ password: e.target.value })
   }
 
-  render() {
+  render () {
     const { password } = this.state
 
     return (

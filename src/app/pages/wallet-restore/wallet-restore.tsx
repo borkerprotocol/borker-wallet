@@ -43,7 +43,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
     this.props.toggleModal(modal)
   }
 
-  render() {
+  render () {
     const { isMnemonicEntered, mnemonic } = this.state
 
     return (

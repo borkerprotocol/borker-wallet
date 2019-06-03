@@ -1,11 +1,11 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import { BorkType } from '../../../types/types'
 import FeedPage from './feed/feed'
 import BorkViewPage from './bork-view/bork-view'
 import BorkNewPage from './bork-new/bork-new'
 import UserListPage from '../user-list/user-list'
 import '../../App.scss'
+import { BorkType } from 'borker-rs-browser'
 
 class BorksRoutes extends React.Component<{}, {}> {
 
@@ -36,17 +36,17 @@ class BorksRoutes extends React.Component<{}, {}> {
         <Route
           exact
           path="/borks/:ref/reborks"
-          render={props => <UserListPage {...props} filter={BorkType.rebork} />}
+          render={props => <UserListPage {...props} filter={BorkType.Rebork} />}
         />
         <Route
           exact
           path="/borks/:ref/likes"
-          render={props => <UserListPage {...props} filter={BorkType.like} />}
+          render={props => <UserListPage {...props} filter={BorkType.Like} />}
         />
         <Route
           exact
           path="/borks/:ref/flags"
-          render={props => <UserListPage {...props} filter={BorkType.flag} />}
+          render={props => <UserListPage {...props} filter={BorkType.Flag} />}
         />
         <Redirect to="/borks/feed" />
       </Switch>
