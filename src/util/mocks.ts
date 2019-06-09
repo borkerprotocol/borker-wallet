@@ -1,7 +1,6 @@
-import { Bork, User, ProfileUpdate, ProfileFields } from "../../src/types/types"
+import { Bork, User, BorkType } from "../../src/types/types"
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
-import { BorkType } from "borker-rs-browser"
 
 export const sampleWords = [
   'blade',
@@ -45,7 +44,7 @@ export const sampleWords = [
 //     address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
 //     content: 'I like to bork. I like to bork',
 //     isThread: false,
-//     threadIndex: 0,
+//     position: 0,
 //     replies: 2,
 //     reborks: 4,
 //     likes: 20,
@@ -60,7 +59,7 @@ export const sampleWords = [
   //   address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
   //   content: 'Bork some more. Bork some more.',
   //   isThread: false,
-  //   threadIndex: 0,
+  //   position: 0,
   //   replies: 4,
   //   reborks: 20,
   //   likes: 100,
@@ -75,7 +74,7 @@ export const sampleWords = [
 //     address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
 //     content: 'Borking like there aint no tomorrow',
 //     isThread: false,
-//     threadIndex: 0,
+//     position: 0,
 //     replies: 44,
 //     reborks: 500,
 //     likes: 250,
@@ -90,7 +89,7 @@ export const sampleWords = [
 //     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
 //     content: 'This is a long bork that will take up two whole transactions. I will write',
 //     isThread: true,
-//     threadIndex: 0,
+//     position: 0,
 //     replies: 0,
 //     reborks: 2,
 //     likes: 15,
@@ -105,7 +104,7 @@ export const sampleWords = [
 //     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
 //     content: 'just a little more. See, I told you. Bork on. We will actually do one more',
 //     isThread: true,
-//     threadIndex: 1,
+//     position: 1,
 //     replies: 1,
 //     reborks: 1,
 //     likes: 1,
@@ -120,7 +119,7 @@ export const sampleWords = [
 //     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
 //     content: 'just to seal the deal. There. Done and done.',
 //     isThread: true,
-//     threadIndex: 2,
+//     position: 2,
 //     replies: 1,
 //     reborks: 2,
 //     likes: 10,
@@ -135,7 +134,7 @@ export const sampleWords = [
 //     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
 //     content: 'This bork is a little older',
 //     isThread: false,
-//     threadIndex: 0,
+//     position: 0,
 //     replies: 0,
 //     reborks: 1,
 //     likes: 1,
@@ -150,7 +149,7 @@ export const sampleWords = [
 //     address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
 //     content: 'And this one is even older.',
 //     isThread: false,
-//     threadIndex: 0,
+//     position: 0,
 //     replies: 3,
 //     reborks: 2,
 //     likes: 10,
@@ -165,7 +164,7 @@ export const sampleWords = [
 //     address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
 //     content: 'One final bork to end them all.',
 //     isThread: false,
-//     threadIndex: 0,
+//     position: 0,
 //     replies: 10,
 //     reborks: 13,
 //     likes: 1000,
@@ -183,36 +182,5 @@ export const sampleWords = [
 //   {
 //     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
 //     txid: '069aa2f138cbdc6ebd379b1e6d1cb7f86c8770ad58be27006671d528a75ba0e3',
-//   },
-// ]
-
-// export const sampleProfileUpdates: ProfileUpdate[] = [
-//   {
-//     timestamp: moment().subtract(10, 'd').toISOString(),
-//     address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
-//     txid: '39128e8edacce1ada4e1df9aa5fc91431302ef951df06a78e13f4fbc3759e752',
-//     field: ProfileFields.name,
-//     value: 'MattHill',
-//   },
-//   {
-//     timestamp: moment().subtract(14, 'd').toISOString(),
-//     address: 'DSJdZogGLmREMZTyJGSzSs2RL9UJjeqKd7',
-//     txid: 'd128ab6c2de86559b0dfe408a62a37073a65934eda8c4283bcfacb0cf3da7b56',
-//     field: ProfileFields.name,
-//     value: 'MatthewHill',
-//   },
-//   {
-//     timestamp: moment().subtract(2, 'd').toISOString(),
-//     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-//     txid: '94a10c877bdace5b0ccf17f0b718ba602c9f878f9a4a35fd3e68518accb859c2',
-//     field: ProfileFields.name,
-//     value: 'DR-BoneZ',
-//   },
-//   {
-//     timestamp: moment().subtract(30, 'd').toISOString(),
-//     address: 'D65dwxsVdaCFHUGqAVWKgdddsa9ADxXcGk',
-//     txid: '774bef2197e6394112e1ee18246f1a0137ddb19a4d2d4464c1e25217977a0460',
-//     field: ProfileFields.name,
-//     value: 'Aiden',
 //   },
 // ]

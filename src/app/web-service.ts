@@ -1,14 +1,11 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { User, Bork, OrderBy, Utxo } from '../types/types'
+import { User, Bork, BorkType, OrderBy, Utxo } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
 import { BorkerConfig } from './pages/settings/settings'
-import { BorkType } from 'borker-rs-browser'
 
 class WebService {
-
-  constructor () {}
 
   async getBalance (): Promise<BigNumber> {
     const address = await Storage.get<string>('address')
@@ -152,7 +149,7 @@ export interface IndexParams {
 }
 
 export interface IndexBorkParams extends IndexParams {
-  filterFollowing?: 1
+  filterFollowing?: boolean
   senderAddress?: string
   parentTxid?: string
   types?: BorkType[]

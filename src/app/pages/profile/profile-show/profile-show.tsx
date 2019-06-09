@@ -2,17 +2,15 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { Bork, User } from '../../../../types/types'
+import { Bork, User, BorkType } from '../../../../types/types'
 import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
 import BlockButton from '../../../components/block-button/block-button'
-import { calendar } from '../../../../util/timestamps'
 import defaultAvatar from '../../../../assets/default-avatar.png'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -103,14 +101,14 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           )}
         </div>
         <div className="profile-header">
-          <img src={user.avatarLink || defaultAvatar} className="profile-avatar" />
+          <img src={user.avatarLink || defaultAvatar} className="profile-avatar" alt='profile' />
           <h2>
             {user.name}
           </h2>
           <h4>
-            <a href={`https://chain.so/address/DOGE/${user.address}`} target="_blank">@{user.address.substr(0, 9)}</a>
+            <a href={`https://chain.so/address/DOGE/${user.address}`} target="_blank" rel="noopener noreferrer">@{user.address.substr(0, 9)}</a>
             <br></br>
-            <b>Birth Block: </b><a href={`https://chain.so/block/DOGE/${user.birthBlock}`} target="_blank">{user.birthBlock}</a>
+            <b>Birth Block: </b><a href={`https://chain.so/block/DOGE/${user.birthBlock}`} target="_blank" rel="noopener noreferrer">{user.birthBlock}</a>
           </h4>
         </div>
         <p className="profile-bio">{user.bio}</p>
@@ -169,9 +167,9 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           <TabPanel>
             {!loading &&
               <div>
-                {likes.length > 0 &&
-                  <BorkList borks={flags.map(l => {
-                    return l.parent
+                {flags.length > 0 &&
+                  <BorkList borks={flags.map(f => {
+                    return f.parent
                   })} />
                 }
                 {!flags.length &&

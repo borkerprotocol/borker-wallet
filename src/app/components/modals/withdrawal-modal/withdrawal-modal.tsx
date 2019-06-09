@@ -1,7 +1,7 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
 import './withdrawal-modal.scss'
-import WebService from '../../../web-service';
+import WebService from '../../../web-service'
 
 export interface WithdrawalModalProps {
   balance: BigNumber

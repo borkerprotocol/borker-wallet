@@ -5,7 +5,7 @@ import BorkViewPage from './bork-view/bork-view'
 import BorkNewPage from './bork-new/bork-new'
 import UserListPage from '../user-list/user-list'
 import '../../App.scss'
-import { BorkType } from 'borker-rs-browser'
+import { BorkType } from '../../../types/types'
 
 class BorksRoutes extends React.Component<{}, {}> {
 

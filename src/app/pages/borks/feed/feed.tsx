@@ -1,11 +1,10 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { Bork } from '../../../../types/types'
+import { Bork, BorkType } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
 import WebService from '../../../web-service'
 import '../../../App.scss'
 import './feed.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface FeedProps extends AuthProps {}
 
@@ -28,7 +27,7 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
 
     this.setState({
       borks: await this.webService.getBorks({
-        filterFollowing: 1,
+        filterFollowing: true,
         types: [
           BorkType.Bork,
           BorkType.Rebork,

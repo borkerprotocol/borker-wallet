@@ -3,7 +3,7 @@ import { Omit } from '../../types/types'
 
 // app context
 export interface AppContext {
-  address: string 
+  address: string
   login: (address: string) => Promise<void>
   logout: () => Promise<void>
   toggleModal: (content: JSX.Element | null) => void

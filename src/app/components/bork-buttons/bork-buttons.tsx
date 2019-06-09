@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Bork } from '../../../types/types'
+import { Bork, BorkType } from '../../../types/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments as commentsOutline } from '@fortawesome/free-regular-svg-icons'
 import { faComments as commentsSolid } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +13,6 @@ import { withAppContext, AppProps } from '../../contexts/app-context'
 import BigNumber from 'bignumber.js'
 import '../../App.scss'
 import './bork-buttons.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface BorkButtonsProps extends AppProps {
   bork: Bork
@@ -26,7 +25,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         data={{
-          type: BorkType.Rebork,
+          type: this.props.bork.iRebork ? BorkType.Delete : BorkType.Rebork,
           parent: {
             txid: this.props.bork.txid,
             tip: new BigNumber(10),
@@ -40,13 +39,13 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   like = () => {
     const modal = (
       <CheckoutModal
-      data={{
-        type: BorkType.Like,
-        parent: {
-          txid: this.props.bork.txid,
-          tip: new BigNumber(10),
-        },
-      }}
+        data={{
+          type: this.props.bork.iLike ? BorkType.Delete : BorkType.Like,
+          parent: {
+            txid: this.props.bork.txid,
+            tip: new BigNumber(10),
+          },
+        }}
       />
     )
     this.props.toggleModal(modal)
@@ -56,7 +55,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         data={{
-          type: BorkType.Flag,
+          type: this.props.bork.iFlag ? BorkType.Delete : BorkType.Flag,
           content: this.props.bork.txid,
         }}
       />

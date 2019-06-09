@@ -1,21 +1,6 @@
-import { BorkType } from "borker-rs-browser"
-
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type OrderBy<Entity> = { [P in keyof Entity]?: 'ASC' | 'DESC' }
-
-export interface TxData {
-  inputs: Utxo[],
-  outputs: Output[],
-  fee: string
-  txHash: string
-}
-
-export interface Output {
-  address: string
-  value: string
-  content: string
-}
 
 export interface User {
   address: string
@@ -34,40 +19,45 @@ export interface Bork {
   type: BorkType
   createdAt: string
   nonce: number
+  position: number
   txid: string
   content: string
-  fee: string
-  value: string
-  commentsCount: number
-  reborksCount: number
-  likesCount: number
-  flagsCount: number
   sender: User
   parent: Bork
   mentions: User[]
   extensions: Bork[]
+  commentsCount: number
+  reborksCount: number
+  likesCount: number
+  flagsCount: number
   iComment: boolean
   iRebork: boolean
   iLike: boolean
   iFlag: boolean
 }
 
-export interface FullUser extends User {
-  borks: Bork[]
-  profileUpdates: ProfileUpdate[]
+export enum BorkType {
+  SetName = 'set_name',
+  SetBio = 'set_bio',
+  SetAvatar = 'set_avatar',
+  Bork = 'bork',
+  Comment = 'comment',
+  Rebork = 'rebork',
+  Extension = 'extension',
+  Delete = 'delete',
+  Like = 'like',
+  Flag = 'flag',
+  Follow = 'follow',
+  Block = 'block',
 }
 
-export interface ProfileUpdate {
-  address: string
-  timestamp: string
-  txid: string
-  field: ProfileFields
-  value: string
+export interface FullUser extends User {
+  borks: Bork[]
 }
 
 export interface Utxo {
   txid: string
-  index: number
+  position: number
   createdAt: string
   address: string
   value: string

@@ -1,13 +1,12 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { Bork } from '../../../../types/types'
+import { Bork, BorkType } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
 import { RouteComponentProps } from 'react-router'
 import WebService from '../../../web-service'
 import BorkComponent from '../../../components/bork/bork'
 import '../../../App.scss'
 import './bork-view.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface BorkViewParams {
   txid: string
@@ -17,6 +16,7 @@ export interface BorkViewProps extends AuthProps, RouteComponentProps<BorkViewPa
 
 export interface BorkViewState {
   bork: Bork | null
+  extensions: Bork[]
   comments: Bork[]
 }
 
@@ -27,6 +27,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     super(props)
     this.state = {
       bork: null,
+      extensions: [],
       comments: [],
     }
     this.webService = new WebService()
@@ -36,8 +37,12 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     this.props.setTitle('Bork')
     this.props.setShowFab(false)
 
-    const [bork, comments] = await Promise.all([
+    const [bork, extensions, comments] = await Promise.all([
       this.webService.getBork(this.props.match.params.txid),
+      this.webService.getBorks({
+        parentTxid: this.props.match.params.txid,
+        types: [BorkType.Extension],
+      }),
       this.webService.getBorks({
         parentTxid: this.props.match.params.txid,
         types: [BorkType.Comment],
@@ -46,6 +51,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
 
     this.setState({
       bork,
+      extensions,
       comments,
     })
   }
@@ -55,8 +61,12 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     const newTxid = nextProps.match.params.txid
 
     if (oldTxid !== newTxid) {
-      const [bork, comments] = await Promise.all([
+      const [bork, extensions, comments] = await Promise.all([
         this.webService.getBork(newTxid),
+        this.webService.getBorks({
+          parentTxid: newTxid,
+          types: [BorkType.Extension],
+        }),
         this.webService.getBorks({
           parentTxid: newTxid,
           types: [BorkType.Comment],
@@ -65,13 +75,14 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
 
       this.setState({
         bork,
+        extensions,
         comments,
       })
     }
   }
 
   render () {
-    const { bork, comments } = this.state
+    const { bork, extensions, comments } = this.state
 
     return !bork ? (
       <div>
@@ -81,7 +92,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       <div>
         <BorkList borks={bork.parent ? [bork.parent] : []} />
         <BorkComponent bork={bork} showButtons />
-        <BorkList borks={bork.extensions} />
+        <BorkList borks={extensions} />
         <BorkList borks={comments} />
       </div>
     )

@@ -22,7 +22,7 @@ export interface CheckoutModalState {
 class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalState> {
   public webService: WebService
 
-  constructor(props: CheckoutModalProps) {
+  constructor (props: CheckoutModalProps) {
     super(props)
     this.state = {
       fees: new BigNumber(0),
@@ -33,7 +33,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     this.webService = new WebService()
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     const { txCount, parent } = this.props.data
 
     const fees = txCount ? new BigNumber(txCount).times(1) : new BigNumber(1)
@@ -67,7 +67,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     this.webService.signAndBroadcastTx(rawTxs)
   }
 
-  render() {
+  render () {
     const { data } = this.props
     const { tip, totalCost, fees, password } = this.state
 

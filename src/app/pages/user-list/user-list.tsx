@@ -2,12 +2,11 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
-import { User } from '../../../types/types'
+import { User, BorkType } from '../../../types/types'
 import WebService from '../../web-service'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import FollowButton from '../../components/follow-button/follow-button'
 import './user-list.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export enum FollowsType {
   following = 'following',
@@ -75,7 +74,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
                   <FollowButton user={user} />
                 </div>
                 <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
-                  <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" />
+                  <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" alt='avatar' />
                   <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
                   <span style={{ color: 'gray' }}>@{user.address.substring(0, 9)}</span><br />
                   <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>

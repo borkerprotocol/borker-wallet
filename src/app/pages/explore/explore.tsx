@@ -20,7 +20,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
   constructor (props: UserListProps) {
     super(props)
     this.state = {
-      order: { followersCount: 'DESC' },
+      order: {},
       users: [],
     }
     this.webService = new WebService()
@@ -50,9 +50,9 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
                   <FollowButton user={user} />
                 </div>
                 <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
-                  <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" />
+                  <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" alt='avatar' />
                   <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
-                  <span style={{ color: 'gray' }}>@{user.address.substring(0,9)}</span><br />
+                  <span style={{ color: 'gray' }}>@{user.address.substring(0, 9)}</span><br />
                   <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>
                 </Link>
               </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import { Bork } from '../../../types/types'
+import { Bork, BorkType } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
 import './bork.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface BorkComponentProps {
   bork: Bork
@@ -27,7 +26,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
     const avatar = (
       <Link to={`/profile/${bork.sender.address}`}>
-        <img src={bork.sender.avatarLink || defaultAvatar} className="bork-avatar" />
+        <img src={bork.sender.avatarLink || defaultAvatar} className="bork-avatar" alt='avatar' />
       </Link>
     )
 
@@ -76,7 +75,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
         <div className="bork-content">
           <div className="bork-border">
             <BorkBody />
-            <p><a href={`https://chain.so/tx/DOGE/${bork.txid}`} target="_blank">{bork.txid.substr(0, 20)}</a></p>
+            <p><a href={`https://chain.so/tx/DOGE/${bork.txid}`} target="_blank" rel="noopener noreferrer">{bork.txid.substr(0, 20)}</a></p>
             <p style={{ color: 'gray' }}>{calendar(bork.createdAt)}</p>
           </div>
           <div className="bork-border">

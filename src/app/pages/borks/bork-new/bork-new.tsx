@@ -4,17 +4,18 @@ import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import BorkPreviewComponent from '../../../components/bork-preview/bork-preview'
 import WebService, { ConstructRequest } from '../../../web-service'
-import { Bork } from '../../../../types/types'
+import { Bork, BorkType } from '../../../../types/types'
 import BigNumber from 'bignumber.js'
 import './bork-new.scss'
 import '../../../App.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface NewBorkParams {
   txid: string
 }
 
-export interface NewBorkProps extends AuthProps, RouteComponentProps<NewBorkParams> {}
+export interface NewBorkProps extends AuthProps, RouteComponentProps<NewBorkParams> {
+  type: BorkType.Bork | BorkType.Comment | BorkType.Rebork
+}
 
 export interface NewBorkState {
   body: string
@@ -56,7 +57,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     const txCount = charCount === 0 ? 0 : charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
 
     const data: ConstructRequest = {
-      type: parent ? BorkType.Comment : BorkType.Bork,
+      type: this.props.type,
       content: body,
     }
     if (parent) {

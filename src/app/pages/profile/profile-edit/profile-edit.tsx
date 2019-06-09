@@ -1,11 +1,10 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
-import { User } from '../../../../types/types'
+import { User, BorkType } from '../../../../types/types'
 import { RouteComponentProps } from 'react-router'
 import './profile-edit.scss'
 import '../../../App.scss'
-import { BorkType } from 'borker-rs-browser'
 
 export interface ProfileEditParams {
   type: BorkType.SetName | BorkType.SetBio | BorkType.SetAvatar
@@ -27,8 +26,8 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     super(props)
     this.state = {
       previousValue: props.match.params.type === BorkType.SetName ? props.user.name :
-                            BorkType.SetBio ? props.user.bio :
-                            BorkType.SetAvatar ? props.user.avatarLink : '',
+        BorkType.SetBio ? props.user.bio :
+        BorkType.SetAvatar ? props.user.avatarLink : '',
       value: '',
     }
   }
