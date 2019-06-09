@@ -1,4 +1,4 @@
-# Borker-App - UNRELEASED
+# Borker-Wallet - UNRELEASED
 
 An open-source, decentralized, React/Typescript/Rust/WASM Progressive Web Application for unstoppable news sharing on the Degecoin Blockchain.
 
@@ -17,7 +17,7 @@ https://github.com/nodesource/distributions/blob/master/README.md
 ```npm install -g typescript```
 
 ### Clone the repository
-```git clone https://github.com/MattDHill/borker-app.git```
+```git clone https://github.com/MattDHill/borker-wallet.git```
 
 ```cd borker-app```
 
