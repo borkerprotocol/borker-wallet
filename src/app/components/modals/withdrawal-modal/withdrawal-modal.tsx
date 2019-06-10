@@ -34,8 +34,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
 
   withdraw = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const utxos = await this.webService.getUtxos(this.state.amount)
-    console.log('utxos', utxos)
+    const utxos = await this.webService.getUtxos(new BigNumber(this.state.amount).times(100000000))
   }
 
   fillMax = () => {

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Omit } from '../../types/types'
 import { withAppContext, AppContext } from './app-context'
 import BigNumber from 'bignumber.js'
 
@@ -7,6 +6,7 @@ import BigNumber from 'bignumber.js'
 export interface AuthContext {
   setTitle: (title: string) => void
   setShowFab: (showFab: boolean) => void
+  getBalance: () => void
   balance: BigNumber
 }
 export const AuthContext = React.createContext({} as AuthContext)

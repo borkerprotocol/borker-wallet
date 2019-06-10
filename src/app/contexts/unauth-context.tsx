@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Omit } from '../../types/types'
 import { withAppContext, AppContext } from './app-context'
 
 // unauth context

@@ -19,16 +19,27 @@ class WebService {
     return new BigNumber(res)
   }
 
-  async getUtxos (amount: string): Promise<Utxo[]> {
+  async getUtxos (amount: BigNumber): Promise<Utxo[]> {
     const address = await Storage.get<string>('address')
 
     const options: rp.Options = {
       method: 'GET',
       url: `/users/${address}/utxos`,
-      qs: { amount },
+      qs: { amount: amount.toString() },
     }
 
     return this.request(options)
+  }
+
+  async getReferenceId (txid: string, address: string): Promise<string> {
+    const options: rp.Options = {
+      method: 'GET',
+      url: `/borks/referenceId`,
+      qs: { txid, address },
+    }
+
+    const res = await this.request(options)
+    return res.referenceId
   }
 
   async signAndBroadcastTx (body: string[]): Promise<void> {
@@ -153,14 +164,5 @@ export interface IndexBorkParams extends IndexParams {
   senderAddress?: string
   parentTxid?: string
   types?: BorkType[]
-}
-
-export interface ConstructRequest {
-  type: BorkType,
-  txCount?: number
-  content?: string
-  parent?: {
-    txid: string
-    tip: BigNumber
-  }
+  order?: OrderBy<Bork>
 }

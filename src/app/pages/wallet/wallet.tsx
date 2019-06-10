@@ -1,7 +1,7 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import DepositModal from '../../components/modals/deposit-modal/deposit-modal'
-import WithdrawalModal from '../../components/modals/withdrawal-modal/withdrawal-modal';
+import WithdrawalModal from '../../components/modals/withdrawal-modal/withdrawal-modal'
 import '../../App.scss'
 import './wallet.scss'
 
@@ -12,6 +12,7 @@ class WalletPage extends React.PureComponent<WalletProps> {
   async componentDidMount () {
     this.props.setShowFab(false)
     this.props.setTitle('Wallet')
+    this.props.getBalance()
   }
 
   render () {

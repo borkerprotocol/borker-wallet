@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Omit } from '../../types/types'
 
 export function addContext<T> (Context: React.Context<T>) {
   return function withContext<P extends T> (Component: React.ComponentType<P>) {
@@ -12,7 +11,7 @@ export function addContext<T> (Context: React.Context<T>) {
         )
       }
     }
-  
+
     return ContextHOC
   }
 }

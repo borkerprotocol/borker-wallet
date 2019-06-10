@@ -55,7 +55,10 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     const { previousValue, value } = this.state
 
     const modal = (
-      <CheckoutModal data={{ type, content: value }} />
+      <CheckoutModal
+        type={type}
+        content={value}
+      />
     )
 
     return (

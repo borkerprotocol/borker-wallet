@@ -20,7 +20,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
   constructor (props: UserListProps) {
     super(props)
     this.state = {
-      order: {},
+      order: { birthBlock: 'ASC' },
       users: [],
     }
     this.webService = new WebService()

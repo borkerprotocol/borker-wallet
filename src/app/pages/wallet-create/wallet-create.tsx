@@ -2,7 +2,7 @@ import React from 'react'
 import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 import { withUnauthContext, UnauthProps } from '../../contexts/unauth-context'
 import { JsWallet } from 'borker-rs-browser'
-import { sampleWords } from '../../../util/mocks'
+// import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
 import './wallet-create.scss'
 
@@ -21,7 +21,7 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
   async componentDidMount () {
     const borkerLib = await import('borker-rs-browser')
     this.setState({
-      wallet: new borkerLib.JsWallet(sampleWords),
+      wallet: new borkerLib.JsWallet(),
     })
   }
 
@@ -33,35 +33,35 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
     }
 
     const modal = (
-      <EncryptModal wallet={wallet} />
+      <EncryptModal newWallet={wallet} />
     )
 
     const words = wallet.words()
 
-    return wallet ? (
+    return (
       <div className="page-content">
         <p>Below is your recovery phrase. Write it down.</p>
         <table className="words-table">
           <tbody>
             <tr>
-              <td>{words[0]}</td>
-              <td>{words[1]}</td>
-              <td>{words[2]}</td>
+              <td>1. {words[0]}</td>
+              <td>2. {words[1]}</td>
+              <td>3. {words[2]}</td>
             </tr>
             <tr>
-              <td>{words[3]}</td>
-              <td>{words[4]}</td>
-              <td>{words[5]}</td>
+              <td>4. {words[3]}</td>
+              <td>5. {words[4]}</td>
+              <td>6. {words[5]}</td>
             </tr>
             <tr>
-              <td>{words[6]}</td>
-              <td>{words[7]}</td>
-              <td>{words[8]}</td>
+              <td>7. {words[6]}</td>
+              <td>8. {words[7]}</td>
+              <td>9. {words[8]}</td>
             </tr>
             <tr>
-              <td>{words[9]}</td>
-              <td>{words[10]}</td>
-              <td>{words[11]}</td>
+              <td>10. {words[9]}</td>
+              <td>11. {words[10]}</td>
+              <td>12. {words[11]}</td>
             </tr>
           </tbody>
         </table>
@@ -69,9 +69,7 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
           I've Written Down My Recovery Phrase
         </button>
       </div>
-    ) : (
-        null
-      )
+    )
   }
 }
 

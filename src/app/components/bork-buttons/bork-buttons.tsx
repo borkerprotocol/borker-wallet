@@ -24,12 +24,12 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   rebork = () => {
     const modal = (
       <CheckoutModal
-        data={{
-          type: this.props.bork.iRebork ? BorkType.Delete : BorkType.Rebork,
-          parent: {
-            txid: this.props.bork.txid,
-            tip: new BigNumber(10),
-          },
+        type={this.props.bork.iRebork ? BorkType.Delete : BorkType.Rebork}
+        content={this.props.bork.iRebork ? this.props.bork.txid : undefined}
+        parent={{
+          txid: this.props.bork.txid,
+          senderAddress: this.props.bork.sender.address,
+          tip: new BigNumber(1000000000),
         }}
       />
     )
@@ -39,12 +39,12 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   like = () => {
     const modal = (
       <CheckoutModal
-        data={{
-          type: this.props.bork.iLike ? BorkType.Delete : BorkType.Like,
-          parent: {
-            txid: this.props.bork.txid,
-            tip: new BigNumber(10),
-          },
+        type={this.props.bork.iLike ? BorkType.Delete : BorkType.Like}
+        content={this.props.bork.iLike ? this.props.bork.txid : undefined}
+        parent={{
+          txid: this.props.bork.txid,
+          senderAddress: this.props.bork.sender.address,
+          tip: new BigNumber(200000000),
         }}
       />
     )
@@ -54,10 +54,8 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   flag = () => {
     const modal = (
       <CheckoutModal
-        data={{
-          type: this.props.bork.iFlag ? BorkType.Delete : BorkType.Flag,
-          content: this.props.bork.txid,
-        }}
+        type={this.props.bork.iFlag ? BorkType.Delete : BorkType.Flag}
+        content={this.props.bork.txid}
       />
     )
     this.props.toggleModal(modal)

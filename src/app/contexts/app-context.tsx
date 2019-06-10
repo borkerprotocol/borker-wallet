@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { Omit } from '../../types/types'
+import { JsWallet, JsChildWallet } from 'borker-rs-browser'
 
 // app context
 export interface AppContext {
   address: string
-  login: (address: string) => Promise<void>
+  wallet: JsChildWallet | null
+  login: (wallet: JsWallet, password: string) => Promise<void>
   logout: () => Promise<void>
+  decryptWallet: (password: string) => Promise<JsChildWallet>
   toggleModal: (content: JSX.Element | null) => void
 }
 export const AppContext = React.createContext({} as AppContext)

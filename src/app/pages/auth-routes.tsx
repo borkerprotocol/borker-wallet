@@ -57,10 +57,6 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
 
   async componentDidMount () {
     mql.addListener(this.mediaQueryChanged)
-
-    this.setState({
-      balance: await this.webService.getBalance(),
-    })
   }
 
   componentWillUnmount () {
@@ -78,6 +74,12 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
   toggleSidebar = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
     this.onSetSidebarOpen(!this.state.sidebarOpen)
+  }
+
+  getBalance = async () => {
+    this.setState({
+      balance: await this.webService.getBalance(),
+    })
   }
 
   setTitle = (title: string) => {
@@ -114,6 +116,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
       <AuthContext.Provider value={{
         setTitle: this.setTitle,
         setShowFab: this.setShowFab,
+        getBalance: this.getBalance,
         balance,
       }}>
         <Sidebar {...sidebarProps}>

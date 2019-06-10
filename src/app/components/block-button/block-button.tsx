@@ -15,14 +15,25 @@ class BlockButton extends React.PureComponent<BlockButtonProps> {
     return this.props.address === this.props.user.address ? (
       null
     ) : this.props.user.iBlock ? (
-      <button
-        onClick={() => this.props.toggleModal(<CheckoutModal data={{ type: BorkType.Delete, content: this.props.user.address }} />)}
-        className="unblock-button"
+      <button onClick={() => this.props.toggleModal(
+        <CheckoutModal
+          type={BorkType.Delete}
+          content={this.props.user.address}
+        />,
+      )}
+      className="unblock-button"
       >
         Blocking
       </button>
     ) : (
-      <button onClick={() => this.props.toggleModal(<CheckoutModal data={{ type: BorkType.Block, content: this.props.user.address }} />)}>Block</button>
+      <button onClick={() => this.props.toggleModal(
+        <CheckoutModal
+          type={BorkType.Block}
+          content={this.props.user.address}
+        />,
+      )}>
+        Block
+      </button>
     )
   }
 }

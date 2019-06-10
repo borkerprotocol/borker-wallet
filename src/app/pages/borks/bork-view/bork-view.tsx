@@ -42,6 +42,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       this.webService.getBorks({
         parentTxid: this.props.match.params.txid,
         types: [BorkType.Extension],
+        order: { position: 'ASC' },
       }),
       this.webService.getBorks({
         parentTxid: this.props.match.params.txid,
@@ -66,6 +67,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
         this.webService.getBorks({
           parentTxid: newTxid,
           types: [BorkType.Extension],
+          order: { position: 'ASC' },
         }),
         this.webService.getBorks({
           parentTxid: newTxid,

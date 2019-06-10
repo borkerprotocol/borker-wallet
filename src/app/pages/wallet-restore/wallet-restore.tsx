@@ -2,7 +2,7 @@ import React from 'react'
 import { JsWallet } from 'borker-rs-browser'
 import { UnauthProps, withUnauthContext } from '../../contexts/unauth-context'
 import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
-import { sampleWords } from '../../../util/mocks'
+// import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
 import './wallet-restore.scss'
 
@@ -17,7 +17,7 @@ export interface WalletRestoreState {
 class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestoreState> {
 
   state = {
-    wallet: null as any,
+    wallet: null as unknown as JsWallet,
     mnemonic: '',
     isMnemonicEntered: false,
   }
@@ -29,15 +29,15 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
     })
   }
 
-  genWallet = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  genWallet = async (e: React.BaseSyntheticEvent) => {
     if (!this.state.wallet) {
       const borkerLib = await import('borker-rs-browser')
-      const wallet = new borkerLib.JsWallet(sampleWords)
+      const wallet = new borkerLib.JsWallet(this.state.mnemonic.trim().replace(/ +/g, " ").split(' '))
       await this.setState({ wallet })
     }
 
     const modal = (
-      <EncryptModal wallet={this.state.wallet} />
+      <EncryptModal newWallet={this.state.wallet} />
     )
 
     this.props.toggleModal(modal)

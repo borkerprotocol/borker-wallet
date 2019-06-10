@@ -16,13 +16,13 @@ class FollowButton extends React.PureComponent<FollowButtonProps> {
       null
     ) : this.props.user.iFollow ? (
       <button
-        onClick={() => this.props.toggleModal(<CheckoutModal data={{ type: BorkType.Delete, content: this.props.user.address }} />)}
+        onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.Delete} content={this.props.user.address} />)}
         className="unfollow-button"
       >
         Following
       </button>
     ) : (
-      <button onClick={() => this.props.toggleModal(<CheckoutModal data={{ type: BorkType.Follow, content: this.props.user.address }} />)}>Follow</button>
+      <button onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.Follow} content={this.props.user.address} />)}>Follow</button>
     )
   }
 }

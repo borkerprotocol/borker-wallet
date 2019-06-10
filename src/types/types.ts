@@ -1,5 +1,3 @@
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
-
 export type OrderBy<Entity> = { [P in keyof Entity]?: 'ASC' | 'DESC' }
 
 export interface User {
