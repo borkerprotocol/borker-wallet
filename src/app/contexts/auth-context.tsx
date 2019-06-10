@@ -15,13 +15,13 @@ export const AuthContext = React.createContext({} as AuthContext)
 export type AuthProps = AuthContext & AppContext
 
 // auth HOC
-export function withAuthContext<P extends AuthProps> (Component: React.ComponentType<P>) {
+export function withAuthContext<P extends AuthProps>(Component: React.ComponentType<P>) {
   const AppComp = withAppContext(Component)
   return class AuthHOC extends React.PureComponent<
     Omit<P, keyof AuthProps>,
     AuthProps
-  > {
-    render () {
+    > {
+    render() {
       return (
         <AuthContext.Consumer>
           {newProps => <AppComp {...this.props as any} {...newProps} />}

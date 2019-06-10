@@ -9,7 +9,7 @@ import { BorkType } from '../../../types/types'
 
 class BorksRoutes extends React.Component<{}, {}> {
 
-  render () {
+  render() {
 
     return (
       <Switch>
@@ -21,7 +21,7 @@ class BorksRoutes extends React.Component<{}, {}> {
         <Route
           exact
           path="/borks/new"
-          component={BorkNewPage}
+          render={props => <BorkNewPage {...props} type={BorkType.Bork} />}
         />
         <Route
           exact
@@ -31,7 +31,7 @@ class BorksRoutes extends React.Component<{}, {}> {
         <Route
           exact
           path="/borks/:txid/comment"
-          component={BorkNewPage}
+          render={props => <BorkNewPage {...props} type={BorkType.Comment} />}
         />
         <Route
           exact

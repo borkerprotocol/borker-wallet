@@ -5,18 +5,18 @@ import WithdrawalModal from '../../components/modals/withdrawal-modal/withdrawal
 import '../../App.scss'
 import './wallet.scss'
 
-export interface WalletProps extends AuthProps {}
+export interface WalletProps extends AuthProps { }
 
 class WalletPage extends React.PureComponent<WalletProps> {
 
-  async componentDidMount () {
+  async componentDidMount() {
     this.props.setShowFab(false)
     this.props.setTitle('Wallet')
     this.props.getBalance()
   }
 
-  render () {
-    const { balance } = this.props
+  render() {
+    const { balance, wallet, decryptWallet } = this.props
 
     return (
       <div className="page-content">
@@ -29,7 +29,7 @@ class WalletPage extends React.PureComponent<WalletProps> {
           <tbody>
             <tr>
               <td><button onClick={() => this.props.toggleModal(<DepositModal />)}>Deposit</button></td>
-              <td><button onClick={() => this.props.toggleModal(<WithdrawalModal balance={balance} />)}>Withdrawal</button></td>
+              <td><button onClick={() => this.props.toggleModal(<WithdrawalModal balance={balance} wallet={wallet} decryptWallet={decryptWallet} />)}>Withdrawal</button></td>
             </tr>
           </tbody>
         </table>

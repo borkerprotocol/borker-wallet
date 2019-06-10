@@ -77,14 +77,9 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       { address: parent!.senderAddress, value: tip.toNumber() } :
       null
 
-    console.log('data', data)
-    console.log('inputs', inputs)
-    console.log('recipient', recipient)
-    console.log('fee', BigInt(fee))
-
     const rawTxs = localWallet!.newBork(data, inputs, recipient, [], BigInt(fee), borkerLib.Network.Dogecoin)
 
-    this.webService.signAndBroadcastTx(rawTxs)
+    return this.webService.signAndBroadcastTx(rawTxs)
   }
 
   render () {
