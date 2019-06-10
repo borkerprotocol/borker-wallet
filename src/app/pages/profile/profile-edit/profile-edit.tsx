@@ -26,8 +26,8 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
 
     this.state = {
       previousValue: props.match.params.type === BorkType.SetName ? props.user.name :
-        BorkType.SetBio ? props.user.bio :
-        BorkType.SetAvatar ? props.user.avatarLink : '',
+        props.match.params.type === BorkType.SetBio ? props.user.bio :
+        props.match.params.type === BorkType.SetAvatar ? props.user.avatarLink : '',
       value: '',
     }
   }

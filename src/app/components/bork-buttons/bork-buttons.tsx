@@ -48,7 +48,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
         } : {
           txid: this.props.bork.txid,
           senderAddress: this.props.bork.sender.address,
-          tip: new BigNumber(200000000),
+          tip: new BigNumber(1000000000),
         }}
       />
     )
