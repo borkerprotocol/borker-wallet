@@ -1,9 +1,9 @@
 import * as React from 'react'
 
-export function addContext<T> (Context: React.Context<T>) {
-  return function withContext<P extends T> (Component: React.ComponentType<P>) {
+export function addContext<T>(Context: React.Context<T>) {
+  return function withContext<P extends T>(Component: React.ComponentType<P>) {
     class ContextHOC extends React.PureComponent<Omit<P, keyof T>, T> {
-      render () {
+      render() {
         return (
           <Context.Consumer>
             {newProps => <Component {...this.props as any} {...newProps} />}

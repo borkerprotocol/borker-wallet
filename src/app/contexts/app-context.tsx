@@ -13,15 +13,15 @@ export interface AppContext {
 export const AppContext = React.createContext({} as AppContext)
 
 // app props
-export interface AppProps extends AppContext {}
+export interface AppProps extends AppContext { }
 
 // app HOC
-export function withAppContext<P extends AppProps> (Component: React.ComponentType<P>) {
+export function withAppContext<P extends AppProps>(Component: React.ComponentType<P>) {
   class AppHOC extends React.PureComponent<
     Omit<P, keyof AppProps>,
     AppProps
-  > {
-    render () {
+    > {
+    render() {
       return (
         <AppContext.Consumer>
           {newProps => <Component {...this.props as any} {...newProps} />}
