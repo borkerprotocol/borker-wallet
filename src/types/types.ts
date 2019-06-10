@@ -9,8 +9,8 @@ export interface User {
   avatarLink: string
   followingCount: number
   followersCount: number
-  iFollow: boolean
-  iBlock: boolean
+  iFollow: string
+  iBlock: string
 }
 
 export interface Bork {
@@ -30,8 +30,8 @@ export interface Bork {
   flagsCount: number
   iComment: boolean
   iRebork: boolean
-  iLike: boolean
-  iFlag: boolean
+  iLike: string
+  iFlag: string
 }
 
 export enum BorkType {

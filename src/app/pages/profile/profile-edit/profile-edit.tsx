@@ -10,7 +10,6 @@ export interface ProfileEditParams {
   type: BorkType.SetName | BorkType.SetBio | BorkType.SetAvatar
 }
 
-
 export interface ProfileEditProps extends AuthProps, RouteComponentProps<ProfileEditParams> {
   user: User
 }
@@ -24,6 +23,7 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
 
   constructor (props: ProfileEditProps) {
     super(props)
+
     this.state = {
       previousValue: props.match.params.type === BorkType.SetName ? props.user.name :
         BorkType.SetBio ? props.user.bio :
@@ -33,10 +33,10 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
   }
 
   async componentDidMount () {
-    this.props.setTitle('Edit Profile')
+    this.props.setTitle(`Edit ${this.props.match.params.type.split('_')[1].replace(/^\w/, c => c.toUpperCase())}`)
     this.props.setShowFab(false)
     this.setState({
-      value: this.state.previousValue,
+      value: this.state.previousValue || '',
     })
   }
 
@@ -44,10 +44,6 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     this.setState({
       value: e.target.value,
     })
-  }
-
-  broadcast = () => {
-    alert ('broadcasts coming soon!')
   }
 
   render () {
@@ -65,7 +61,7 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
       <div className="page-content">
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="profile-edit-form">
           <label>Value</label>
-          <input type="text" value={"name"} maxLength={77} onChange={this.handleValueChange} />
+          <input type="text" value={value} maxLength={77} onChange={this.handleValueChange} />
           <input type="submit" value="Checkout" disabled={previousValue === value} />
         </form>
       </div>

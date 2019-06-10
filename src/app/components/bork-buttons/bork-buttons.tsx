@@ -37,11 +37,15 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   like = () => {
+    const already = !!this.props.bork.iLike
     const modal = (
       <CheckoutModal
-        type={this.props.bork.iLike ? BorkType.Delete : BorkType.Like}
-        content={this.props.bork.iLike ? this.props.bork.txid : undefined}
-        parent={{
+        type={already ? BorkType.Delete : BorkType.Like}
+        parent={already ? {
+          txid: this.props.bork.iLike,
+          senderAddress: this.props.address,
+          tip: new BigNumber(0),
+        } : {
           txid: this.props.bork.txid,
           senderAddress: this.props.bork.sender.address,
           tip: new BigNumber(200000000),
@@ -55,7 +59,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         type={this.props.bork.iFlag ? BorkType.Delete : BorkType.Flag}
-        content={this.props.bork.txid}
+        content={this.props.bork.iFlag}
       />
     )
     this.props.toggleModal(modal)

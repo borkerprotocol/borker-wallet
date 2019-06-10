@@ -14,7 +14,7 @@ export enum FollowsType {
 }
 
 export interface UserListParams {
-  ref: string
+  address: string
 }
 
 export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
@@ -44,10 +44,10 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     let users = []
 
     if (filter === FollowsType.followers || filter === FollowsType.following) {
-      users = await this.webService.getUsersByUser(this.props.match.params.ref, filter)
+      users = await this.webService.getUsersByUser(this.props.match.params.address, filter)
     } else {
       title = `${title}s`
-      users = await this.webService.getUsersByTx(this.props.match.params.ref, filter)
+      users = await this.webService.getUsersByTx(this.props.match.params.address, filter)
     }
 
     this.props.setTitle(title)

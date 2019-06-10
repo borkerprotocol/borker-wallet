@@ -60,18 +60,18 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
         />
         <Route
           exact
-          path="/profile/:address/set_*"
-          render={props => <ProfileEditPage {...props} user={user} />}
-        />
-        <Route
-          exact
-          path="/profile/:ref/following"
+          path="/profile/:address/following"
           render={props => <UserListPage {...props} filter={FollowsType.following} />}
         />
         <Route
           exact
-          path="/profile/:ref/followers"
+          path="/profile/:address/followers"
           render={props => <UserListPage {...props} filter={FollowsType.followers} />}
+        />
+        <Route
+          exact
+          path="/profile/:address/:type"
+          render={props => <ProfileEditPage {...props} user={user} />}
         />
       </Switch>
     )
