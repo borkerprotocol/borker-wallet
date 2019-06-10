@@ -23,6 +23,7 @@ export interface CheckoutModalState {
   tip: BigNumber
   totalCost: BigNumber
   password: string
+  processing: boolean
 }
 
 class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalState> {
@@ -35,6 +36,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       tip: new BigNumber(0),
       totalCost: new BigNumber(0),
       password: '',
+      processing: false,
     }
     this.webService = new WebService()
   }
@@ -58,6 +60,11 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   }
   signAndBroadcast = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    this.setState({
+      processing: true,
+    })
+
     const borkerLib = await import('borker-rs-browser')
     const { type, content, parent, wallet, decryptWallet } = this.props
     const { fee, tip, totalCost, password } = this.state
@@ -79,12 +86,14 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
 
     const rawTxs = localWallet!.newBork(data, inputs, recipient, [], BigInt(fee), borkerLib.Network.Dogecoin)
 
-    return this.webService.signAndBroadcastTx(rawTxs)
+    await this.webService.signAndBroadcastTx(rawTxs)
+
+    this.props.toggleModal(null)
   }
 
   render () {
     const { type, txCount, wallet } = this.props
-    const { tip, totalCost, fee, password } = this.state
+    const { tip, totalCost, fee, password, processing } = this.state
 
     return (
       <div className="checkout-modal-content">
@@ -102,7 +111,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
           {!wallet &&
             <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
           }
-          <input type="submit" value="Bork!" />
+          <input type="submit" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
         </form>
       </div>
     )
