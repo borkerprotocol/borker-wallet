@@ -64,12 +64,15 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         type={already ? BorkType.Delete : BorkType.Flag}
-        content={already ? undefined : this.props.bork.txid}
         parent={already ? {
           txid: this.props.bork.iFlag!,
           senderAddress: this.props.address,
           tip: new BigNumber(0),
-        } : undefined}
+        } : {
+          txid: this.props.bork.txid,
+          senderAddress: this.props.bork.sender.address,
+          tip: new BigNumber(0),
+        }}
       />
     )
     this.props.toggleModal(modal)

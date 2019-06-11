@@ -24,6 +24,7 @@ export interface CheckoutModalState {
   totalCost: BigNumber
   password: string
   processing: boolean
+  error: string
 }
 
 class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalState> {
@@ -37,6 +38,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       totalCost: new BigNumber(0),
       password: '',
       processing: false,
+      error: '',
     }
     this.webService = new WebService()
   }
@@ -65,35 +67,51 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       processing: true,
     })
 
-    const borkerLib = await import('borker-rs-browser')
-    const { type, content, parent, wallet, decryptWallet } = this.props
-    const { fee, tip, totalCost, password } = this.state
+    try {
+      const borkerLib = await import('borker-rs-browser')
+      const { type, content, parent, wallet, decryptWallet } = this.props
+      const { fee, tip, totalCost, password } = this.state
 
-    const localWallet = wallet || await decryptWallet(password)
-    const utxos = await this.webService.getUtxos(totalCost)
+      // decrypt wallet and set in memory if not already
+      const localWallet = wallet || await decryptWallet(password)
+      const utxos = await this.webService.getUtxos(totalCost)
 
-    const referenceId = parent ? await this.webService.getReferenceId(parent.txid, parent.senderAddress) : null
+      // set referenceId based on type
+      let referenceId = ''
+      if (parent) {
+        if ([BorkType.Comment, BorkType.Rebork, BorkType.Delete].includes(type)) {
+          referenceId = await this.webService.getReferenceId(parent.txid, parent.senderAddress)
+        } else if (type === BorkType.Flag) {
+          referenceId = parent.txid
+        }
+      }
 
-    const data = {
-      type,
-      content,
-      referenceId,
+      // construct params for lib
+      const data = {
+        type,
+        content,
+        referenceId,
+      }
+      const inputs = utxos.map(utxo => utxo.raw)
+      const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
+        { address: parent!.senderAddress, value: tip.toNumber() } :
+        null
+      // construct the txs
+      const rawTxs = localWallet!.newBork(data, inputs, recipient, [], BigInt(fee), borkerLib.Network.Dogecoin)
+      // broadcast
+      await this.webService.signAndBroadcastTx(rawTxs)
+      // close modal
+      this.props.toggleModal(null)
+    } catch (err) {
+      this.setState({
+        error: `Error sending bork: "${err.message}"`,
+      })
     }
-    const inputs = utxos.map(utxo => utxo.raw)
-    const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
-      { address: parent!.senderAddress, value: tip.toNumber() } :
-      null
-
-    const rawTxs = localWallet!.newBork(data, inputs, recipient, [], BigInt(fee), borkerLib.Network.Dogecoin)
-
-    await this.webService.signAndBroadcastTx(rawTxs)
-
-    this.props.toggleModal(null)
   }
 
   render () {
     const { type, txCount, wallet } = this.props
-    const { tip, totalCost, fee, password, processing } = this.state
+    const { tip, totalCost, fee, password, processing, error } = this.state
 
     return (
       <div className="checkout-modal-content">
@@ -112,6 +130,9 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
             <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
           }
           <input type="submit" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
+          {error &&
+            <p style={{color: 'red'}}>{error}</p>
+          }
         </form>
       </div>
     )
