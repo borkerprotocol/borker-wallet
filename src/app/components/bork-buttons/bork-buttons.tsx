@@ -22,10 +22,11 @@ export interface BorkButtonsProps extends AppProps {
 class BorkButtons extends React.PureComponent<BorkButtonsProps> {
 
   rebork = () => {
-    const already = this.props.bork.iRebork
+    const already = !!this.props.bork.iRebork
     const modal = (
       <CheckoutModal
         type={already ? BorkType.Delete : BorkType.Rebork}
+        content={already ? undefined : ''}
         parent={already ? {
           txid: this.props.bork.iRebork!,
           senderAddress: this.props.address,
@@ -41,7 +42,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   like = () => {
-    const already = this.props.bork.iLike
+    const already = !!this.props.bork.iLike
     const modal = (
       <CheckoutModal
         type={already ? BorkType.Delete : BorkType.Like}
@@ -60,7 +61,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   flag = () => {
-    const already = this.props.bork.iFlag
+    const already = !!this.props.bork.iFlag
     const modal = (
       <CheckoutModal
         type={already ? BorkType.Delete : BorkType.Flag}
