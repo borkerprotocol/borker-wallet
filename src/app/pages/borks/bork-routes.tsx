@@ -9,7 +9,7 @@ import { BorkType } from '../../../types/types'
 
 class BorksRoutes extends React.Component<{}, {}> {
 
-  render() {
+  render () {
 
     return (
       <Switch>
@@ -35,17 +35,17 @@ class BorksRoutes extends React.Component<{}, {}> {
         />
         <Route
           exact
-          path="/borks/:ref/reborks"
+          path="/borks/:txid/reborks"
           render={props => <UserListPage {...props} filter={BorkType.Rebork} />}
         />
         <Route
           exact
-          path="/borks/:ref/likes"
+          path="/borks/:txid/likes"
           render={props => <UserListPage {...props} filter={BorkType.Like} />}
         />
         <Route
           exact
-          path="/borks/:ref/flags"
+          path="/borks/:txid/flags"
           render={props => <UserListPage {...props} filter={BorkType.Flag} />}
         />
         <Redirect to="/borks/feed" />
