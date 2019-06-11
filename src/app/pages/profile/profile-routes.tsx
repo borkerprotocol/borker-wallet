@@ -12,16 +12,21 @@ export interface ProfileRoutesParams {
   address: string
 }
 
-export interface ProfileRoutesProps extends RouteComponentProps<ProfileRoutesParams>, AuthProps {}
+export interface ProfileRoutesProps
+  extends RouteComponentProps<ProfileRoutesParams>,
+    AuthProps {}
 
 export interface ProfileRoutesState {
   user: User | null
 }
 
-class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesState> {
+class ProfileRoutes extends React.Component<
+  ProfileRoutesProps,
+  ProfileRoutesState
+> {
   public webService: WebService
 
-  constructor (props: ProfileRoutesProps) {
+  constructor(props: ProfileRoutesProps) {
     super(props)
     this.state = {
       user: null,
@@ -29,13 +34,13 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
     this.webService = new WebService()
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     this.setState({
       user: await this.webService.getUser(this.props.match.params.address),
     })
   }
 
-  async componentWillReceiveProps (nextProps: ProfileRoutesProps) {
+  async componentWillReceiveProps(nextProps: ProfileRoutesProps) {
     const oldAddress = this.props.match.params.address
     const newAddress = nextProps.match.params.address
 
@@ -46,12 +51,10 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
     }
   }
 
-  render () {
+  render() {
     const { user } = this.state
 
-    return !user ? (
-      null
-    ) : (
+    return !user ? null : (
       <Switch>
         <Route
           exact
@@ -60,13 +63,17 @@ class ProfileRoutes extends React.Component<ProfileRoutesProps, ProfileRoutesSta
         />
         <Route
           exact
-          path="/profile/:address/following"
-          render={props => <UserListPage {...props} filter={FollowsType.following} />}
+          path="/profile/:ref/following"
+          render={props => (
+            <UserListPage {...props} filter={FollowsType.following} />
+          )}
         />
         <Route
           exact
-          path="/profile/:address/followers"
-          render={props => <UserListPage {...props} filter={FollowsType.followers} />}
+          path="/profile/:ref/followers"
+          render={props => (
+            <UserListPage {...props} filter={FollowsType.followers} />
+          )}
         />
         <Route
           exact

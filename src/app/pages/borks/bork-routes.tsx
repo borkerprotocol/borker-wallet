@@ -8,26 +8,16 @@ import '../../App.scss'
 import { BorkType } from '../../../types/types'
 
 class BorksRoutes extends React.Component<{}, {}> {
-
-  render () {
-
+  render() {
     return (
       <Switch>
-        <Route
-          exact
-          path="/borks/feed"
-          component={FeedPage}
-        />
+        <Route exact path="/borks/feed" component={FeedPage} />
         <Route
           exact
           path="/borks/new"
           render={props => <BorkNewPage {...props} type={BorkType.Bork} />}
         />
-        <Route
-          exact
-          path="/borks/:txid"
-          component={BorkViewPage}
-        />
+        <Route exact path="/borks/:txid" component={BorkViewPage} />
         <Route
           exact
           path="/borks/:txid/comment"
@@ -35,17 +25,17 @@ class BorksRoutes extends React.Component<{}, {}> {
         />
         <Route
           exact
-          path="/borks/:txid/reborks"
+          path="/borks/:ref/reborks"
           render={props => <UserListPage {...props} filter={BorkType.Rebork} />}
         />
         <Route
           exact
-          path="/borks/:txid/likes"
+          path="/borks/:ref/likes"
           render={props => <UserListPage {...props} filter={BorkType.Like} />}
         />
         <Route
           exact
-          path="/borks/:txid/flags"
+          path="/borks/:ref/flags"
           render={props => <UserListPage {...props} filter={BorkType.Flag} />}
         />
         <Redirect to="/borks/feed" />

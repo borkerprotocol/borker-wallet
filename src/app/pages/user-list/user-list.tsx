@@ -14,10 +14,12 @@ export enum FollowsType {
 }
 
 export interface UserListParams {
-  txid: string
+  ref: string
 }
 
-export interface UserListProps extends AuthProps, RouteComponentProps<UserListParams> {
+export interface UserListProps
+  extends AuthProps,
+    RouteComponentProps<UserListParams> {
   filter: BorkType.Rebork | BorkType.Like | BorkType.Flag | FollowsType
 }
 
@@ -29,7 +31,7 @@ export interface UserListState {
 class UserListPage extends React.Component<UserListProps, UserListState> {
   public webService: WebService
 
-  constructor (props: UserListProps) {
+  constructor(props: UserListProps) {
     super(props)
     this.state = {
       title: '',
@@ -38,16 +40,22 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     this.webService = new WebService()
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const filter = this.props.filter
     let title = `${filter.charAt(0).toUpperCase()}${filter.slice(1)}`
     let users = []
 
     if (filter === FollowsType.followers || filter === FollowsType.following) {
-      users = await this.webService.getUsersByUser(this.props.match.params.txid, filter)
+      users = await this.webService.getUsersByUser(
+        this.props.match.params.ref,
+        filter
+      )
     } else {
       title = `${title}s`
-      users = await this.webService.getUsersByTx(this.props.match.params.txid, filter)
+      users = await this.webService.getUsersByTx(
+        this.props.match.params.ref,
+        filter
+      )
     }
 
     this.props.setTitle(title)
@@ -59,7 +67,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     })
   }
 
-  render () {
+  render() {
     const { users } = this.state
 
     return !users.length ? (
@@ -73,10 +81,23 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
                 <div className="user-item-follow">
                   <FollowButton user={user} />
                 </div>
-                <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
-                  <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" alt='avatar' />
-                  <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
-                  <span style={{ color: 'gray' }}>@{user.address.substring(0, 9)}</span><br />
+                <Link
+                  to={`/profile/${user.address}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <img
+                    src={user.avatarLink || defaultAvatar}
+                    className="user-item-avatar"
+                    alt="avatar"
+                  />
+                  <span style={{ fontWeight: 'bold', color: 'black' }}>
+                    {user.name}
+                  </span>
+                  <br />
+                  <span style={{ color: 'gray' }}>
+                    @{user.address.substring(0, 9)}
+                  </span>
+                  <br />
                   <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>
                 </Link>
               </div>
