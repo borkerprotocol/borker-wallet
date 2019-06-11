@@ -80,7 +80,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       // set referenceId based on type
       let referenceId = ''
       if (parent) {
-        if ([BorkType.Comment, BorkType.Rebork, BorkType.Delete].includes(type)) {
+        if ([BorkType.Comment, BorkType.Rebork, BorkType.Delete, BorkType.Like].includes(type)) {
           referenceId = await this.webService.getReferenceId(parent.txid, parent.senderAddress)
         } else if (type === BorkType.Flag) {
           referenceId = parent.txid
