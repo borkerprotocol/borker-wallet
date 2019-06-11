@@ -28,10 +28,10 @@ export interface Bork {
   reborksCount: number
   likesCount: number
   flagsCount: number
-  iComment: boolean
-  iRebork: boolean
-  iLike: string
-  iFlag: string
+  iComment: string | null
+  iRebork: string | null
+  iLike: string | null
+  iFlag: string | null
 }
 
 export enum BorkType {

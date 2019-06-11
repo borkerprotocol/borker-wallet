@@ -22,11 +22,15 @@ export interface BorkButtonsProps extends AppProps {
 class BorkButtons extends React.PureComponent<BorkButtonsProps> {
 
   rebork = () => {
+    const already = this.props.bork.iRebork
     const modal = (
       <CheckoutModal
-        type={this.props.bork.iRebork ? BorkType.Delete : BorkType.Rebork}
-        content={this.props.bork.iRebork ? this.props.bork.txid : undefined}
-        parent={{
+        type={already ? BorkType.Delete : BorkType.Rebork}
+        parent={already ? {
+          txid: this.props.bork.iRebork!,
+          senderAddress: this.props.address,
+          tip: new BigNumber(0),
+        } : {
           txid: this.props.bork.txid,
           senderAddress: this.props.bork.sender.address,
           tip: new BigNumber(1000000000),
@@ -37,12 +41,12 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   like = () => {
-    const already = !!this.props.bork.iLike
+    const already = this.props.bork.iLike
     const modal = (
       <CheckoutModal
         type={already ? BorkType.Delete : BorkType.Like}
         parent={already ? {
-          txid: this.props.bork.iLike,
+          txid: this.props.bork.iLike!,
           senderAddress: this.props.address,
           tip: new BigNumber(0),
         } : {
@@ -56,10 +60,16 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   flag = () => {
+    const already = this.props.bork.iFlag
     const modal = (
       <CheckoutModal
-        type={this.props.bork.iFlag ? BorkType.Delete : BorkType.Flag}
-        content={this.props.bork.iFlag ? this.props.bork.iFlag : this.props.bork.txid}
+        type={already ? BorkType.Delete : BorkType.Flag}
+        content={already ? undefined : this.props.bork.txid}
+        parent={already ? {
+          txid: this.props.bork.iFlag!,
+          senderAddress: this.props.address,
+          tip: new BigNumber(0),
+        } : undefined}
       />
     )
     this.props.toggleModal(modal)
