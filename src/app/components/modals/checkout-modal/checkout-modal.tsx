@@ -74,7 +74,8 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
 
       // decrypt wallet and set in memory if not already
       const localWallet = wallet || await decryptWallet(password)
-      const utxos = await this.webService.getUtxos(totalCost)
+      const ret_utxos = await this.webService.getUtxos(totalCost)
+      const utxos = ret_utxos.filter(u => !(window.sessionStorage.getItem('usedUTXOs') || '').includes(`${u.txid}-${u.position}`))
 
       // set referenceId based on type
       let referenceId = ''
@@ -92,14 +93,20 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         content,
         referenceId,
       }
-      const inputs = utxos.map(utxo => utxo.raw)
+      let inputs = utxos.map(utxo => utxo.raw)
+      if (inputs.length === 0) {
+        const last = window.sessionStorage.getItem('lastTransaction')
+        inputs = last ? [last.split(':')[1]] : []
+      }
       const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
         { address: parent!.senderAddress, value: tip.toNumber() } :
         null
       // construct the txs
       const rawTxs = localWallet!.newBork(data, inputs, recipient, [], BigInt(fee), borkerLib.Network.Dogecoin)
       // broadcast
-      await this.webService.signAndBroadcastTx(rawTxs)
+      let res = await this.webService.signAndBroadcastTx(rawTxs)
+      window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
+      window.sessionStorage.setItem('lastTransaction', `${res[res.length - 1]}-0:${rawTxs[rawTxs.length - 1]}`)
       // close modal
       this.props.toggleModal(null)
     } catch (err) {
@@ -131,7 +138,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
           }
           <input type="submit" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
           {error &&
-            <p style={{color: 'red'}}>{error}</p>
+            <p style={{ color: 'red' }}>{error}</p>
           }
         </form>
       </div>
