@@ -59,7 +59,7 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     const modal = (
       <CheckoutModal
         type={this.props.bork.iFlag ? BorkType.Delete : BorkType.Flag}
-        content={this.props.bork.iFlag}
+        content={this.props.bork.iFlag ? this.props.bork.iFlag : this.props.bork.txid}
       />
     )
     this.props.toggleModal(modal)
