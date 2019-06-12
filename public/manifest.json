@@ -1,6 +1,7 @@
 {
   "short_name": "Borker",
   "name": "Borker",
+  "description": "self-sovereign micro-blogging",
   "icons": [
     {
       "src": "favicon.ico",

@@ -58,6 +58,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
           <input type="text" value={config.externalip} maxLength={40} onChange={this.handleIpChange} />
           <input type="submit" value="Save" disabled={!submitEnabled} />
         </form>
+        <br></br>
         <button onClick={this.props.logout}>Logout</button>
       </div>
     )

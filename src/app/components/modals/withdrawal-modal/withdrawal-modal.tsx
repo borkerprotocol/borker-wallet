@@ -2,7 +2,6 @@ import React from 'react'
 import BigNumber from 'bignumber.js'
 import './withdrawal-modal.scss'
 import WebService from '../../../web-service'
-import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { JsChildWallet } from 'borker-rs-browser'
 /* global BigInt */
 
@@ -22,13 +21,13 @@ export interface WithdrawalModalState {
 class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalModalState> {
   public webService: WebService
 
-  constructor(props: WithdrawalModalProps) {
+  constructor (props: WithdrawalModalProps) {
     super(props)
     this.state = {
       address: '',
       amount: '',
       password: '',
-      fee: new BigNumber(100000000)
+      fee: new BigNumber(100000000),
     }
     this.webService = new WebService()
   }
@@ -66,7 +65,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
     this.setState({ amount: this.props.balance.dividedBy(100000000).toFixed(8) })
   }
 
-  render() {
+  render () {
     const { address, amount, password } = this.state
     const { balance, wallet } = this.props
 

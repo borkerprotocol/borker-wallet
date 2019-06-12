@@ -31,9 +31,14 @@ class DepositModal extends React.Component<DepositModalProps, DepositModalState>
 
     return (
       <div className="deposit-modal">
-        <p><b>Dogecoin Address</b></p>
+        <p><b>Deposit Dogecoin</b></p>
+        <QRCode
+          value={address}
+          renderAs='svg'
+        />
+        <br />
+        <br />
         <p className="deposit-modal-address">{address}</p>
-        <QRCode value={address} /><br />
         <CopyToClipboard text={address}>
           <button onClick={this.copyToClipboard}>Copy</button>
         </CopyToClipboard>
