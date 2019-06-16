@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import * as Storage from 'idb-keyval'
 import AuthRoutes from './pages/auth-routes'
 import UnauthRotes from './pages/unauth-routes'
@@ -15,75 +15,62 @@ export interface AppState {
   modalContent: JSX.Element | null
 }
 
-class App extends React.Component<{}, AppState> {
+const App: React.FC<{}> = () => {
+  const [loading, setLoading] = useState(true)
+  const [address, setAddress] = useState('')
+  const [wallet, setWallet] = useState<JsChildWallet | null>(null)
+  const [modalContent, setModalContent] = useState<JSX.Element | null>(null)
 
-  state = {
-    isLoading: true,
-    address: '',
-    wallet: null,
-    modalContent: null,
-  }
-
-  async componentDidMount () {
-    this.setState({
-      address: await Storage.get<string>('address'),
-      isLoading: false,
+  useEffect(() => {
+    Storage.get<string>('address').then(address => {
+      setAddress(address)
+      setLoading(false)
     })
-  }
+  }, [])
 
-  login = async (wallet: JsWallet, password: string) => {
+  const login = async (wallet: JsWallet, password: string) => {
     const borkerLib = await import('borker-rs-browser')
 
     const child = wallet.childAt([-44, -3, -0, 0, 0])
     const address = child.address(borkerLib.Network.Dogecoin)
     const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer(), password).toString()
 
-    await Promise.all([
-      Storage.set('wallet', encrypted),
-      Storage.set('address', address),
-    ])
+    await Promise.all([Storage.set('wallet', encrypted), Storage.set('address', address)])
 
-    this.setState({
-      address,
-      wallet: child,
-      modalContent: null,
-    })
+    setAddress(address)
+    setWallet(child)
+    setModalContent(null)
   }
 
-  logout = async () => {
+  const logout = async () => {
     await Storage.clear()
-    this.setState({ address: '', wallet: null })
+    setAddress('')
+    setWallet(null)
   }
 
-  decryptWallet = async (password: string): Promise<JsChildWallet> => {
+  const decryptWallet = async (password: string): Promise<JsChildWallet> => {
     const borkerLib = await import('borker-rs-browser')
     const encrypted = await Storage.get<string>('wallet')
-    const wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8))
+    const wallet = borkerLib.JsWallet.fromBuffer(
+      CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8),
+    )
     const child = wallet.childAt([-44, -3, -0, 0, 0])
-    this.setState({
-      wallet: child,
-    })
+    setWallet(child)
     return child
   }
 
-  toggleModal = (modalContent: JSX.Element | null) => {
-    this.setState({ modalContent })
+  const toggleModal = (modalContent: JSX.Element | null) => {
+    setModalContent(modalContent)
   }
 
-  render () {
-    const { isLoading, address, wallet, modalContent } = this.state
-    const { login, logout, toggleModal, decryptWallet } = this
-
-    return isLoading ? (
-      <p>loading...</p>
-    ) : (
-      <AppContext.Provider value={{ address, wallet, login, logout, toggleModal, decryptWallet }}>
-        {address ? <AuthRoutes /> : <UnauthRotes />}
-        <Modal content={modalContent}/>
-      </AppContext.Provider>
-    )
-
-  }
+  return loading ? (
+    <p>Loading...</p>
+  ) : (
+    <AppContext.Provider value={{ address, wallet, login, logout, toggleModal, decryptWallet }}>
+      {address ? <AuthRoutes /> : <UnauthRotes />}
+      <Modal content={modalContent} />
+    </AppContext.Provider>
+  )
 }
 
 export default App

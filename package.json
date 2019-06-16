@@ -36,7 +36,8 @@
     "start": "PORT=3001 react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "compile": "tsc"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -52,7 +53,7 @@
     "@types/jest": "^24.0.13",
     "@types/node": "^12.0.4",
     "@types/qrcode.react": "^0.8.2",
-    "@types/react": "^16.8.19",
+    "@types/react": "^16.8.20",
     "@types/react-copy-to-clipboard": "^4.2.6",
     "@types/react-dom": "^16.8.4",
     "@types/react-modal": "^3.8.2",
