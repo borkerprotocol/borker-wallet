@@ -1,53 +1,33 @@
-import React from 'react'
-import { AppProps, withAppContext } from '../../../contexts/app-context'
+import React, { useState } from 'react'
 import QRCode from 'qrcode.react'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { useAppState } from '../../../globalState'
+
 import '../../../App.scss'
 import './deposit-modal.scss'
 
-export interface DepositModalProps extends AppProps {}
+export default function DepositModal() {
+  const [isCopied, setIsCopied] = useState(false)
+  const { address } = useAppState()
 
-export interface DepositModalState {
-  isCopied: boolean
+  const copyToClipboard = () => {
+    setIsCopied(true)
+    setTimeout(() => setIsCopied(false), 1000)
+  }
+
+  return (
+    <div className="deposit-modal">
+      <p>
+        <b>Deposit Dogecoin</b>
+      </p>
+      <QRCode value={address} renderAs="svg" />
+      <br />
+      <br />
+      <p className="deposit-modal-address">{address}</p>
+      <CopyToClipboard text={address}>
+        <button onClick={copyToClipboard}>Copy</button>
+      </CopyToClipboard>
+      {isCopied && <p style={{ color: 'green' }}>Copied to Clipboard!</p>}
+    </div>
+  )
 }
-
-class DepositModal extends React.Component<DepositModalProps, DepositModalState> {
-
-  constructor (props: DepositModalProps) {
-    super(props)
-    this.state = {
-      isCopied: false,
-    }
-  }
-
-  copyToClipboard = () => {
-    this.setState({ isCopied: true })
-    setTimeout(() => this.setState({ isCopied: false }), 1000)
-  }
-
-  render () {
-    const { isCopied } = this.state
-    const { address } = this.props
-
-    return (
-      <div className="deposit-modal">
-        <p><b>Deposit Dogecoin</b></p>
-        <QRCode
-          value={address}
-          renderAs='svg'
-        />
-        <br />
-        <br />
-        <p className="deposit-modal-address">{address}</p>
-        <CopyToClipboard text={address}>
-          <button onClick={this.copyToClipboard}>Copy</button>
-        </CopyToClipboard>
-        {isCopied &&
-          <p style={{ color: 'green' }}>Copied to Clipboard!</p>
-        }
-      </div>
-    )
-  }
-}
-
-export default withAppContext(DepositModal)

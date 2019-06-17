@@ -1,5 +1,5 @@
-import React from 'react'
-import { AuthProps, withAuthContext } from '../../contexts/auth-context'
+import React, { useState, useEffect } from 'react'
+import { useAuthActions, useAppActions } from '../../globalState'
 import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './settings.scss'
@@ -8,61 +8,51 @@ export interface BorkerConfig {
   externalip: string
 }
 
-export interface SettingsProps extends AuthProps {}
+export default function SettingsPage() {
+  const [submitEnabled, setSubmitEnabled] = useState<boolean>(false)
+  const [ip, setIp] = useState('')
 
-export interface SettingsState {
-  submitEnabled: boolean
-  config: BorkerConfig
-}
+  const { setShowFab, setTitle } = useAuthActions()
+  const { logout } = useAppActions()
 
-class SettingsPage extends React.Component<SettingsProps, SettingsState> {
-
-  state = {
-    submitEnabled: false,
-    config: {
-      externalip: '',
-    },
-  }
-
-  async componentDidMount () {
-    this.props.setShowFab(false)
-    this.props.setTitle('Settings')
-
-    const config = await Storage.get<BorkerConfig>('borkerconfig')
-
-    if (config) { this.setState({ config }) }
-  }
-
-  handleIpChange = (e: React.BaseSyntheticEvent) => {
-    this.setState({
-      submitEnabled: true,
-      config: {
-        ...this.state.config,
-        externalip: e.target.value,
-      },
+  useEffect(() => {
+    let fetching = true
+    setShowFab(false)
+    setTitle('Settings')
+    Storage.get<BorkerConfig>('borkerconfig').then(fetchedConfig => {
+      if (fetching && fetchedConfig) {
+        setIp(fetchedConfig.externalip)
+      }
     })
+    return () => {
+      fetching = false
+    }
+  })
+
+  const handleIpChange = (e: React.BaseSyntheticEvent) => {
+    if (!submitEnabled) {
+      setSubmitEnabled(true)
+    }
+    setIp(e.target.value)
   }
 
-  saveConfig = (e: React.BaseSyntheticEvent) => {
+  const saveConfig = (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
-    Storage.set('borkerconfig', this.state.config)
+    Storage.set('borkerconfig', { externalip: ip })
   }
 
-  render () {
-    const { submitEnabled, config } = this.state
-
-    return (
-      <div className="page-content">
-        <form onSubmit={this.saveConfig} className="profile-edit-form">
-          <label>Borker IP Address</label>
-          <input type="text" value={config.externalip} maxLength={40} onChange={this.handleIpChange} />
-          <input type="submit" value="Save" disabled={!submitEnabled} />
-        </form>
-        <br></br>
-        <button onClick={this.props.logout}>Logout</button>
-      </div>
-    )
-  }
+  return (
+    <div className="page-content">
+      <form onSubmit={saveConfig} className="profile-edit-form">
+        <label>Borker IP Address</label>
+        <input type="text" value={ip} maxLength={40} onChange={handleIpChange} />
+        {/* <input type="submit" value="Save" disabled={!submitEnabled} /> */}
+      </form>
+      <button onClick={saveConfig} disabled={!submitEnabled}>
+        Submit
+      </button>
+      <br />
+      <button onClick={logout}>Logout</button>
+    </div>
+  )
 }
-
-export default withAuthContext(SettingsPage)

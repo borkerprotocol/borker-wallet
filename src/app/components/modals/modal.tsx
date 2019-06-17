@@ -1,30 +1,22 @@
 import React from 'react'
 import ReactModal from 'react-modal'
-import { AppProps, withAppContext } from '../../contexts/app-context'
 import './modal.scss'
+import { useAppState, useAppActions } from '../../globalState'
 
-export interface ModalProps extends AppProps {
-  content: JSX.Element | null
+function Modal() {
+  const { toggleModal } = useAppActions()
+  const { modalContent } = useAppState()
+  return (
+    <ReactModal
+      ariaHideApp={false}
+      isOpen={!!modalContent}
+      onRequestClose={() => toggleModal(null)}
+      shouldCloseOnOverlayClick={true}
+      className="Modal"
+      overlayClassName="Modal-Overlay"
+    >
+      {modalContent}
+    </ReactModal>
+  )
 }
-
-class Modal extends React.PureComponent<ModalProps> {
-
-  render () {
-    const { content, toggleModal } = this.props
-
-    return (
-      <ReactModal
-        ariaHideApp={false}
-        isOpen={!!content}
-        onRequestClose={() => toggleModal(null)}
-        shouldCloseOnOverlayClick={true}
-        className="Modal"
-        overlayClassName="Modal-Overlay"
-      >
-        {content}
-      </ReactModal> 
-    )
-  }
-}
-
-export default withAppContext(Modal)
+export default Modal

@@ -1,38 +1,43 @@
 import React from 'react'
 import { User, BorkType } from '../../../types/types'
-import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import CheckoutModal from '../modals/checkout-modal/checkout-modal'
-import './follow-button.scss'
 import BigNumber from 'bignumber.js'
 
-export interface FollowButtonProps extends AuthProps {
+import { useAppState, useAppActions } from '../../globalState'
+import './follow-button.scss'
+
+export interface FollowButtonProps {
   user: User
 }
 
-class FollowButton extends React.PureComponent<FollowButtonProps> {
+export default function FollowButton(props: FollowButtonProps) {
+  const { user } = props
+  const { address } = useAppState()
+  const { toggleModal } = useAppActions()
 
-  render () {
-    console.log(this.props.user)
-
-    return this.props.address === this.props.user.address ? (
-      null
-    ) : this.props.user.iFollow ? (
-      <button
-        onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.Delete} parent={{
-          txid: this.props.user.iFollow,
-          senderAddress: this.props.address,
-          tip: new BigNumber(0),
-        }} />)}
-        className="unfollow-button"
-      >
-        Following
-      </button>
-    ) : (
-      <button onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.Follow} content={this.props.user.address} />)}>
-        Follow
-      </button>
-    )
-  }
+  return address === user.address ? null : user.iFollow ? (
+    <button
+      onClick={() =>
+        toggleModal(
+          <CheckoutModal
+            type={BorkType.Delete}
+            parent={{
+              txid: user.iFollow,
+              senderAddress: address,
+              tip: new BigNumber(0),
+            }}
+          />,
+        )
+      }
+      className="unfollow-button"
+    >
+      Following
+    </button>
+  ) : (
+    <button
+      onClick={() => toggleModal(<CheckoutModal type={BorkType.Follow} content={user.address} />)}
+    >
+      Follow
+    </button>
+  )
 }
-
-export default withAuthContext(FollowButton)
