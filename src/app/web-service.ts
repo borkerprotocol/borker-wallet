@@ -135,11 +135,8 @@ class WebService {
     })
 
     try {
-
       return rp(options)
-
     } catch (err) {
-
       console.error(err)
       alert(err)
     }

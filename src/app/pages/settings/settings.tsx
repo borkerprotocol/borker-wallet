@@ -1,5 +1,6 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
+import WebService from '../../web-service'
 import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './settings.scss'
@@ -16,12 +17,17 @@ export interface SettingsState {
 }
 
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
+  public webService: WebService
 
-  state = {
-    submitEnabled: false,
-    config: {
-      externalip: '',
-    },
+  constructor (props: SettingsProps) {
+    super(props)
+    this.state = {
+      submitEnabled: false,
+      config: {
+        externalip: '',
+      },
+    }
+    this.webService = new WebService()
   }
 
   async componentDidMount () {
@@ -43,9 +49,20 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     })
   }
 
-  saveConfig = (e: React.BaseSyntheticEvent) => {
+  saveConfig = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
-    Storage.set('borkerconfig', this.state.config)
+    this.setState({
+      submitEnabled: false,
+    })
+    await Storage.set('borkerconfig', this.state.config)
+    if (!this.state.config.externalip) { return }
+    try {
+      await this.props.getBalance()
+      alert('Success! Happy Borking')
+    } catch (err) {
+      alert('invalid borker IP')
+      await Storage.set('borkerconfig', { ...this.state.config, externalip: '' })
+    }
   }
 
   render () {
@@ -58,7 +75,8 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
           <input type="text" value={config.externalip} maxLength={40} onChange={this.handleIpChange} />
           <input type="submit" value="Save" disabled={!submitEnabled} />
         </form>
-        <br></br>
+        <br />
+        <br />
         <button onClick={this.props.logout}>Logout</button>
       </div>
     )

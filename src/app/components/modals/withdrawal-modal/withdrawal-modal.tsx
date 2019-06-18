@@ -72,13 +72,16 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
     return (
       <form onSubmit={this.withdraw} className="withdrawal-form">
         <h2>Withdrawal</h2>
-        <input type="text" placeholder="Address" value={address} onChange={this.handleAddressChange} />
+        <input type="text" placeholder="Destination Address" value={address} onChange={this.handleAddressChange} />
         <input type="number" placeholder="Amount" value={amount} onChange={this.handleAmountChange} />
-        <p>Available: <a className={"clickable"} onClick={this.fillMax}>{balance.dividedBy(100000000).toFormat(8)}</a></p>
+        <p>Available: <a className={"clickable"} onClick={this.fillMax}>{balance && balance.isGreaterThan(0) ? balance.dividedBy(100000000).toFormat(8) : new BigNumber(0).toFormat(8)}</a></p>
         {!wallet &&
           <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
         }
-        <input type="submit" value="Construct Tx" />
+        <br />
+        <br />
+        <br />
+        <input type="submit" value="Submit" />
       </form>
     )
   }

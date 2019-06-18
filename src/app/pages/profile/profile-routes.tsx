@@ -26,7 +26,7 @@ class ProfileRoutes extends React.Component<
 > {
   public webService: WebService
 
-  constructor(props: ProfileRoutesProps) {
+  constructor (props: ProfileRoutesProps) {
     super(props)
     this.state = {
       user: null,
@@ -34,13 +34,13 @@ class ProfileRoutes extends React.Component<
     this.webService = new WebService()
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.setState({
       user: await this.webService.getUser(this.props.match.params.address),
     })
   }
 
-  async componentWillReceiveProps(nextProps: ProfileRoutesProps) {
+  async componentWillReceiveProps (nextProps: ProfileRoutesProps) {
     const oldAddress = this.props.match.params.address
     const newAddress = nextProps.match.params.address
 
@@ -51,7 +51,7 @@ class ProfileRoutes extends React.Component<
     }
   }
 
-  render() {
+  render () {
     const { user } = this.state
 
     return !user ? null : (

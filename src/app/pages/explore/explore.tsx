@@ -31,7 +31,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
     this.props.setShowFab(false)
 
     this.setState({
-      users: await this.webService.getUsers(this.state.order),
+      users: await this.webService.getUsers(this.state.order) || [],
     })
   }
 
