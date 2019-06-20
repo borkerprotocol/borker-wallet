@@ -1,6 +1,6 @@
 # Borker-Wallet
 
-Borker is a first-of-its-kind, Twitter-like microblogging platform built on top of the Dogecoin p2p network. Borker is open-source, decentralized, borderless, permissionless, pseudonymous, and immutable - affording it a degree of censorship-resistance unparalled in human history.
+Borker is a first-of-its-kind, Twitter-like microblogging platform built on top of the Dogecoin p2p network. Borker is open-source, decentralized, borderless, permissionless, pseudonymous, immutable, and censorship-resistant.
 
 The Borker-Wallet is a Progressive Web Application (PWA) and cryptocurrency wallet for managing private keys and publishing and consuming information on the Borker network.
 
