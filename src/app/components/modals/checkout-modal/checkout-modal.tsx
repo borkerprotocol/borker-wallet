@@ -5,7 +5,6 @@ import WebService from '../../../web-service'
 import '../../../App.scss'
 import './checkout-modal.scss'
 import { BorkType } from '../../../../types/types'
-/* global BigInt */
 
 export interface CheckoutModalProps extends AuthProps {
   type: BorkType,
@@ -102,7 +101,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         { address: parent!.senderAddress, value: tip.toNumber() } :
         null
       // construct the txs
-      const rawTxs = localWallet!.newBork(data, inputs, recipient, [], BigInt(fee), borkerLib.Network.Dogecoin)
+      const rawTxs = localWallet!.newBork(data, inputs, recipient, [], fee.toNumber(), borkerLib.Network.Dogecoin)
       // broadcast
       let res = await this.webService.signAndBroadcastTx(rawTxs)
       window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])

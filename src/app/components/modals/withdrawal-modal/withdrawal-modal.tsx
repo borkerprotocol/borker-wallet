@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import './withdrawal-modal.scss'
 import WebService from '../../../web-service'
 import { JsChildWallet } from 'borker-rs-browser'
-/* global BigInt */
 
 export interface WithdrawalModalProps {
   balance: BigNumber
@@ -55,7 +54,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
     const utxos = await this.webService.getUtxos(new BigNumber(amount_sat))
     const inputs = utxos.map(u => u.raw)
 
-    const rawTx = localWallet!.constructSigned(inputs, address, BigInt(amount_sat), BigInt(fee), borkerLib.Network.Dogecoin)
+    const rawTx = localWallet!.constructSigned(inputs, address, amount_sat, fee.toNumber(), borkerLib.Network.Dogecoin)
 
     return this.webService.signAndBroadcastTx([rawTx])
 

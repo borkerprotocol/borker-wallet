@@ -9,12 +9,12 @@
     "url": "git@github.com:MattDHill/borker-app.git"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.18",
-    "@fortawesome/free-regular-svg-icons": "^5.8.2",
-    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-regular-svg-icons": "^5.9.0",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "bignumber.js": "^9.0.0",
-    "borker-rs-browser": "^0.1.25",
+    "borker-rs-browser": "^0.1.26",
     "crypto-js": "^3.1.9-1",
     "idb-keyval": "^3.2.0",
     "lighthouse": "^5.1.0",
@@ -24,7 +24,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-modal": "^3.8.1",
-    "react-router-dom": "^5.0.0",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-sidebar": "^3.0.2",
     "react-tabs": "^3.0.0",
@@ -49,19 +49,19 @@
   ],
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",
-    "@types/jest": "^24.0.13",
-    "@types/node": "^12.0.4",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.0.10",
     "@types/qrcode.react": "^0.8.2",
-    "@types/react": "^16.8.19",
+    "@types/react": "^16.8.22",
     "@types/react-copy-to-clipboard": "^4.2.6",
     "@types/react-dom": "^16.8.4",
     "@types/react-modal": "^3.8.2",
-    "@types/react-router-dom": "^4.3.3",
+    "@types/react-router-dom": "^4.3.4",
     "@types/react-sidebar": "^3.0.0",
     "@types/react-tabs": "^2.3.1",
     "@types/request-promise": "^4.1.44",
     "node-sass": "^4.12.0",
     "react-app-rewired": "^2.1.3",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.2"
   }
 }
