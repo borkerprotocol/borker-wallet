@@ -162,4 +162,5 @@ export interface IndexBorkParams extends IndexParams {
   parentTxid?: string
   types?: BorkType[]
   order?: OrderBy<Bork>
+  tags?: string[]
 }

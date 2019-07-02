@@ -9,6 +9,7 @@ import './feed.scss'
 export interface FeedProps extends AuthProps {}
 
 export interface FeedState {
+  loading: boolean
   borks: Bork[]
 }
 
@@ -17,7 +18,7 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
 
   constructor (props: FeedProps) {
     super(props)
-    this.state = { borks: [] }
+    this.state = { loading: true, borks: [] }
     this.webService = new WebService()
   }
 
@@ -34,15 +35,18 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
           BorkType.Comment,
           BorkType.Like,
         ],
-      }) || [],
+      }),
+      loading: false,
     })
   }
 
   render () {
-    const { borks } = this.state
+    const { borks, loading } = this.state
+
+    if (loading) { return null }
 
     return !borks.length ? (
-      null
+      <p style={{ padding: "20px" }}>This is your news feed. Borks and likes of people you follow will display here. Discover people to follow in the <i>Explore</i> tab.</p>
     ) : (
       <BorkList borks={borks} />
     )

@@ -31,7 +31,7 @@ export interface UserListState {
 class UserListPage extends React.Component<UserListProps, UserListState> {
   public webService: WebService
 
-  constructor(props: UserListProps) {
+  constructor (props: UserListProps) {
     super(props)
     this.state = {
       title: '',
@@ -40,7 +40,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     this.webService = new WebService()
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     const filter = this.props.filter
     let title = `${filter.charAt(0).toUpperCase()}${filter.slice(1)}`
     let users = []
@@ -48,13 +48,13 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     if (filter === FollowsType.followers || filter === FollowsType.following) {
       users = await this.webService.getUsersByUser(
         this.props.match.params.ref,
-        filter
+        filter,
       )
     } else {
       title = `${title}s`
       users = await this.webService.getUsersByTx(
         this.props.match.params.ref,
-        filter
+        filter,
       )
     }
 
@@ -67,7 +67,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
     })
   }
 
-  render() {
+  render () {
     const { users } = this.state
 
     return !users.length ? (
