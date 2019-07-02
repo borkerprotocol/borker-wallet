@@ -35,7 +35,7 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
           BorkType.Comment,
           BorkType.Like,
         ],
-      }),
+      }) || [],
       loading: false,
     })
   }
