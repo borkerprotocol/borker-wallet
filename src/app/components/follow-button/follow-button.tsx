@@ -12,8 +12,6 @@ export interface FollowButtonProps extends AuthProps {
 class FollowButton extends React.PureComponent<FollowButtonProps> {
 
   render () {
-    console.log(this.props.user)
-
     return this.props.address === this.props.user.address ? (
       null
     ) : this.props.user.iFollow ? (

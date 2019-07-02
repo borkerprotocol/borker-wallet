@@ -30,6 +30,9 @@ const styles = {
     padding: "16px",
     fontSize: "1.6em",
     fontWeight: "bold" as "bold",
+    position: "sticky" as "sticky",
+    top: 0,
+    zIndex: 1,
   },
   sidebar: {
     sidebar: {
