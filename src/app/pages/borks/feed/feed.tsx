@@ -46,7 +46,11 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
     if (loading) { return null }
 
     return !borks.length ? (
-      <p style={{ padding: "20px" }}>This is your news feed. Borks and likes of people you follow will display here. Discover people to follow in the <i>Explore</i> tab.</p>
+      <div style={{ padding: "20px" }}>
+        <p>This is your news feed.</p>
+        <p>Borks and likes of people you follow will show up here.</p>
+        <p>You can discover new people to follow in the <i>Explore</i> tab.</p>
+      </div>
     ) : (
       <BorkList borks={borks} />
     )

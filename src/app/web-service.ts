@@ -1,7 +1,7 @@
 import rp from 'request-promise'
 import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
-import { User, Bork, BorkType, OrderBy, Utxo } from '../types/types'
+import { User, Bork, BorkType, OrderBy, Utxo, Tag } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
 import { BorkerConfig } from './pages/settings/settings'
 
@@ -26,6 +26,16 @@ class WebService {
       method: 'GET',
       url: `/users/${address}/utxos`,
       qs: { amount: amount.toString() },
+    }
+
+    return this.request(options)
+  }
+
+  async getTags (page?: number, perPage?: number): Promise<Tag[]> {
+    const options: rp.Options = {
+      method: 'GET',
+      url: `/borks/tags`,
+      qs: { page, perPage },
     }
 
     return this.request(options)

@@ -49,6 +49,11 @@ export enum BorkType {
   Block = 'block',
 }
 
+export interface Tag {
+  name: string
+  count: number
+}
+
 export interface FullUser extends User {
   borks: Bork[]
 }

@@ -10,6 +10,22 @@
   }
 }
 
+.tag-list {
+  list-style: none;
+  margin-top: 0;
+  padding-left: 0;
+  & li {
+    min-height: 40px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: lightgray;
+    overflow: hidden;
+    & p {
+      padding-left: 20px;
+    }
+  }
+}
+
 .user-item {
   margin: 14px;
 }

@@ -1,29 +1,37 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
-import { User, OrderBy, Bork } from '../../../types/types'
+import { User, Bork, Tag, BorkType } from '../../../types/types'
 import WebService from '../../web-service'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import FollowButton from '../../components/follow-button/follow-button'
 import '../user-list/user-list.scss'
+import './explore.scss'
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
+import BorkList from '../../components/bork-list/bork-list'
 
-export interface UserListProps extends AuthProps {}
+// export interface UserListProps extends AuthProps {}
 
-export interface UserListState {
-  order: OrderBy<User>
+export interface ExploreProps extends AuthProps {}
+
+export interface ExploreState {
   users: User[]
-  tags: any[]
+  tags: Tag[]
   borks: Bork[]
 }
 
-class ExplorePage extends React.Component<UserListProps, UserListState> {
+// export interface UserListState {
+//   users: User[]
+//   tags: any[]
+//   borks: Bork[]
+// }
+
+class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   public webService: WebService
 
-  constructor (props: UserListProps) {
+  constructor (props: ExploreProps) {
     super(props)
     this.state = {
-      order: { birthBlock: 'ASC' },
       users: [],
       tags: [],
       borks: [],
@@ -36,7 +44,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
     this.props.setShowFab(false)
 
     this.setState({
-      users: await this.webService.getUsers(this.state.order) || [],
+      users: await this.webService.getUsers({ birthBlock: 'ASC' }) || [],
     })
   }
 
@@ -46,17 +54,19 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
     switch (index) {
       case 0:
         if (this.state.users.length) { return }
-        this.webService.getUsers({ birthBlock: 'DESC' }).then(users => {
+        this.webService.getUsers({ birthBlock: 'ASC' }).then(users => {
           this.setState({ users })
         })
         break
       case 1:
         if (this.state.tags.length) { return }
-        console.log('get tags')
+        this.webService.getTags().then(tags => {
+          this.setState({ tags })
+        })
         break
       case 2:
         if (this.state.borks.length) { return }
-        this.webService.getBorks({ tags: ['free'] }).then(borks => {
+        this.webService.getBorks({ types: [BorkType.Bork, BorkType.Comment, BorkType.Rebork], order: { createdAt: 'DESC' } }).then(borks => {
           this.setState({ borks })
         })
         break
@@ -64,7 +74,7 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
   }
 
   render () {
-    const { users } = this.state
+    const { users, tags, borks } = this.state
 
     return (
       <div className="page-content">
@@ -98,9 +108,21 @@ class ExplorePage extends React.Component<UserListProps, UserListState> {
           </TabPanel>
 
           <TabPanel>
-
+            <ul className="tag-list">
+              {tags.map(tag => {
+                return (
+                  <li key={tag.name}>
+                    <h2># {tag.name}</h2>
+                    <p><i>{tag.count} Borks</i></p>
+                  </li>
+                )
+              })}
+            </ul>
           </TabPanel>
-          <TabPanel></TabPanel>
+
+          <TabPanel>
+            <BorkList borks={borks} />
+          </TabPanel>
         </Tabs>
       </div>
     )
