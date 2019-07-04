@@ -16,11 +16,11 @@ export interface BorkComponentProps {
 
 class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
-  render () {
+  render() {
     let { bork, showButtons } = this.props
 
     // TODO convert #tags into <Links>
-    function getTags (content: string) {
+    function getTags(content: string) {
       return content
     }
 
@@ -50,7 +50,11 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
           to={`/borks/${bork.txid}`}
           className="bork-body-link"
         >
-          <h2>{content}</h2>
+          <h2>
+            {bork.type === BorkType.Extension ? "…" : ""}
+            {content}
+            {bork.extensionsCount > 0 ? "…" : ""}
+          </h2>
         </Link>
       )
     }
@@ -103,7 +107,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
         </div>
         {showButtons &&
           <div className="bork-footer">
-            <BorkButtons bork={bork} showCount={false}/>
+            <BorkButtons bork={bork} showCount={false} />
           </div>
         }
       </div>
