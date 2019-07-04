@@ -42,18 +42,17 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
       const linkRegex = /(?:(?:https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)|(?:#[a-zA-Z0-9_]+)/gi
       const contentArr = content.split(linkRegex)
       const links = content.match(linkRegex) || []
-      let res = [<span>{contentArr[0]}</span>]
+      let res = [<span key={0}>{contentArr[0]}</span>]
       for (let linkIdx = 0; linkIdx < links.length; linkIdx++) {
         let link = links[linkIdx]
         if (link[0] === '#') {
-          console.log(link)
-          res.push(<Link to={`hashtags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
+          res.push(<Link key={contentArr[linkIdx]} to={`hashtags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
         } else if (isImage(link)) {
-          res.push(<img src={link}></img>)
+          res.push(<img key={contentArr[linkIdx]} src={link}></img>)
         } else {
-          res.push(<a href={link} className='bork-link'>{link}</a>)
+          res.push(<a key={contentArr[linkIdx]} href={link} className='bork-link'>{link}</a>)
         }
-        res.push(<span>{contentArr[linkIdx + 1]}</span>)
+        res.push(<span key={linkIdx + 1}>{contentArr[linkIdx + 1]}</span>)
       }
       return res
     }
