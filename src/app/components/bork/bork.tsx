@@ -6,7 +6,6 @@ import { calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
-import * as isImage from 'is-image'
 import '../../App.scss'
 import './bork.scss'
 
@@ -44,6 +43,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
     )
 
     const buildContent = (content: string) => {
+      const isImage = require('is-image')
       const linkRegex = /(?:(?:https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)|(?:#[a-zA-Z0-9_]+)/gi
       const contentArr = content.split(linkRegex)
       const links = content.match(linkRegex) || []
