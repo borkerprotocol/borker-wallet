@@ -17,7 +17,7 @@ export interface BorkPreviewComponentProps {
 
 class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps> {
 
-  render () {
+  render() {
     let { bork, showButtons, isSubBork } = this.props
     let child: Bork | null = null
     let childText: string = ''
@@ -31,7 +31,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
     }
 
     // TODO convert #tags into <Links>
-    function getTags (content: string) {
+    function getTags(content: string) {
       return content
     }
 
@@ -61,7 +61,11 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
           to={`/borks/${bork.txid}`}
           className="bork-body-link"
         >
-          <p>{content}</p>
+          <p>
+            {bork.type === BorkType.Extension ? "…" : ""}
+            {content}
+            {bork.extensionsCount > 0 ? "…" : ""}
+          </p>
         </Link>
       )
     }
@@ -81,7 +85,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
           <p>
             {userName}<span> &#183; </span>{userAddress}
             {!isSubBork &&
-              <span style={{color: 'gray'}}> &#183; {fromNow(bork.createdAt)}</span>
+              <span style={{ color: 'gray' }}> &#183; {fromNow(bork.createdAt)}</span>
             }
           </p>
         </div>
@@ -95,7 +99,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
         }
         {showButtons &&
           <div className="bork-footer-small">
-            <BorkButtons bork={bork} showCount/>
+            <BorkButtons bork={bork} showCount />
           </div>
         }
       </div>
