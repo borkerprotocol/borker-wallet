@@ -42,27 +42,36 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
       </Link>
     )
 
+    const buildContent = (content: string) => {
+      const linkRegex = /(?:(?:https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)|(?:#[a-zA-Z0-9_]+)/gi
+      const contentArr = content.split(linkRegex)
+      const links = content.match(linkRegex) || []
+      let res = [<span>{contentArr[0]}</span>]
+      for (let linkIdx = 0; linkIdx < links.length; linkIdx++) {
+        let link = links[linkIdx]
+        if (link[0] == '#') {
+          res.push(<Link to={`/hashtags/${link.slice(1)}`} className='bork-body-link'>{link}</Link>)
+        } else {
+          res.push(<a href={link}>{link}</a>)
+        }
+        res.push(<span>{contentArr[linkIdx + 1]}</span>)
+      }
+      return res
+    }
+
     const BorkBody = () => {
-      const content = getTags(bork.content)
-      const linkRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
-      const links = content.match(linkRegex)
+      const content = buildContent(bork.content)
       const body = (<h2>
         {bork.type === BorkType.Extension ? "…" : ""}
-        {content.replace(linkRegex, (match) => `<a href="${match}">${match}</a>`)}
+        {content}
         {bork.position < bork.extensionsCount ? "…" : ""}
       </h2>)
-      if (links) {
-        return body
-      } else {
-        return (
-          <Link
-            to={`/borks/${bork.txid}`}
-            className="bork-body-link"
-          >
-            {body}
-          </Link>
-        )
-      }
+
+      return (
+        <div className="bork-body-link">
+          {body}
+        </div>
+      )
     }
 
     return (
