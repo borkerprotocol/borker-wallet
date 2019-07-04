@@ -47,7 +47,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
       return (
         <Link
-          to={`/borks/${bork.txid}`}
+          to={content.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi) ? content : `/borks/${bork.txid}`}
           className="bork-body-link"
         >
           <h2>
