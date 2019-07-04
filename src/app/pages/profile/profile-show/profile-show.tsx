@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 import { Bork, User, BorkType } from '../../../../types/types'
+import InfiniteScroll from 'react-infinite-scroller'
 import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
@@ -21,6 +22,7 @@ export interface ProfileShowState {
   borks: Bork[]
   likes: Bork[]
   flags: Bork[]
+  more: boolean
 }
 
 class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState> {
@@ -33,6 +35,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
       borks: [],
       likes: [],
       flags: [],
+      more: false,
     }
     this.webService = new WebService()
   }
@@ -41,7 +44,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     this.props.setTitle('Profile')
     this.props.setShowFab(true)
 
-    this.getUserData(this.props.user.address)
+    this.fetchData(0, 1, this.props.user.address)
   }
 
   async componentWillReceiveProps (nextProps: ProfileShowProps) {
@@ -49,32 +52,82 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     const newAddress = nextProps.user.address
 
     if (oldAddress !== newAddress) {
-      this.setState({ loading: true })
-      this.getUserData(newAddress)
+      this.fetchData(0, 1, newAddress)
     }
   }
 
-  getUserData = async (senderAddress: string) => {
-    const [ borks, likes, flags ] = await Promise.all([
-      this.webService.getBorks({
-        senderAddress,
-        types: [BorkType.Bork, BorkType.Rebork, BorkType.Comment],
-      }),
-      this.webService.getBorks({
-        senderAddress,
-        types: [BorkType.Like],
-      }),
-      this.webService.getBorks({
-        senderAddress,
-        types: [BorkType.Flag],
-      }),
-    ])
+  fetchData = (index: number, lastIndex: number, senderAddress: string): void | boolean => {
+    if (index === lastIndex) { return false }
 
-    this.setState({ loading: false, borks, likes, flags })
+    switch (index) {
+      case 0:
+        if (this.state.borks.length) { return }
+        this.setState({
+          loading: true,
+        })
+        this.getBorks(1, senderAddress)
+        break
+      case 1:
+        if (this.state.likes.length) { return }
+        this.setState({
+          loading: true,
+        })
+        this.getLikes(1, senderAddress)
+        break
+      case 2:
+        if (this.state.flags.length) { return }
+this.setState({
+          loading: true,
+        })
+        this.getFlags(1, senderAddress)
+        break
+    }
+  }
+
+  getBorks = async (page: number, senderAddress: string) => {
+    const borks = await this.webService.getBorks({
+      senderAddress,
+      types: [BorkType.Bork, BorkType.Rebork, BorkType.Comment],
+      order: { createdAt: 'DESC' },
+      page,
+    }) || []
+    this.setState({
+      borks: this.state.borks.concat(borks),
+      more: borks.length > 0,
+      loading: false,
+    })
+  }
+
+  getLikes = async (page: number, senderAddress: string) => {
+    const likes = await this.webService.getBorks({
+      senderAddress,
+      types: [BorkType.Like],
+      order: { createdAt: 'DESC' },
+      page,
+    }) || []
+    this.setState({
+      likes: this.state.likes.concat(likes),
+      more: likes.length > 0,
+      loading: false,
+    })
+  }
+
+  getFlags = async (page: number, senderAddress: string) => {
+    const flags = await this.webService.getBorks({
+      senderAddress,
+      types: [BorkType.Flag],
+      order: { createdAt: 'DESC' },
+      page,
+    }) || []
+    this.setState({
+      flags: this.state.flags.concat(flags),
+      more: flags.length > 0,
+      loading: false,
+    })
   }
 
   render () {
-    const { loading, borks, likes, flags } = this.state
+    const { loading, borks, likes, flags, more } = this.state
     const { user } = this.props
 
     return (
@@ -126,7 +179,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             {user.followersCount || 0}<span> Followers</span>
           </Link>
         </p>
-        <Tabs>
+        <Tabs onSelect={(index, lastIndex) => this.fetchData(index, lastIndex, user.address)}>
           <TabList>
             <Tab>Borks</Tab>
             <Tab>Likes</Tab>
@@ -134,50 +187,57 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           </TabList>
 
           <TabPanel>
-            {!loading &&
-              <div>
-                {borks.length > 0 &&
-                  <BorkList borks={borks.map(b => {
-                    return { ...b }
-                  })} />
-                }
-                {!borks.length &&
-                  <p>No Borks</p>
-                }
-              </div>
-            }
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={(page) => this.getBorks(page, user.address)}
+              hasMore={more}
+              useWindow={false}
+            >
+              {borks.length > 0 &&
+                <BorkList borks={borks.map(b => {
+                  return { ...b }
+                })} />
+              }
+              {!borks.length && !loading &&
+                <p>No Borks</p>
+              }
+            </InfiniteScroll>
           </TabPanel>
 
           <TabPanel>
-            {!loading &&
-              <div>
-                {likes.length > 0 &&
-                  <BorkList borks={likes.map(l => {
-                    return l.parent
-                  })} />
-                }
-                {!likes.length &&
-                  <p>No Likes</p>
-                }
-              </div>
-            }
-
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={(page) => this.getLikes(page, user.address)}
+              hasMore={more}
+              useWindow={false}
+            >
+              {likes.length > 0 &&
+                <BorkList borks={likes.map(l => {
+                  return l.parent
+                })} />
+              }
+              {!likes.length && !loading &&
+                <p>No Likes</p>
+              }
+            </InfiniteScroll>
           </TabPanel>
 
           <TabPanel>
-            {!loading &&
-              <div>
-                {flags.length > 0 &&
-                  <BorkList borks={flags.map(f => {
-                    return f.parent
-                  })} />
-                }
-                {!flags.length &&
-                  <p>No Flags</p>
-                }
-              </div>
-            }
-
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={(page) => this.getFlags(page, user.address)}
+              hasMore={more}
+              useWindow={false}
+            >
+              {flags.length > 0 &&
+                <BorkList borks={flags.map(f => {
+                  return f.parent
+                })} />
+              }
+              {!flags.length && !loading &&
+                <p>No Flags</p>
+              }
+            </InfiniteScroll>
           </TabPanel>
         </Tabs>
       </div>

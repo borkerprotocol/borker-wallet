@@ -10,120 +10,106 @@ class WebService {
   async getBalance (): Promise<BigNumber> {
     const address = await Storage.get<string>('address')
 
-    const options: rp.Options = {
+    const res = await this.request({
       method: 'GET',
       url: `/users/${address}/balance`,
-    }
+    })
 
-    const res = await this.request(options)
     return new BigNumber(res)
   }
 
   async getUtxos (amount: BigNumber): Promise<Utxo[]> {
     const address = await Storage.get<string>('address')
 
-    const options: rp.Options = {
+    return this.request({
       method: 'GET',
       url: `/users/${address}/utxos`,
       qs: { amount: amount.toString() },
-    }
-
-    return this.request(options)
+    })
   }
 
-  async getTags (page?: number, perPage?: number): Promise<Tag[]> {
-    const options: rp.Options = {
+  async getTags (params: IndexTagParams = {}): Promise<Tag[]> {
+    return this.request({
       method: 'GET',
       url: `/borks/tags`,
-      qs: { page, perPage },
-    }
-
-    return this.request(options)
+      qs: params,
+    })
   }
 
   async getReferenceId (txid: string, address: string): Promise<string> {
-    const options: rp.Options = {
+    const res = await this.request({
       method: 'GET',
       url: `/borks/referenceId`,
       qs: { txid, address },
-    }
+    })
 
-    const res = await this.request(options)
     return res.referenceId
   }
 
   async signAndBroadcastTx (body: string[]): Promise<string[]> {
-    const options: rp.Options = {
+    return this.request({
       method: 'POST',
       url: `/borks/broadcast`,
       body,
-    }
-
-    return this.request(options)
+    })
   }
 
-  async getUsers (order: OrderBy<User>): Promise<User[]> {
-
-    const options: rp.Options = {
+  async getUsers (params: IndexUserParams = {}): Promise<User[]> {
+    return this.request({
       method: 'GET',
       url: `/users`,
-      qs: { order },
-    }
-
-    return this.request(options)
+      qs: params,
+    })
   }
 
-  async getUsersByTx (txid: string, type: BorkType.Comment | BorkType.Rebork | BorkType.Like | BorkType.Flag): Promise<User[]> {
+  async getUsersByTx (
+    txid: string,
+    type: BorkType.Comment | BorkType.Rebork | BorkType.Like | BorkType.Flag,
+    page: number,
+  ): Promise<User[]> {
 
-    const options: rp.OptionsWithUrl = {
+    return this.request({
       method: 'GET',
       url: `/borks/${txid}/users`,
-      qs: { type },
-    }
-
-    return this.request(options)
+      qs: { page, type },
+    })
   }
 
-  async getUsersByUser (address: string, type: FollowsType): Promise<User[]> {
+  async getUsersByUser (
+    address: string,
+    type: FollowsType,
+    page: number,
+  ): Promise<User[]> {
 
-    const options: rp.OptionsWithUrl = {
+    return this.request({
       method: 'GET',
       url: `/users/${address}/users`,
-      qs: { type },
-    }
-
-    return this.request(options)
+      qs: { page, type },
+    })
   }
 
   async getUser (address: string): Promise<User> {
-
-    const options: rp.OptionsWithUrl = {
+    return this.request({
       method: 'GET',
       url: `/users/${address}`,
-    }
-
-    return this.request(options)
+    })
   }
 
   async getBork (txid: string): Promise<Bork> {
 
-    const options: rp.OptionsWithUrl = {
+    return this.request({
       method: 'GET',
       url: `/borks/${txid}`,
-    }
-
-    return this.request(options)
+    })
   }
 
   async getBorks (params: IndexBorkParams = {}): Promise<Bork[]> {
 
-    const options: rp.OptionsWithUrl = {
+    return this.request({
       method: 'GET',
       url: '/borks',
       qs: params,
-    }
-
-    return this.request(options)
+    })
   }
 
   private async request (options: rp.OptionsWithUrl) {
@@ -173,4 +159,14 @@ export interface IndexBorkParams extends IndexParams {
   types?: BorkType[]
   order?: OrderBy<Bork>
   tags?: string[]
+}
+
+export interface IndexUserParams extends IndexParams {
+  order?: OrderBy<User>
+  name?: string
+}
+
+export interface IndexTagParams extends IndexParams {
+  order?: OrderBy<User>
+  name?: string
 }

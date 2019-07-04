@@ -24,6 +24,7 @@ export interface Bork {
   parent: Bork
   mentions: User[]
   extensions: Bork[]
+  extensionsCount: number
   commentsCount: number
   reborksCount: number
   likesCount: number

@@ -7,10 +7,9 @@ import defaultAvatar from '../../../assets/default-avatar.png'
 import FollowButton from '../../components/follow-button/follow-button'
 import '../user-list/user-list.scss'
 import './explore.scss'
+import InfiniteScroll from 'react-infinite-scroller'
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
 import BorkList from '../../components/bork-list/bork-list'
-
-// export interface UserListProps extends AuthProps {}
 
 export interface ExploreProps extends AuthProps {}
 
@@ -18,13 +17,8 @@ export interface ExploreState {
   users: User[]
   tags: Tag[]
   borks: Bork[]
+  more: boolean
 }
-
-// export interface UserListState {
-//   users: User[]
-//   tags: any[]
-//   borks: Bork[]
-// }
 
 class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   public webService: WebService
@@ -35,6 +29,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
       users: [],
       tags: [],
       borks: [],
+      more: false,
     }
     this.webService = new WebService()
   }
@@ -42,39 +37,63 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   async componentDidMount () {
     this.props.setTitle('Explore')
     this.props.setShowFab(false)
-
-    this.setState({
-      users: await this.webService.getUsers({ birthBlock: 'ASC' }) || [],
-    })
+    this.fetchData(0, 1)
   }
 
-  fetchData = (index: number, lastIndex: number, event: Event): void | boolean => {
+  fetchData = (index: number, lastIndex: number): void | boolean => {
     if (index === lastIndex) { return false }
 
     switch (index) {
       case 0:
         if (this.state.users.length) { return }
-        this.webService.getUsers({ birthBlock: 'ASC' }).then(users => {
-          this.setState({ users })
-        })
+        this.getUsers(1)
         break
       case 1:
         if (this.state.tags.length) { return }
-        this.webService.getTags().then(tags => {
-          this.setState({ tags })
-        })
+        this.getTags(1)
         break
       case 2:
         if (this.state.borks.length) { return }
-        this.webService.getBorks({ types: [BorkType.Bork, BorkType.Comment, BorkType.Rebork], order: { createdAt: 'DESC' } }).then(borks => {
-          this.setState({ borks })
-        })
+        this.getBorks(1)
         break
     }
   }
 
+  getUsers = async (page: number) => {
+    const users = await this.webService.getUsers({
+      order: { birthBlock: 'ASC' },
+      page,
+    })
+    this.setState({
+      users: this.state.users.concat(users),
+      more: users.length > 0,
+    })
+  }
+
+  getTags = async (page: number) => {
+    const tags = await this.webService.getTags({
+      page,
+    })
+    this.setState({
+      tags: this.state.tags.concat(tags),
+      more: tags.length > 0,
+    })
+  }
+
+  getBorks = async (page: number) => {
+    const borks = await this.webService.getBorks({
+      types: [BorkType.Bork, BorkType.Comment, BorkType.Rebork],
+      order: { createdAt: 'DESC' },
+      page,
+    })
+    this.setState({
+      borks: this.state.borks.concat(borks),
+      more: borks.length > 0,
+    })
+  }
+
   render () {
-    const { users, tags, borks } = this.state
+    const { users, tags, borks, more } = this.state
 
     return (
       <div className="page-content">
@@ -86,42 +105,63 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
           </TabList>
 
           <TabPanel>
-            <ul className="user-list">
-              {users.map(user => {
-                return (
-                  <li key={user.address}>
-                    <div className="user-item">
-                      <div className="user-item-follow">
-                        <FollowButton user={user} />
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={this.getUsers}
+              hasMore={more}
+              useWindow={false}
+            >
+              <ul className="user-list">
+                {users.map(user => {
+                  return (
+                    <li key={user.address}>
+                      <div className="user-item">
+                        <div className="user-item-follow">
+                          <FollowButton user={user} />
+                        </div>
+                        <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
+                          <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" alt='avatar' />
+                          <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
+                          <span style={{ color: 'gray' }}>@{user.address.substring(0, 9)}</span><br />
+                          <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>
+                        </Link>
                       </div>
-                      <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
-                        <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" alt='avatar' />
-                        <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
-                        <span style={{ color: 'gray' }}>@{user.address.substring(0, 9)}</span><br />
-                        <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>
-                      </Link>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
+                    </li>
+                  )
+                })}
+              </ul>
+            </InfiniteScroll>
           </TabPanel>
 
           <TabPanel>
-            <ul className="tag-list">
-              {tags.map(tag => {
-                return (
-                  <li key={tag.name}>
-                    <h2># {tag.name}</h2>
-                    <p><i>{tag.count} Borks</i></p>
-                  </li>
-                )
-              })}
-            </ul>
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={this.getTags}
+              hasMore={more}
+              useWindow={false}
+            >
+              <ul className="tag-list">
+                {tags.map(tag => {
+                  return (
+                    <li key={tag.name}>
+                      <h2># {tag.name}</h2>
+                      <p><i>{tag.count} Borks</i></p>
+                    </li>
+                  )
+                })}
+              </ul>
+            </InfiniteScroll>
           </TabPanel>
 
           <TabPanel>
-            <BorkList borks={borks} />
+            <InfiniteScroll
+              pageStart={1}
+              loadMore={this.getBorks}
+              hasMore={more}
+              useWindow={false}
+            >
+              <BorkList borks={borks} />
+            </InfiniteScroll>
           </TabPanel>
         </Tabs>
       </div>

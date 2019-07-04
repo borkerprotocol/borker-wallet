@@ -5,6 +5,7 @@ import BorkList from '../../../components/bork-list/bork-list'
 import { RouteComponentProps } from 'react-router'
 import WebService from '../../../web-service'
 import BorkComponent from '../../../components/bork/bork'
+import InfiniteScroll from 'react-infinite-scroller'
 import '../../../App.scss'
 import './bork-view.scss'
 
@@ -15,9 +16,11 @@ export interface BorkViewParams {
 export interface BorkViewProps extends AuthProps, RouteComponentProps<BorkViewParams> {}
 
 export interface BorkViewState {
+  loading: boolean
   bork: Bork | null
   extensions: Bork[]
   comments: Bork[]
+  more: boolean
 }
 
 class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
@@ -26,9 +29,11 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
   constructor (props: BorkViewProps) {
     super(props)
     this.state = {
+      loading: true,
       bork: null,
       extensions: [],
       comments: [],
+      more: false,
     }
     this.webService = new WebService()
   }
@@ -36,25 +41,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
   async componentDidMount () {
     this.props.setTitle('Bork')
     this.props.setShowFab(false)
-
-    const [bork, extensions, comments] = await Promise.all([
-      this.webService.getBork(this.props.match.params.txid),
-      this.webService.getBorks({
-        parentTxid: this.props.match.params.txid,
-        types: [BorkType.Extension],
-        order: { position: 'ASC' },
-      }),
-      this.webService.getBorks({
-        parentTxid: this.props.match.params.txid,
-        types: [BorkType.Comment],
-      }),
-    ])
-
-    this.setState({
-      bork,
-      extensions,
-      comments,
-    })
+    await this.getBorks(1)
   }
 
   async componentWillReceiveProps (nextProps: BorkViewProps) {
@@ -62,29 +49,52 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     const newTxid = nextProps.match.params.txid
 
     if (oldTxid !== newTxid) {
-      const [bork, extensions, comments] = await Promise.all([
-        this.webService.getBork(newTxid),
-        this.webService.getBorks({
-          parentTxid: newTxid,
-          types: [BorkType.Extension],
-          order: { position: 'ASC' },
-        }),
-        this.webService.getBorks({
-          parentTxid: newTxid,
-          types: [BorkType.Comment],
-        }),
-      ])
-
-      this.setState({
-        bork,
-        extensions,
-        comments,
-      })
+      await this.getBorks(1, newTxid)
     }
   }
 
+  getBorks = async (page: number, txid = this.props.match.params.txid) => {
+    if (!this.state.bork || this.state.bork.txid !== txid) {
+      await this.setState({
+        bork: await this.webService.getBork(txid),
+        extensions: [],
+        comments: [],
+      })
+    }
+
+    let extensions: Bork[] = []
+    if (this.state.bork!.extensionsCount > this.state.extensions.length) {
+      extensions = await this.webService.getBorks({
+        parentTxid: txid,
+        types: [BorkType.Extension],
+        order: { position: 'ASC' },
+        page,
+        perPage: 20,
+      })
+    }
+
+    let comments: Bork[] = []
+    if (extensions.length < 20) {
+      comments = await this.webService.getBorks({
+        parentTxid: txid,
+        types: [BorkType.Comment],
+        page,
+        perPage: 20,
+      })
+    }
+
+    this.setState({
+      extensions: this.state.extensions.concat(extensions),
+      comments: this.state.comments.concat(comments),
+      loading: false,
+      more: extensions.length >= 20 || comments.length >= 20 ? true : false,
+    })
+  }
+
   render () {
-    const { bork, extensions, comments } = this.state
+    const { bork, extensions, comments, loading, more } = this.state
+
+    if (loading) { return null }
 
     return !bork ? (
       <div>
@@ -94,8 +104,15 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
       <div>
         <BorkList borks={bork.parent ? [bork.parent] : []} />
         <BorkComponent bork={bork} showButtons />
-        <BorkList borks={extensions} />
-        <BorkList borks={comments} />
+        <InfiniteScroll
+          pageStart={1}
+          loadMore={this.getBorks}
+          hasMore={more}
+          useWindow={false}
+        >
+          <BorkList borks={extensions} />
+          <BorkList borks={comments} />
+        </InfiniteScroll>
       </div>
     )
   }

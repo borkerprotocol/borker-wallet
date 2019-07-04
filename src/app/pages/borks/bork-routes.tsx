@@ -8,7 +8,7 @@ import '../../App.scss'
 import { BorkType } from '../../../types/types'
 
 class BorksRoutes extends React.Component<{}, {}> {
-  render() {
+  render () {
     return (
       <Switch>
         <Route exact path="/borks/feed" component={FeedPage} />
