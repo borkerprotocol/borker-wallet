@@ -66,7 +66,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     })
     this.setState({
       users: this.state.users.concat(users),
-      more: users.length > 0,
+      more: users.length >= 20,
     })
   }
 
@@ -76,7 +76,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     })
     this.setState({
       tags: this.state.tags.concat(tags),
-      more: tags.length > 0,
+      more: tags.length >= 20,
     })
   }
 
@@ -88,7 +88,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     })
     this.setState({
       borks: this.state.borks.concat(borks),
-      more: borks.length > 0,
+      more: borks.length >= 20,
     })
   }
 

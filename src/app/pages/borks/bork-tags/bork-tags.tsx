@@ -1,24 +1,29 @@
 import React from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import { Bork, BorkType } from '../../../../types/types'
+import { Bork } from '../../../../types/types'
 import BorkList from '../../../components/bork-list/bork-list'
 import WebService from '../../../web-service'
 import '../../../App.scss'
-import './feed.scss'
+import './bork-tags.scss'
+import { RouteComponentProps } from 'react-router'
 
-export interface FeedProps extends AuthProps {}
+export interface BorkTagsParams {
+  tag: string
+}
 
-export interface FeedState {
+export interface BorkTagsProps extends AuthProps, RouteComponentProps<BorkTagsParams> {}
+
+export interface BorkTagsState {
   loading: boolean
   borks: Bork[]
   more: boolean
 }
 
-class FeedPage extends React.Component<FeedProps, FeedState> {
+class BorkTagsPage extends React.Component<BorkTagsProps, BorkTagsState> {
   public webService: WebService
 
-  constructor (props: FeedProps) {
+  constructor (props: BorkTagsProps) {
     super(props)
     this.state = {
       loading: true,
@@ -29,20 +34,15 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
   }
 
   async componentDidMount () {
-    this.props.setTitle('Feed')
+    const tag = this.props.match.params.tag
+    this.props.setTitle(`#${tag.charAt(0).toUpperCase()}${tag.slice(1)}`)
     this.props.setShowFab(true)
     await this.getBorks(1)
   }
 
   getBorks = async (page: number) => {
     const borks = await this.webService.getBorks({
-      filterFollowing: true,
-      types: [
-        BorkType.Bork,
-        BorkType.Rebork,
-        BorkType.Comment,
-        BorkType.Like,
-      ],
+      tags: [this.props.match.params.tag],
       page,
     }) || []
     this.setState({
@@ -59,9 +59,7 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
 
     return !borks.length ? (
       <div style={{ padding: "20px" }}>
-        <p>This is your news feed.</p>
-        <p>Borks and likes of people you follow will show up here.</p>
-        <p>You can discover new people to follow in the <i>Explore</i> tab.</p>
+        <p>No Borks</p>
       </div>
     ) : (
       <InfiniteScroll
@@ -76,4 +74,4 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
   }
 }
 
-export default withAuthContext(FeedPage)
+export default withAuthContext(BorkTagsPage)

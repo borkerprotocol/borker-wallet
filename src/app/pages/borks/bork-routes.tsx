@@ -4,6 +4,7 @@ import FeedPage from './feed/feed'
 import BorkViewPage from './bork-view/bork-view'
 import BorkNewPage from './bork-new/bork-new'
 import UserListPage from '../user-list/user-list'
+import BorkTagsPage from './bork-tags/bork-tags'
 import '../../App.scss'
 import { BorkType } from '../../../types/types'
 
@@ -16,6 +17,11 @@ class BorksRoutes extends React.Component<{}, {}> {
           exact
           path="/borks/new"
           render={props => <BorkNewPage {...props} type={BorkType.Bork} />}
+        />
+        <Route
+          exact
+          path="/borks/tags/:tag"
+          render={props => <BorkTagsPage {...props} />}
         />
         <Route exact path="/borks/:txid" component={BorkViewPage} />
         <Route

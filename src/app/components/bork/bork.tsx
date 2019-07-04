@@ -16,13 +16,8 @@ export interface BorkComponentProps {
 
 class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
-  render() {
+  render () {
     let { bork, showButtons } = this.props
-
-    // TODO convert #tags into <Links>
-    function getTags(content: string) {
-      return content
-    }
 
     const avatar = (
       <Link to={`/profile/${bork.sender.address}`}>
@@ -49,8 +44,8 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
       let res = [<span>{contentArr[0]}</span>]
       for (let linkIdx = 0; linkIdx < links.length; linkIdx++) {
         let link = links[linkIdx]
-        if (link[0] == '#') {
-          res.push(<Link to={`/hashtags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
+        if (link[0] === '#') {
+          res.push(<Link to={`tags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
         } else {
           res.push(<a href={link} className='bork-link'>{link}</a>)
         }

@@ -93,7 +93,7 @@ this.setState({
     }) || []
     this.setState({
       borks: this.state.borks.concat(borks),
-      more: borks.length > 0,
+      more: borks.length >= 20,
       loading: false,
     })
   }
@@ -107,7 +107,7 @@ this.setState({
     }) || []
     this.setState({
       likes: this.state.likes.concat(likes),
-      more: likes.length > 0,
+      more: likes.length >= 20,
       loading: false,
     })
   }
@@ -121,7 +121,7 @@ this.setState({
     }) || []
     this.setState({
       flags: this.state.flags.concat(flags),
-      more: flags.length > 0,
+      more: flags.length >= 20,
       loading: false,
     })
   }
@@ -193,7 +193,7 @@ this.setState({
               hasMore={more}
               useWindow={false}
             >
-              {borks.length > 0 &&
+              {borks.length >= 20 &&
                 <BorkList borks={borks.map(b => {
                   return { ...b }
                 })} />
@@ -211,7 +211,7 @@ this.setState({
               hasMore={more}
               useWindow={false}
             >
-              {likes.length > 0 &&
+              {likes.length >= 20 &&
                 <BorkList borks={likes.map(l => {
                   return l.parent
                 })} />
@@ -229,7 +229,7 @@ this.setState({
               hasMore={more}
               useWindow={false}
             >
-              {flags.length > 0 &&
+              {flags.length >= 20 &&
                 <BorkList borks={flags.map(f => {
                   return f.parent
                 })} />
