@@ -38,6 +38,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
     )
 
     const buildContent = (content: string) => {
+      const isImage = require('is-image')
       const linkRegex = /(?:(?:https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)|(?:#[a-zA-Z0-9_]+)/gi
       const contentArr = content.split(linkRegex)
       const links = content.match(linkRegex) || []
@@ -45,7 +46,9 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
       for (let linkIdx = 0; linkIdx < links.length; linkIdx++) {
         let link = links[linkIdx]
         if (link[0] === '#') {
-          res.push(<Link to={`tags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
+          res.push(<Link to={`/hashtags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
+        } else if (isImage(link)) {
+          res.push(<img src={link}></img>)
         } else {
           res.push(<a href={link} className='bork-link'>{link}</a>)
         }

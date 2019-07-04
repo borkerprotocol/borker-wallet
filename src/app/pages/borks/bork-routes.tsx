@@ -20,7 +20,7 @@ class BorksRoutes extends React.Component<{}, {}> {
         />
         <Route
           exact
-          path="/borks/tags/:tag"
+          path="/borks/hashtags/:tag"
           render={props => <BorkTagsPage {...props} />}
         />
         <Route exact path="/borks/:txid" component={BorkViewPage} />
