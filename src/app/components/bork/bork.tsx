@@ -50,7 +50,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
       for (let linkIdx = 0; linkIdx < links.length; linkIdx++) {
         let link = links[linkIdx]
         if (link[0] == '#') {
-          res.push(<Link to={`/hashtags/${link.slice(1)}`} className='bork-body-link'>{link}</Link>)
+          res.push(<Link to={`/hashtags/${link.slice(1).toLowerCase()}`} className='bork-body-link'>{link}</Link>)
         } else {
           res.push(<a href={link}>{link}</a>)
         }
