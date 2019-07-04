@@ -6,6 +6,7 @@ import { calendar } from '../../../util/timestamps'
 import defaultAvatar from '../../../assets/default-avatar.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
+import * as isImage from 'is-image'
 import '../../App.scss'
 import './bork.scss'
 
@@ -51,6 +52,8 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
         let link = links[linkIdx]
         if (link[0] == '#') {
           res.push(<Link to={`/hashtags/${link.slice(1).toLowerCase()}`} className='bork-link'>{link}</Link>)
+        } else if (isImage(link)) {
+          res.push(<img src={link}></img>)
         } else {
           res.push(<a href={link} className='bork-link'>{link}</a>)
         }
