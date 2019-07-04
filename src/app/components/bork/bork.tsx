@@ -53,7 +53,7 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
           <h2>
             {bork.type === BorkType.Extension ? "…" : ""}
             {content}
-            {bork.extensionsCount > 0 ? "…" : ""}
+            {bork.position < bork.extensionsCount ? "…" : ""}
           </h2>
         </Link>
       )

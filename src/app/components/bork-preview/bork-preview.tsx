@@ -64,7 +64,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
           <p>
             {bork.type === BorkType.Extension ? "…" : ""}
             {content}
-            {bork.extensionsCount > 0 ? "…" : ""}
+            {bork.position < bork.extensionsCount ? "…" : ""}
           </p>
         </Link>
       )
