@@ -143,10 +143,12 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
               <ul className="tag-list">
                 {tags.map(tag => {
                   return (
-                    <li key={tag.name}>
-                      <h2># {tag.name}</h2>
-                      <p><i>{tag.count} Borks</i></p>
-                    </li>
+                    <Link key={tag.name} to={`borks/hashtags/${tag.name.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+                      <li>
+                        <h2># {tag.name}</h2>
+                        <p><i>{tag.count} Borks</i></p>
+                      </li>
+                    </Link>
                   )
                 })}
               </ul>
