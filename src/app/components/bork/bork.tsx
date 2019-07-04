@@ -44,19 +44,25 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
     const BorkBody = () => {
       const content = getTags(bork.content)
-
-      return (
-        <Link
-          to={content.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi) ? content : `/borks/${bork.txid}`}
-          className="bork-body-link"
-        >
-          <h2>
-            {bork.type === BorkType.Extension ? "…" : ""}
-            {content}
-            {bork.position < bork.extensionsCount ? "…" : ""}
-          </h2>
-        </Link>
-      )
+      const linkRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+      const links = content.match(linkRegex)
+      const body = (<h2>
+        {bork.type === BorkType.Extension ? "…" : ""}
+        {content.replace(linkRegex, (match) => `<a href="${match}">${match}</a>`)}
+        {bork.position < bork.extensionsCount ? "…" : ""}
+      </h2>)
+      if (links) {
+        return body
+      } else {
+        return (
+          <Link
+            to={`/borks/${bork.txid}`}
+            className="bork-body-link"
+          >
+            {body}
+          </Link>
+        )
+      }
     }
 
     return (
