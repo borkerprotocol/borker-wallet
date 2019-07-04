@@ -41,6 +41,14 @@
   }
 }
 
+.bork-link {
+  text-decoration: none;
+  color: blue;
+  & h2 {
+    font-weight: 400;
+  }
+}
+
 .bork-stats {
   font-weight: bold;
   & span {
