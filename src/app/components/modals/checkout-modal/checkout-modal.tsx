@@ -110,7 +110,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         inputs = last ? [last.split(':')[1]] : []
       }
       const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
-        { address: parent!.senderAddress, value: tip.plus(extraTip).toNumber() } :
+        { address: parent!.senderAddress, value: tip.plus(extraTip || 0).toNumber() } :
         null
       // construct the txs
       const rawTxs = localWallet!.newBork(data, inputs, recipient, [], fee.toNumber(), borkerLib.Network.Dogecoin)
@@ -150,7 +150,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
             <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
           }
           <div style={{ textAlign: "center" }}>
-            <input type="submit" className="small-button" style={{ marginBottom: "20px" }} disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
+            <input type="submit" className="small-button" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
           </div>
           {error &&
             <p style={{ color: 'red' }}>{error}</p>
