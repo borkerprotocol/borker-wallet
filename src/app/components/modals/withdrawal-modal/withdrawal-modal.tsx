@@ -3,18 +3,17 @@ import BigNumber from 'bignumber.js'
 import './withdrawal-modal.scss'
 import WebService from '../../../web-service'
 import { JsChildWallet } from 'borker-rs-browser'
+import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
 
-export interface WithdrawalModalProps {
-  balance: BigNumber
-  wallet: JsChildWallet | null
-  decryptWallet: (password: string) => Promise<JsChildWallet>
-}
+export interface WithdrawalModalProps extends AuthProps {}
 
 export interface WithdrawalModalState {
   address: string
   amount: string
   password: string
   fee: BigNumber
+  processing: boolean
+  error: string
 }
 
 class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalModalState> {
@@ -27,6 +26,8 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
       amount: '',
       password: '',
       fee: new BigNumber(100000000),
+      processing: false,
+      error: '',
     }
     this.webService = new WebService()
   }
@@ -45,19 +46,43 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
 
   withdraw = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const borkerLib = await import('borker-rs-browser')
-    const { wallet, decryptWallet } = this.props
-    const { fee, address, amount, password } = this.state
 
-    const amount_sat = parseFloat(amount) * 100000000
-    const localWallet = wallet || await decryptWallet(password)
-    const utxos = await this.webService.getUtxos(new BigNumber(amount_sat))
-    const inputs = utxos.map(u => u.raw)
+    this.setState({
+      processing: true,
+    })
 
-    const rawTx = localWallet!.constructSigned(inputs, address, amount_sat, fee.toNumber(), borkerLib.Network.Dogecoin)
+    try {
+      const borkerLib = await import('borker-rs-browser')
+      const { wallet, decryptWallet } = this.props
+      const { fee, address, amount, password } = this.state
+      const totalCost = new BigNumber(amount)
 
-    return this.webService.signAndBroadcastTx([rawTx])
+      // decrypt wallet and set in memory if not already
+      const localWallet = wallet || await decryptWallet(password)
+      const ret_utxos = await this.webService.getUtxos(totalCost)
+      const utxos = ret_utxos.filter(u => !(window.sessionStorage.getItem('usedUTXOs') || '').includes(`${u.txid}-${u.position}`))
 
+      const amount_sat = totalCost.times(100000000).minus(fee)
+
+      let inputs = utxos.map(utxo => utxo.raw)
+      if (inputs.length === 0) {
+        const last = window.sessionStorage.getItem('lastTransaction')
+        inputs = last ? [last.split(':')[1]] : []
+      }
+
+      const rawTx = localWallet!.constructSigned(inputs, address, amount_sat.toNumber(), fee.toNumber(), borkerLib.Network.Dogecoin)
+
+      // broadcast
+      let res = await this.webService.signAndBroadcastTx([rawTx])
+      window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
+      window.sessionStorage.setItem('lastTransaction', `${res[0]}-0:${rawTx}`)
+      // close modal
+      this.props.toggleModal(null)
+    } catch (err) {
+      this.setState({
+        error: `Error processing withdrawal: "${err.message}"`,
+      })
+    }
   }
 
   fillMax = () => {
@@ -65,7 +90,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
   }
 
   render () {
-    const { address, amount, password } = this.state
+    const { address, amount, password, processing, error } = this.state
     const { balance, wallet } = this.props
 
     return (
@@ -80,10 +105,13 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
         <br />
         <br />
         <br />
-        <input type="submit" value="Submit" />
+        <input type="submit" disabled={processing} value={processing ? 'Processing' : 'Submit'} />
+        {error &&
+            <p style={{ color: 'red' }}>{error}</p>
+          }
       </form>
     )
   }
 }
 
-export default WithdrawalModal
+export default withAuthContext(WithdrawalModal)

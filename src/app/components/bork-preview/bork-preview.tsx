@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Bork, BorkType } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { fromNow } from '../../../util/timestamps'
-import defaultAvatar from '../../../assets/default-avatar.png'
+import defaultAvatar from '../../../assets/avatar-1.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faRetweet } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
@@ -17,7 +17,7 @@ export interface BorkPreviewComponentProps {
 
 class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps> {
 
-  render() {
+  render () {
     let { bork, showButtons, isSubBork } = this.props
     let child: Bork | null = null
     let childText: string = ''
@@ -31,7 +31,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
     }
 
     // TODO convert #tags into <Links>
-    function getTags(content: string) {
+    function getTags (content: string) {
       return content
     }
 

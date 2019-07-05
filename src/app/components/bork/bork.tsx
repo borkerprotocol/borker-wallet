@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Bork, BorkType } from '../../../types/types'
 import BorkButtons from '../bork-buttons/bork-buttons'
 import { calendar } from '../../../util/timestamps'
-import defaultAvatar from '../../../assets/default-avatar.png'
+import defaultAvatar from '../../../assets/avatar-1.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments } from '@fortawesome/free-solid-svg-icons'
 import '../../App.scss'
