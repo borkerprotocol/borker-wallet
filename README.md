@@ -24,7 +24,7 @@ https://github.com/nodesource/distributions/blob/master/README.md
 ```cd borker-app```
 
 ### Create borkerconfig.json file
-cp borkerconfig-sample.json borkerconfig.json
+cp src/borkerconfig-sample.json src/borkerconfig.json
 
 ### Edit borkerconfig.json
 "borkerip": "" // the default borker url/ip
