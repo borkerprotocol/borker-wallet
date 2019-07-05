@@ -54,7 +54,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
   render () {
     const { body, parent } = this.state
     const charCount = body.length
-    const txCount = charCount === 0 ? 0 : charCount > 77 ? Math.ceil(1 + (charCount - 77) / 76) : 1
+    const txCount = charCount === 0 ? 0 : charCount > 76 ? Math.ceil(1 + (charCount - 76) / 75) : 1
 
     const modal = (
       <CheckoutModal

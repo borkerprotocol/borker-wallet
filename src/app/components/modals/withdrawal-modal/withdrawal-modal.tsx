@@ -2,10 +2,11 @@ import React from 'react'
 import BigNumber from 'bignumber.js'
 import './withdrawal-modal.scss'
 import WebService from '../../../web-service'
-import { JsChildWallet } from 'borker-rs-browser'
-import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
+import { AppProps, withAppContext } from '../../../contexts/app-context'
 
-export interface WithdrawalModalProps extends AuthProps {}
+export interface WithdrawalModalProps extends AppProps {
+  balance: BigNumber
+}
 
 export interface WithdrawalModalState {
   address: string
@@ -114,4 +115,4 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
   }
 }
 
-export default withAuthContext(WithdrawalModal)
+export default withAppContext(WithdrawalModal)
