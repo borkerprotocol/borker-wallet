@@ -78,8 +78,9 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
         }
         <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="bork-form">
           <textarea value={body} onChange={this.handleBodyChange} />
-          <input type="submit" value="Preview" disabled={!charCount} />
+          <input type="submit" className="small-button" value="Preview" disabled={!charCount} />
         </form>
+        <br />
         <p>Character Count: {charCount}</p>
         <p>Transaction Count: {txCount}</p>
       </div>

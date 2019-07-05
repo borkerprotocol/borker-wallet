@@ -135,7 +135,6 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       <div className="checkout-modal-content">
         <h1>Order Summary</h1>
         <p>Transaction Type: <b>{type}</b></p>
-        <br></br>
         <p>Total Transactions: {txCount || 1}</p>
         <p>Miner Fees: {fee.dividedBy(100000000).toString()} DOGE</p>
         {tip.isGreaterThan(0) &&
@@ -150,7 +149,9 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
           {!wallet &&
             <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
           }
-          <input type="submit" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
+          <div style={{ textAlign: "center" }}>
+            <input type="submit" className="small-button" style={{ marginBottom: "20px" }} disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
+          </div>
           {error &&
             <p style={{ color: 'red' }}>{error}</p>
           }

@@ -34,11 +34,11 @@ class EncryptModal extends React.Component<EncryptModalProps, EncryptModalState>
     const { password } = this.state
 
     return (
-      <form onSubmit={this.saveWallet} className="password-form">
+      <form onSubmit={this.saveWallet} className="encrypt-form">
         <p>Encrypt Wallet (recommended)</p>
         <p>You you will required to enter your password with each new session. If you lose your password, you can still restore your wallet using the mnemonic phrase.</p>
         <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
-        <input type="submit" value="Save" />
+        <input type="submit" className="small-button" value="Save" />
       </form>
     )
   }

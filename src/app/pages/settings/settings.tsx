@@ -4,6 +4,8 @@ import WebService from '../../web-service'
 import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './settings.scss'
+import * as CryptoJS from 'crypto-js'
+import PasswordModal from '../../components/modals/password-modal/password-modal'
 
 
 export interface SettingsProps extends AuthProps {}
@@ -11,6 +13,7 @@ export interface SettingsProps extends AuthProps {}
 export interface SettingsState {
   submitEnabled: boolean
   borkerip: string
+  mnemonic: string
 }
 
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
@@ -21,6 +24,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     this.state = {
       submitEnabled: false,
       borkerip: '',
+      mnemonic: '',
     }
     this.webService = new WebService()
   }
@@ -41,12 +45,22 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     })
   }
 
+  showMnemonic = async (password: string) => {
+    const borkerLib = await import('borker-rs-browser')
+    const encrypted = await Storage.get<string>('wallet')
+    const wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8))
+    this.setState({
+      mnemonic: wallet.words().join(' '),
+    })
+    this.props.toggleModal(null)
+  }
+
   saveConfig = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
     this.setState({
       submitEnabled: false,
     })
-    await Storage.set('bokerip', this.state.borkerip)
+    await Storage.set('borkerip', this.state.borkerip)
     if (!this.state.borkerip) { return }
     try {
       await this.props.getBalance()
@@ -58,18 +72,26 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   }
 
   render () {
-    const { submitEnabled, borkerip } = this.state
+    const { submitEnabled, borkerip, mnemonic } = this.state
 
     return (
       <div className="page-content">
-        <form onSubmit={this.saveConfig} className="profile-edit-form">
+        <form onSubmit={this.saveConfig} className="settings-edit-form">
           <label>Borker IP Address</label>
           <input type="text" value={borkerip} maxLength={40} onChange={this.handleIpChange} />
-          <input type="submit" value="Save" disabled={!submitEnabled} />
+          <input type="submit" className="small-button" value="Save" disabled={!submitEnabled} />
         </form>
-        <br />
-        <br />
-        <button onClick={this.props.logout}>Logout</button>
+        {!mnemonic &&
+          <button className="standard-button" style={{ marginBottom: "60px"}} onClick={() => this.props.toggleModal(<PasswordModal usePasswordFn={this.showMnemonic} />)}>
+            View Recovery Phrase
+          </button>
+        }
+        <div>
+          {mnemonic &&
+            <p>{mnemonic}</p>
+          }
+        </div>
+        <button className="small-button" style={{ color: "red"}} onClick={this.props.logout}>Logout</button>
       </div>
     )
   }
