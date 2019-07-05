@@ -5,15 +5,12 @@ import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './settings.scss'
 
-export interface BorkerConfig {
-  externalip: string
-}
 
 export interface SettingsProps extends AuthProps {}
 
 export interface SettingsState {
   submitEnabled: boolean
-  config: BorkerConfig
+  borkerip: string
 }
 
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
@@ -23,9 +20,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     super(props)
     this.state = {
       submitEnabled: false,
-      config: {
-        externalip: '',
-      },
+      borkerip: '',
     }
     this.webService = new WebService()
   }
@@ -34,18 +29,15 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     this.props.setShowFab(false)
     this.props.setTitle('Settings')
 
-    const config = await Storage.get<BorkerConfig>('borkerconfig')
+    const borkerip = await Storage.get<string>('borkerip')
 
-    if (config) { this.setState({ config }) }
+    if (borkerip) { this.setState({ borkerip }) }
   }
 
   handleIpChange = (e: React.BaseSyntheticEvent) => {
     this.setState({
       submitEnabled: true,
-      config: {
-        ...this.state.config,
-        externalip: e.target.value,
-      },
+      borkerip: e.target.value,
     })
   }
 
@@ -54,25 +46,25 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     this.setState({
       submitEnabled: false,
     })
-    await Storage.set('borkerconfig', this.state.config)
-    if (!this.state.config.externalip) { return }
+    await Storage.set('bokerip', this.state.borkerip)
+    if (!this.state.borkerip) { return }
     try {
       await this.props.getBalance()
       alert('Success! Happy Borking')
     } catch (err) {
       alert('invalid borker IP')
-      await Storage.set('borkerconfig', { ...this.state.config, externalip: '' })
+      await Storage.set('borkerip', { borkerip: '' })
     }
   }
 
   render () {
-    const { submitEnabled, config } = this.state
+    const { submitEnabled, borkerip } = this.state
 
     return (
       <div className="page-content">
         <form onSubmit={this.saveConfig} className="profile-edit-form">
           <label>Borker IP Address</label>
-          <input type="text" value={config.externalip} maxLength={40} onChange={this.handleIpChange} />
+          <input type="text" value={borkerip} maxLength={40} onChange={this.handleIpChange} />
           <input type="submit" value="Save" disabled={!submitEnabled} />
         </form>
         <br />

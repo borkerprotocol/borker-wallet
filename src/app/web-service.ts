@@ -3,13 +3,10 @@ import * as Storage from 'idb-keyval'
 import BigNumber from 'bignumber.js'
 import { User, Bork, BorkType, OrderBy, Utxo, Tag } from '../types/types'
 import { FollowsType } from './pages/user-list/user-list'
-import { BorkerConfig } from './pages/settings/settings'
 
 class WebService {
 
-  async getBalance (): Promise<BigNumber> {
-    const address = await Storage.get<string>('address')
-
+  async getBalance (address: string): Promise<BigNumber> {
     const res = await this.request({
       method: 'GET',
       url: `/users/${address}/balance`,
@@ -114,19 +111,19 @@ class WebService {
 
   private async request (options: rp.OptionsWithUrl) {
 
-    const [config, address] = await Promise.all([
-      Storage.get<BorkerConfig>('borkerconfig'),
+    const [borkerip, address] = await Promise.all([
+      Storage.get<string>('borkerip'),
       Storage.get<string>('address'),
     ])
 
-    if (!config || !config.externalip) {
+    if (!borkerip) {
       alert('please go to "Settings" and provide an IP address of a Borker node.')
       return
     }
 
     Object.assign(options, {
       json: true,
-      url: config.externalip + options.url,
+      url: borkerip + options.url,
       headers: { 'my-address': address },
     })
 

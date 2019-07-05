@@ -7,6 +7,7 @@ import { AppContext } from './contexts/app-context'
 import './App.scss'
 import { JsWallet, JsChildWallet } from 'borker-rs-browser'
 import * as CryptoJS from 'crypto-js'
+import * as config from '../borkerconfig.json'
 
 export interface AppState {
   isLoading: boolean
@@ -25,6 +26,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   async componentDidMount () {
+    await Storage.set('borkerip', config.borkerip)
     this.setState({
       address: await Storage.get<string>('address'),
       isLoading: false,

@@ -5,7 +5,7 @@
 
 # testing
 /coverage
-config.ts
+borkerconfig.json
 
 # production
 /build

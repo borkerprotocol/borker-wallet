@@ -81,7 +81,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
 
   getBalance = async () => {
     this.setState({
-      balance: await this.webService.getBalance(),
+      balance: await this.webService.getBalance(this.props.address),
     })
   }
 
