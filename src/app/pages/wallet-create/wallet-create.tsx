@@ -65,8 +65,8 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
             </tr>
           </tbody>
         </table>
-        <button onClick={() => this.props.toggleModal(modal)}>
-          I've Written Down My Recovery Phrase
+        <button className="standard-button" onClick={() => this.props.toggleModal(modal)}>
+          Done
         </button>
       </div>
     )

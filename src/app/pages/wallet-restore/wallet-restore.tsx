@@ -55,7 +55,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
           onChange={this.handleMnemonicChange}
           className="textarea"
         />
-        <button onClick={this.genWallet} disabled={!isMnemonicEntered}>
+        <button className="standard-button" onClick={this.genWallet} disabled={!isMnemonicEntered}>
           Restore
         </button>
       </div>

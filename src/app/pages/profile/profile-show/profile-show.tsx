@@ -193,10 +193,8 @@ this.setState({
               hasMore={more}
               useWindow={false}
             >
-              {borks.length >= 20 &&
-                <BorkList borks={borks.map(b => {
-                  return { ...b }
-                })} />
+              {borks.length > 0 &&
+                <BorkList borks={borks.map(b => b)} />
               }
               {!borks.length && !loading &&
                 <p>No Borks</p>
@@ -211,10 +209,8 @@ this.setState({
               hasMore={more}
               useWindow={false}
             >
-              {likes.length >= 20 &&
-                <BorkList borks={likes.map(l => {
-                  return l.parent
-                })} />
+              {likes.length > 0 &&
+                <BorkList borks={likes.map(l => l)} />
               }
               {!likes.length && !loading &&
                 <p>No Likes</p>
@@ -229,10 +225,8 @@ this.setState({
               hasMore={more}
               useWindow={false}
             >
-              {flags.length >= 20 &&
-                <BorkList borks={flags.map(f => {
-                  return f.parent
-                })} />
+              {flags.length > 0 &&
+                <BorkList borks={flags.map(f => f)} />
               }
               {!flags.length && !loading &&
                 <p>No Flags</p>

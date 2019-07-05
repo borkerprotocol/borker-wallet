@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import logo from '../../../assets/logo.png'
 import '../../App.scss'
 import './home.scss'
 
@@ -8,14 +9,14 @@ class HomePage extends React.PureComponent {
   render () {
     return (
       <div className="page-content">
-        <button>
-          <Link to="create">Create New Wallet</Link>
-        </button>
-        <br></br>
-        <br></br>
-        <button>
-          <Link to="restore">Restore Existing Wallet</Link>
-        </button>
+        <div className="start-page">
+          <h1>Borker <span>beta</span></h1>
+          <div><img className="home-logo" src={logo} alt="logo"></img></div>
+          <button><Link to="create">Create Wallet</Link></button>
+          <br/>
+          <br/>
+          <button> <Link to="restore">Restore Wallet</Link></button>
+        </div>
       </div>
     )
   }
