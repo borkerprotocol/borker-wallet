@@ -26,7 +26,10 @@ class App extends React.Component<{}, AppState> {
   }
 
   async componentDidMount () {
-    await Storage.set('borkerip', config.borkerip)
+    const borkerip = await Storage.get('borkerip')
+    if (!borkerip) {
+      await Storage.set('borkerip', config.borkerip)
+    }
     this.setState({
       address: await Storage.get<string>('address'),
       isLoading: false,
