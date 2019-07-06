@@ -110,7 +110,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         inputs = last ? [last.split(':')[1]] : []
       }
       const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
-        { address: parent!.senderAddress, value: tip.plus(new BigNumber(extraTip).times(100000000) || 0).toNumber() } :
+        { address: parent!.senderAddress, value: tip.plus(new BigNumber(extraTip || 0).times(100000000) || 0).toNumber() } :
         null
       // construct the txs
       const rawTxs = localWallet!.newBork(data, inputs, recipient, [], fee.toNumber(), borkerLib.Network.Dogecoin)
