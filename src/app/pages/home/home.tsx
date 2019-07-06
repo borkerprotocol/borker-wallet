@@ -15,7 +15,7 @@ class HomePage extends React.PureComponent {
           <button><Link to="create">Create Wallet</Link></button>
           <br/>
           <br/>
-          <button> <Link to="restore">Restore Wallet</Link></button>
+          <button> <Link to="recover">Recover Wallet</Link></button>
         </div>
       </div>
     )

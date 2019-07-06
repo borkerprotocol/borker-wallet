@@ -11,7 +11,7 @@ export interface WithdrawalModalProps extends AppProps {
 export interface WithdrawalModalState {
   address: string
   amount: string
-  password: string
+  pin: string
   fee: BigNumber
   processing: boolean
   error: string
@@ -25,7 +25,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
     this.state = {
       address: '',
       amount: '',
-      password: '',
+      pin: '',
       fee: new BigNumber(100000000),
       processing: false,
       error: '',
@@ -41,8 +41,8 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
     this.setState({ amount: e.target.value })
   }
 
-  handlePasswordChange = (e: React.BaseSyntheticEvent) => {
-    this.setState({ password: e.target.value })
+  handlePinChange = (e: React.BaseSyntheticEvent) => {
+    this.setState({ pin: e.target.value })
   }
 
   withdraw = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -55,11 +55,11 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
     try {
       const borkerLib = await import('borker-rs-browser')
       const { wallet, decryptWallet } = this.props
-      const { fee, address, amount, password } = this.state
+      const { fee, address, amount, pin } = this.state
       const totalCost = new BigNumber(amount)
 
       // decrypt wallet and set in memory if not already
-      const localWallet = wallet || await decryptWallet(password)
+      const localWallet = wallet || await decryptWallet(pin)
       const ret_utxos = await this.webService.getUtxos(totalCost)
       const utxos = ret_utxos.filter(u => !(window.sessionStorage.getItem('usedUTXOs') || '').includes(`${u.txid}-${u.position}`))
 
@@ -91,7 +91,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
   }
 
   render () {
-    const { address, amount, password, processing, error } = this.state
+    const { address, amount, pin, processing, error } = this.state
     const { balance, wallet } = this.props
 
     return (
@@ -101,7 +101,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
         <input type="number" placeholder="Amount" value={amount} onChange={this.handleAmountChange} />
         <p>Available: <a className={"clickable"} onClick={this.fillMax}>{balance && balance.isGreaterThan(0) ? balance.dividedBy(100000000).toFormat(8) : new BigNumber(0).toFormat(8)}</a></p>
         {!wallet &&
-          <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
+          <input type="pin" placeholder="Pin" value={pin} onChange={this.handlePinChange} />
         }
         <br />
         <br />

@@ -2,7 +2,7 @@ import React from 'react'
 import { Switch, Redirect, Route } from "react-router-dom"
 import HomePage from './home/home'
 import WalletCreatePage from './wallet-create/wallet-create'
-import WalletRestorePage from './wallet-restore/wallet-restore'
+import WalletRecoverPage from './wallet-recover/wallet-recover'
 import { UnauthContext } from '../contexts/unauth-context'
 
 class UnauthRoutes extends React.Component<{}, {}> {
@@ -19,8 +19,8 @@ class UnauthRoutes extends React.Component<{}, {}> {
           />
           <Route
             exact
-            path="/restore"
-            component={WalletRestorePage}
+            path="/recover"
+            component={WalletRecoverPage}
           />
           <Redirect to="/"/>
         </Switch>

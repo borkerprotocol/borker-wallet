@@ -5,9 +5,9 @@ import { JsWallet, JsChildWallet } from 'borker-rs-browser'
 export interface AppContext {
   address: string
   wallet: JsChildWallet | null
-  login: (wallet: JsWallet, password: string) => Promise<void>
+  login: (wallet: JsWallet, pin: string) => Promise<void>
   logout: () => Promise<void>
-  decryptWallet: (password: string) => Promise<JsChildWallet>
+  decryptWallet: (pin: string) => Promise<JsChildWallet>
   toggleModal: (content: JSX.Element | null) => void
 }
 export const AppContext = React.createContext({} as AppContext)
@@ -16,12 +16,12 @@ export const AppContext = React.createContext({} as AppContext)
 export interface AppProps extends AppContext { }
 
 // app HOC
-export function withAppContext<P extends AppProps>(Component: React.ComponentType<P>) {
+export function withAppContext<P extends AppProps> (Component: React.ComponentType<P>) {
   class AppHOC extends React.PureComponent<
     Omit<P, keyof AppProps>,
     AppProps
     > {
-    render() {
+    render () {
       return (
         <AppContext.Consumer>
           {newProps => <Component {...this.props as any} {...newProps} />}

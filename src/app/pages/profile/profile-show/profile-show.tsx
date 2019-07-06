@@ -61,23 +61,24 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
 
     switch (index) {
       case 0:
-        if (this.state.borks.length) { return }
+        console.log('here')
         this.setState({
           loading: true,
+          borks: [],
         })
         this.getBorks(1, senderAddress)
         break
       case 1:
-        if (this.state.likes.length) { return }
         this.setState({
           loading: true,
+          likes: [],
         })
         this.getLikes(1, senderAddress)
         break
       case 2:
-        if (this.state.flags.length) { return }
-this.setState({
+        this.setState({
           loading: true,
+          flags: [],
         })
         this.getFlags(1, senderAddress)
         break

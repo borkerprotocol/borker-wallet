@@ -4,17 +4,17 @@ import { UnauthProps, withUnauthContext } from '../../contexts/unauth-context'
 import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 // import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
-import './wallet-restore.scss'
+import './wallet-recover.scss'
 
-export interface WalletRestoreProps extends UnauthProps { }
+export interface WalletRecoverProps extends UnauthProps { }
 
-export interface WalletRestoreState {
+export interface WalletRecoverState {
   mnemonic: string
   wallet: JsWallet | null
   isMnemonicEntered: boolean
 }
 
-class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestoreState> {
+class WalletRecoverPage extends React.Component<WalletRecoverProps, WalletRecoverState> {
 
   state = {
     wallet: null as unknown as JsWallet,
@@ -32,7 +32,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
   genWallet = async (e: React.BaseSyntheticEvent) => {
     if (!this.state.wallet) {
       const borkerLib = await import('borker-rs-browser')
-      const wallet = new borkerLib.JsWallet(this.state.mnemonic.trim().replace(/ +/g, " ").split(' '))
+      const wallet = new borkerLib.JsWallet(this.state.mnemonic.trim().replace(/ +/g, " ").toLowerCase().split(' '))
       await this.setState({ wallet })
     }
 
@@ -48,7 +48,7 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
 
     return (
       <div className="page-content">
-        <p>Insert your 12 word mnemonic phrase, separted with spaces as shown below</p>
+        <p>Type your 12 word recovery phrase, separted with spaces as shown below</p>
         <textarea
           placeholder="word1 word2 word3"
           value={mnemonic}
@@ -56,11 +56,11 @@ class WalletRestorePage extends React.Component<WalletRestoreProps, WalletRestor
           className="textarea"
         />
         <button className="standard-button" onClick={this.genWallet} disabled={!isMnemonicEntered}>
-          Restore
+          Recover
         </button>
       </div>
     )
   }
 }
 
-export default withUnauthContext(WalletRestorePage)
+export default withUnauthContext(WalletRecoverPage)

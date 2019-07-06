@@ -22,7 +22,7 @@ export interface CheckoutModalState {
   tip: BigNumber
   extraTip: string
   totalCost: BigNumber
-  password: string
+  pin: string
   processing: boolean
   error: string
 }
@@ -37,7 +37,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       tip: new BigNumber(0),
       extraTip: '',
       totalCost: new BigNumber(0),
-      password: '',
+      pin: '',
       processing: false,
       error: '',
     }
@@ -58,8 +58,8 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     })
   }
 
-  handlePasswordChange = (e: React.BaseSyntheticEvent) => {
-    this.setState({ password: e.target.value })
+  handlePinChange = (e: React.BaseSyntheticEvent) => {
+    this.setState({ pin: e.target.value })
   }
 
   handleExtraTip = (e: React.BaseSyntheticEvent) => {
@@ -81,10 +81,10 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     try {
       const borkerLib = await import('borker-rs-browser')
       const { type, content, parent, wallet, decryptWallet } = this.props
-      const { fee, tip, extraTip, totalCost, password } = this.state
+      const { fee, tip, extraTip, totalCost, pin } = this.state
 
       // decrypt wallet and set in memory if not already
-      const localWallet = wallet || await decryptWallet(password)
+      const localWallet = wallet || await decryptWallet(pin)
       const ret_utxos = await this.webService.getUtxos(totalCost)
       const utxos = ret_utxos.filter(u => !(window.sessionStorage.getItem('usedUTXOs') || '').includes(`${u.txid}-${u.position}`))
 
@@ -110,7 +110,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         inputs = last ? [last.split(':')[1]] : []
       }
       const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
-        { address: parent!.senderAddress, value: tip.plus(extraTip || 0).toNumber() } :
+        { address: parent!.senderAddress, value: tip.plus(new BigNumber(extraTip).times(100000000) || 0).toNumber() } :
         null
       // construct the txs
       const rawTxs = localWallet!.newBork(data, inputs, recipient, [], fee.toNumber(), borkerLib.Network.Dogecoin)
@@ -129,7 +129,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
 
   render () {
     const { type, txCount, wallet } = this.props
-    const { tip, extraTip, totalCost, fee, password, processing, error } = this.state
+    const { tip, extraTip, totalCost, fee, pin, processing, error } = this.state
 
     return (
       <div className="checkout-modal-content">
@@ -147,7 +147,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         <p>Total Cost: <b>{totalCost.dividedBy(100000000).toString()} DOGE</b></p>
         <form onSubmit={this.signAndBroadcast} className="checkout-form">
           {!wallet &&
-            <input type="password" placeholder="Password or Pin" value={password} onChange={this.handlePasswordChange} />
+            <input type="number" placeholder="Pin" value={pin} onChange={this.handlePinChange} />
           }
           <div style={{ textAlign: "center" }}>
             <input type="submit" className="small-button" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />

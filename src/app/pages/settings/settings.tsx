@@ -5,7 +5,7 @@ import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './settings.scss'
 import * as CryptoJS from 'crypto-js'
-import PasswordModal from '../../components/modals/password-modal/password-modal'
+import PinModal from '../../components/modals/pin-modal/pin-modal'
 
 
 export interface SettingsProps extends AuthProps {}
@@ -45,10 +45,10 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     })
   }
 
-  showMnemonic = async (password: string) => {
+  showMnemonic = async (pin: string) => {
     const borkerLib = await import('borker-rs-browser')
     const encrypted = await Storage.get<string>('wallet')
-    const wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8))
+    const wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, pin).toString(CryptoJS.enc.Utf8))
     this.setState({
       mnemonic: wallet.words().join(' '),
     })
@@ -82,7 +82,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
           <input type="submit" className="small-button" value="Save" disabled={!submitEnabled} />
         </form>
         {!mnemonic &&
-          <button className="standard-button" style={{ marginBottom: "60px"}} onClick={() => this.props.toggleModal(<PasswordModal usePasswordFn={this.showMnemonic} />)}>
+          <button className="standard-button" style={{ marginBottom: "60px"}} onClick={() => this.props.toggleModal(<PinModal usePinFn={this.showMnemonic} />)}>
             View Recovery Phrase
           </button>
         }

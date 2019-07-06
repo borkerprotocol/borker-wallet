@@ -33,12 +33,12 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
-  login = async (wallet: JsWallet, password: string) => {
+  login = async (wallet: JsWallet, pin: string) => {
     const borkerLib = await import('borker-rs-browser')
 
     const child = wallet.childAt([-44, -3, -0, 0, 0])
     const address = child.address(borkerLib.Network.Dogecoin)
-    const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer(), password).toString()
+    const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer(), pin).toString()
 
     await Promise.all([
       Storage.set('wallet', encrypted),
@@ -57,10 +57,15 @@ class App extends React.Component<{}, AppState> {
     this.setState({ address: '', wallet: null })
   }
 
-  decryptWallet = async (password: string): Promise<JsChildWallet> => {
+  decryptWallet = async (pin: string): Promise<JsChildWallet> => {
     const borkerLib = await import('borker-rs-browser')
     const encrypted = await Storage.get<string>('wallet')
-    const wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8))
+    let wallet: JsWallet
+    try {
+      wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, pin).toString(CryptoJS.enc.Utf8))
+    } catch (e) {
+      throw new Error('invalid pin')
+    }
     const child = wallet.childAt([-44, -3, -0, 0, 0])
     this.setState({
       wallet: child,
