@@ -30,7 +30,7 @@ class WalletPage extends React.PureComponent<WalletProps> {
           <tbody>
             <tr>
               <td><button onClick={() => this.props.toggleModal(<DepositModal />)}>Deposit</button></td>
-              <td><button onClick={() => this.props.toggleModal(<WithdrawalModal balance={balance} />)}>Withdrawal</button></td>
+              <td><button onClick={() => this.props.toggleModal(<WithdrawalModal balance={balance} />)}>Withdraw</button></td>
             </tr>
           </tbody>
         </table>
