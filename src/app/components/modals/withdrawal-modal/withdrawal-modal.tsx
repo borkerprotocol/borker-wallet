@@ -59,7 +59,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
       const totalCost = new BigNumber(amount)
 
       // decrypt wallet and set in memory if not already
-      const localWallet = wallet || await decryptWallet(pin)
+      const localWallet = wallet || (await decryptWallet(pin)).childWallet
       const ret_utxos = await this.webService.getUtxos(totalCost)
       const utxos = ret_utxos.filter(u => !(window.sessionStorage.getItem('usedUTXOs') || '').includes(`${u.txid}-${u.position}`))
 

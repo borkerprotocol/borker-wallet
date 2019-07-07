@@ -7,7 +7,7 @@ export interface AppContext {
   wallet: JsChildWallet | null
   login: (wallet: JsWallet, pin: string) => Promise<void>
   logout: () => Promise<void>
-  decryptWallet: (pin: string) => Promise<JsChildWallet>
+  decryptWallet: (pin: string) => Promise<{ wallet: JsWallet, childWallet: JsChildWallet }>
   toggleModal: (content: JSX.Element | null) => void
 }
 export const AppContext = React.createContext({} as AppContext)

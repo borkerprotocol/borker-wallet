@@ -84,7 +84,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       const { fee, tip, extraTip, totalCost, pin } = this.state
 
       // decrypt wallet and set in memory if not already
-      const localWallet = wallet || await decryptWallet(pin)
+      const localWallet = wallet || (await decryptWallet(pin)).childWallet
       const ret_utxos = await this.webService.getUtxos(totalCost)
       const utxos = ret_utxos.filter(u => !(window.sessionStorage.getItem('usedUTXOs') || '').includes(`${u.txid}-${u.position}`))
 

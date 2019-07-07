@@ -60,7 +60,7 @@ class App extends React.Component<{}, AppState> {
     this.setState({ address: '', wallet: null })
   }
 
-  decryptWallet = async (pin: string): Promise<JsChildWallet> => {
+  decryptWallet = async (pin: string): Promise<{ wallet: JsWallet, childWallet: JsChildWallet }> => {
     const borkerLib = await import('borker-rs-browser')
     const encrypted = await Storage.get<string>('wallet')
     let wallet: JsWallet
@@ -69,11 +69,11 @@ class App extends React.Component<{}, AppState> {
     } catch (e) {
       throw new Error('invalid pin')
     }
-    const child = wallet.childAt([-44, -3, -0, 0, 0])
+    const childWallet = wallet.childAt([-44, -3, -0, 0, 0])
     this.setState({
-      wallet: child,
+      wallet: childWallet,
     })
-    return child
+    return { wallet, childWallet }
   }
 
   toggleModal = (modalContent: JSX.Element | null) => {

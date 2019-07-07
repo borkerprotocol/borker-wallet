@@ -6,6 +6,7 @@ import '../../App.scss'
 import './settings.scss'
 import * as CryptoJS from 'crypto-js'
 import PinModal from '../../components/modals/pin-modal/pin-modal'
+import ChangePinModal from '../../components/modals/change-pin-modal/change-pin-modal'
 
 
 export interface SettingsProps extends AuthProps {}
@@ -81,12 +82,17 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
           <input type="text" value={borkerip} maxLength={40} onChange={this.handleIpChange} />
           <input type="submit" className="small-button" value="Save" disabled={!submitEnabled} />
         </form>
-        {!mnemonic &&
-          <button className="standard-button" style={{ marginBottom: "60px"}} onClick={() => this.props.toggleModal(<PinModal usePinFn={this.showMnemonic} />)}>
-            View Recovery Phrase
+        <div style={{ marginBottom: "40px" }}>
+          <button className="standard-button" onClick={() => this.props.toggleModal(<ChangePinModal />)}>
+            Change Pin
           </button>
-        }
-        <div>
+        </div>
+        <div style={{ marginBottom: "40px" }}>
+          {!mnemonic &&
+            <button className="standard-button" onClick={() => this.props.toggleModal(<PinModal usePinFn={this.showMnemonic} />)}>
+              View Recovery Phrase
+            </button>
+          }
           {mnemonic &&
             <p>{mnemonic}</p>
           }

@@ -34,7 +34,7 @@ class PinModal extends React.Component<PinModalProps, PinModalState> {
     return (
       <form onSubmit={this.submitPin} className="pin-form">
         <p>Enter your pin. Simply hit "Done" if you do not have a pin.</p>
-        <input type="pin" placeholder="Pin" value={pin} onChange={this.handlePinChange} />
+        <input type="number" placeholder="Pin" value={pin} onChange={this.handlePinChange} />
         <input type="submit" className="small-button" value="Done" />
       </form>
     )
