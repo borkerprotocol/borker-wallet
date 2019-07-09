@@ -8,7 +8,6 @@ import * as CryptoJS from 'crypto-js'
 import PinModal from '../../components/modals/pin-modal/pin-modal'
 import ChangePinModal from '../../components/modals/change-pin-modal/change-pin-modal'
 
-
 export interface SettingsProps extends AuthProps {}
 
 export interface SettingsState {
@@ -20,7 +19,7 @@ export interface SettingsState {
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   public webService: WebService
 
-  constructor (props: SettingsProps) {
+  constructor(props: SettingsProps) {
     super(props)
     this.state = {
       submitEnabled: false,
@@ -30,13 +29,15 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     this.webService = new WebService()
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     this.props.setShowFab(false)
     this.props.setTitle('Settings')
 
     const borkerip = await Storage.get<string>('borkerip')
 
-    if (borkerip) { this.setState({ borkerip }) }
+    if (borkerip) {
+      this.setState({ borkerip })
+    }
   }
 
   handleIpChange = (e: React.BaseSyntheticEvent) => {
@@ -47,9 +48,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   }
 
   showMnemonic = async (pin: string) => {
-    const borkerLib = await import('borker-rs-browser')
-    const encrypted = await Storage.get<string>('wallet')
-    const wallet = borkerLib.JsWallet.fromBuffer(CryptoJS.AES.decrypt(encrypted, pin).toString(CryptoJS.enc.Utf8))
+    const { wallet } = await this.props.decryptWallet(pin)
     this.setState({
       mnemonic: wallet.words().join(' '),
     })
@@ -62,7 +61,9 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
       submitEnabled: false,
     })
     await Storage.set('borkerip', this.state.borkerip)
-    if (!this.state.borkerip) { return }
+    if (!this.state.borkerip) {
+      return
+    }
     try {
       await this.props.getBalance()
       alert('Success! Happy Borking')
@@ -72,32 +73,56 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     }
   }
 
-  render () {
+  render() {
     const { submitEnabled, borkerip, mnemonic } = this.state
 
     return (
       <div className="page-content">
         <form onSubmit={this.saveConfig} className="settings-edit-form">
           <label>Borker IP Address</label>
-          <input type="text" value={borkerip} maxLength={40} onChange={this.handleIpChange} />
-          <input type="submit" className="small-button" value="Save" disabled={!submitEnabled} />
+          <input
+            type="text"
+            value={borkerip}
+            maxLength={40}
+            onChange={this.handleIpChange}
+          />
+          <input
+            type="submit"
+            className="small-button"
+            value="Save"
+            disabled={!submitEnabled}
+          />
         </form>
-        <div style={{ marginBottom: "40px" }}>
-          <button className="standard-button" onClick={() => this.props.toggleModal(<ChangePinModal />)}>
+        <div style={{ marginBottom: '40px' }}>
+          <button
+            className="standard-button"
+            onClick={() => this.props.toggleModal(<ChangePinModal />)}
+          >
             Change Pin
           </button>
         </div>
-        <div style={{ marginBottom: "40px" }}>
-          {!mnemonic &&
-            <button className="standard-button" onClick={() => this.props.toggleModal(<PinModal usePinFn={this.showMnemonic} />)}>
+        <div style={{ marginBottom: '40px' }}>
+          {!mnemonic && (
+            <button
+              className="standard-button"
+              onClick={() =>
+                this.props.toggleModal(
+                  <PinModal usePinFn={this.showMnemonic} />
+                )
+              }
+            >
               View Recovery Phrase
             </button>
-          }
-          {mnemonic &&
-            <p>{mnemonic}</p>
-          }
+          )}
+          {mnemonic && <p>{mnemonic}</p>}
         </div>
-        <button className="small-button" style={{ color: "red"}} onClick={this.props.logout}>Logout</button>
+        <button
+          className="small-button"
+          style={{ color: 'red' }}
+          onClick={this.props.logout}
+        >
+          Logout
+        </button>
       </div>
     )
   }

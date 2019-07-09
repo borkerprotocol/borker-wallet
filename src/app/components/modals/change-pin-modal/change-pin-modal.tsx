@@ -11,9 +11,11 @@ export interface ChangePinModalState {
   error: string
 }
 
-class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModalState> {
-
-  constructor (props: ChangePinModalProps) {
+class ChangePinModal extends React.Component<
+  ChangePinModalProps,
+  ChangePinModalState
+> {
+  constructor(props: ChangePinModalProps) {
     super(props)
     this.state = {
       oldPin: '',
@@ -32,24 +34,35 @@ class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModal
 
   savePin = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
-    const wallet = await this.props.decryptWallet(this.state.oldPin)
+    const wallet = await this.props
+      .decryptWallet(this.state.oldPin)
       .then(res => res.wallet)
       .catch(err => this.setState({ error: err.message }))
-    if (!wallet) { return }
+    if (!wallet) {
+      return
+    }
     await this.props.login(wallet, this.state.newPin)
   }
 
-  render () {
+  render() {
     const { oldPin, newPin, error } = this.state
 
     return (
       <form onSubmit={this.savePin} className="change-pin-form">
-        <input type="text" placeholder="Old Pin" value={oldPin} onChange={this.handleOldPinChange} />
-        <input type="number" placeholder="New Pin (Optional)" value={newPin} onChange={this.handleNewPinChange} />
+        <input
+          type="text"
+          placeholder="Old Pin"
+          value={oldPin}
+          onChange={this.handleOldPinChange}
+        />
+        <input
+          type="number"
+          placeholder="New Pin (Optional)"
+          value={newPin}
+          onChange={this.handleNewPinChange}
+        />
         <input type="submit" className="small-button" value="Save" />
-        {error &&
-          <p style={{ color: "red" }}>{error}</p>
-        }
+        {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     )
   }
