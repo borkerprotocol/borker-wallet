@@ -11,7 +11,7 @@ class HomePage extends React.PureComponent {
       <div className="page-content">
         <div className="start-page">
           <h1>Borker <span>beta</span></h1>
-          <div><img className="home-logo" src={logo} alt="logo"></img></div>
+          <div><img className="home-logo" src={logo} alt='borker logo'></img></div>
           <button><Link to="create">Create Wallet</Link></button>
           <br/>
           <br/>

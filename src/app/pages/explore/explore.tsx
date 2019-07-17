@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import { User, Bork, Tag, BorkType } from '../../../types/types'
 import WebService from '../../web-service'
-import defaultAvatar from '../../../assets/avatar-1.png'
 import FollowButton from '../../components/follow-button/follow-button'
 import '../user-list/user-list.scss'
 import './explore.scss'
 import InfiniteScroll from 'react-infinite-scroller'
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
 import BorkList from '../../components/bork-list/bork-list'
+import { getDefaultAvatar } from '../../../util/functions'
 
 export interface ExploreProps extends AuthProps {}
 
@@ -120,7 +120,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
                           <FollowButton user={user} />
                         </div>
                         <Link to={`/profile/${user.address}`} style={{ textDecoration: 'none' }}>
-                          <img src={user.avatarLink || defaultAvatar} className="user-item-avatar" alt='avatar' />
+                          <img src={user.avatarLink || getDefaultAvatar(user.address)} className="list-avatar" alt='avatar' />
                           <span style={{ fontWeight: 'bold', color: 'black' }}>{user.name}</span><br />
                           <span style={{ color: 'gray' }}>@{user.address.substring(0, 9)}</span><br />
                           <p style={{ marginLeft: 64, color: 'black' }}>{user.bio}</p>

@@ -9,8 +9,10 @@
 
 .profile-avatar {
   margin-top: 20px;
-  max-width: 80px;
-  max-height: 80px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  object-fit: cover;
 }
 
 .profile-update-list {

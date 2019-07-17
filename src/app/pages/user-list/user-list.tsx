@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import { User, BorkType } from '../../../types/types'
 import WebService from '../../web-service'
-import defaultAvatar from '../../../assets/avatar-1.png'
 import FollowButton from '../../components/follow-button/follow-button'
 import InfiniteScroll from 'react-infinite-scroller'
 import './user-list.scss'
+import { getDefaultAvatar } from '../../../util/functions'
 
 export enum FollowsType {
   following = 'following',
@@ -105,9 +105,9 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
                     style={{ textDecoration: 'none' }}
                   >
                     <img
-                      src={user.avatarLink || defaultAvatar}
-                      className="user-item-avatar"
-                      alt="avatar"
+                      src={user.avatarLink || getDefaultAvatar(user.address)}
+                      className="list-avatar"
+                      alt='avatar'
                     />
                     <span style={{ fontWeight: 'bold', color: 'black' }}>
                       {user.name}

@@ -8,10 +8,10 @@ import WebService from '../../../web-service'
 import BorkList from '../../../components/bork-list/bork-list'
 import FollowButton from '../../../components/follow-button/follow-button'
 import BlockButton from '../../../components/block-button/block-button'
-import defaultAvatar from '../../../../assets/avatar-1.png'
 import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
+import { getDefaultAvatar } from '../../../../util/functions'
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -155,7 +155,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           )}
         </div>
         <div className="profile-header">
-          <img src={user.avatarLink || defaultAvatar} className="profile-avatar" alt='profile' />
+          <img src={user.avatarLink || getDefaultAvatar(user.address)} className="profile-avatar" alt='avatar' />
           <h2>
             {user.name}
           </h2>
