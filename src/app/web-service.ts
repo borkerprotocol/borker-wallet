@@ -153,6 +153,7 @@ export interface IndexBorkParams extends IndexParams {
   filterFollowing?: boolean
   senderAddress?: string
   parentTxid?: string
+  startPosition?: number
   types?: BorkType[]
   order?: OrderBy<Bork>
   tags?: string[]

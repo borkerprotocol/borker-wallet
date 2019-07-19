@@ -63,9 +63,11 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     }
 
     let extensions: Bork[] = []
-    if (this.state.bork!.extensionsCount > this.state.extensions.length) {
+    const { extensionsCount, type, parent, position } = this.state.bork!
+    if (extensionsCount > this.state.extensions.length) {
       extensions = await this.webService.getBorks({
-        parentTxid: txid,
+        parentTxid: type === BorkType.Extension ? parent.txid : txid,
+        startPosition: position + 1,
         types: [BorkType.Extension],
         order: { position: 'ASC' },
         page,
