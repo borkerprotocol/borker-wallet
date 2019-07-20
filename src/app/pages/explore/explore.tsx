@@ -17,11 +17,15 @@ export interface ExploreState {
   users: User[]
   tags: Tag[]
   borks: Bork[]
-  more: boolean
+  moreUsers: boolean
+  moreTags: boolean
+  moreBorks: boolean
+  tagIndex: number
 }
 
 class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   public webService: WebService
+  public scrollParentRef: any
 
   constructor (props: ExploreProps) {
     super(props)
@@ -29,7 +33,10 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
       users: [],
       tags: [],
       borks: [],
-      more: false,
+      moreUsers: false,
+      moreTags: false,
+      moreBorks: false,
+      tagIndex: 0,
     }
     this.webService = new WebService()
   }
@@ -37,11 +44,11 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   async componentDidMount () {
     this.props.setTitle('Explore')
     this.props.setShowFab(false)
-    this.fetchData(0, 1)
+    this.getUsers(1)
   }
 
-  fetchData = (index: number, lastIndex: number): void | boolean => {
-    if (index === lastIndex) { return false }
+  fetchData = (index: number): void => {
+    this.setState({ tagIndex: index })
 
     switch (index) {
       case 0:
@@ -59,6 +66,20 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     }
   }
 
+  fetchMore = async (page: number) => {
+    switch (this.state.tagIndex) {
+      case 0:
+        this.getUsers(page)
+        break
+      case 1:
+        this.getTags(page)
+        break
+      case 2:
+        this.getBorks(page)
+        break
+    }
+  }
+
   getUsers = async (page: number) => {
     const users = await this.webService.getUsers({
       order: { birthBlock: 'ASC' },
@@ -66,7 +87,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     })
     this.setState({
       users: this.state.users.concat(users),
-      more: users.length >= 20,
+      moreUsers: users.length >= 20,
     })
   }
 
@@ -76,7 +97,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     })
     this.setState({
       tags: this.state.tags.concat(tags),
-      more: tags.length >= 20,
+      moreTags: tags.length >= 20,
     })
   }
 
@@ -88,29 +109,30 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
     })
     this.setState({
       borks: this.state.borks.concat(borks),
-      more: borks.length >= 20,
+      moreBorks: borks.length >= 20,
     })
   }
 
   render () {
-    const { users, tags, borks, more } = this.state
+    const { users, tags, borks, tagIndex, moreUsers, moreTags, moreBorks } = this.state
+    const hasMore = tagIndex === 0 ? moreUsers : tagIndex === 1 ? moreTags : moreBorks
 
     return (
-      <div className="page-content">
-        <Tabs onSelect={this.fetchData}>
-          <TabList>
-            <Tab>People</Tab>
-            <Tab>Hashtags</Tab>
-            <Tab>All Borks</Tab>
-          </TabList>
+      <InfiniteScroll
+        pageStart={1}
+        loadMore={this.fetchMore}
+        hasMore={hasMore}
+        useWindow={false}
+      >
+        <div className="page-content">
+          <Tabs onSelect={this.fetchData}>
+            <TabList>
+              <Tab>People</Tab>
+              <Tab>Hashtags</Tab>
+              <Tab>All Borks</Tab>
+            </TabList>
 
-          <TabPanel>
-            <InfiniteScroll
-              pageStart={1}
-              loadMore={this.getUsers}
-              hasMore={more}
-              useWindow={false}
-            >
+            <TabPanel>
               <ul className="user-list">
                 {users.map(user => {
                   return (
@@ -130,16 +152,9 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
                   )
                 })}
               </ul>
-            </InfiniteScroll>
-          </TabPanel>
+            </TabPanel>
 
-          <TabPanel>
-            <InfiniteScroll
-              pageStart={1}
-              loadMore={this.getTags}
-              hasMore={more}
-              useWindow={false}
-            >
+            <TabPanel>
               <ul className="tag-list">
                 {tags.map(tag => {
                   return (
@@ -152,21 +167,14 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
                   )
                 })}
               </ul>
-            </InfiniteScroll>
-          </TabPanel>
+            </TabPanel>
 
-          <TabPanel>
-            <InfiniteScroll
-              pageStart={1}
-              loadMore={this.getBorks}
-              hasMore={more}
-              useWindow={false}
-            >
+            <TabPanel>
               <BorkList borks={borks} />
-            </InfiniteScroll>
-          </TabPanel>
-        </Tabs>
-      </div>
+            </TabPanel>
+          </Tabs>
+        </div>
+      </InfiniteScroll>
     )
   }
 }
