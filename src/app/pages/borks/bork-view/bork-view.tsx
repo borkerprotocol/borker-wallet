@@ -8,6 +8,7 @@ import BorkComponent from '../../../components/bork/bork'
 import InfiniteScroll from 'react-infinite-scroller'
 import '../../../App.scss'
 import './bork-view.scss'
+import Loader from '../../../components/loader/loader'
 
 export interface BorkViewParams {
   txid: string
@@ -111,6 +112,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
           loadMore={this.getBorks}
           hasMore={more}
           useWindow={false}
+          loader={<Loader key={0} />}
         >
           <BorkList borks={extensions} />
           <BorkList borks={comments} />

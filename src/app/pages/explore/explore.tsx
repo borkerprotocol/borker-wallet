@@ -10,6 +10,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
 import BorkList from '../../components/bork-list/bork-list'
 import { getDefaultAvatar } from '../../../util/functions'
+import Loader from '../../components/loader/loader'
 
 export interface ExploreProps extends AuthProps {}
 
@@ -20,7 +21,7 @@ export interface ExploreState {
   moreUsers: boolean
   moreTags: boolean
   moreBorks: boolean
-  tagIndex: number
+  tabIndex: number
 }
 
 class ExplorePage extends React.Component<ExploreProps, ExploreState> {
@@ -36,7 +37,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
       moreUsers: false,
       moreTags: false,
       moreBorks: false,
-      tagIndex: 0,
+      tabIndex: 0,
     }
     this.webService = new WebService()
   }
@@ -48,7 +49,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   }
 
   fetchData = (index: number): void => {
-    this.setState({ tagIndex: index })
+    this.setState({ tabIndex: index })
 
     switch (index) {
       case 0:
@@ -67,7 +68,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   }
 
   fetchMore = async (page: number) => {
-    switch (this.state.tagIndex) {
+    switch (this.state.tabIndex) {
       case 0:
         this.getUsers(page)
         break
@@ -114,8 +115,8 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
   }
 
   render () {
-    const { users, tags, borks, tagIndex, moreUsers, moreTags, moreBorks } = this.state
-    const hasMore = tagIndex === 0 ? moreUsers : tagIndex === 1 ? moreTags : moreBorks
+    const { users, tags, borks, tabIndex, moreUsers, moreTags, moreBorks } = this.state
+    const hasMore = tabIndex === 0 ? moreUsers : tabIndex === 1 ? moreTags : moreBorks
 
     return (
       <InfiniteScroll
@@ -123,6 +124,7 @@ class ExplorePage extends React.Component<ExploreProps, ExploreState> {
         loadMore={this.fetchMore}
         hasMore={hasMore}
         useWindow={false}
+        loader={<Loader key={0} />}
       >
         <div className="page-content">
           <Tabs onSelect={this.fetchData}>

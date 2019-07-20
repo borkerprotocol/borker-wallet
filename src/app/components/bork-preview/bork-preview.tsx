@@ -12,13 +12,14 @@ import { getDefaultAvatar } from '../../../util/functions'
 export interface BorkPreviewComponentProps {
   bork: Bork
   showButtons?: boolean
+  showHeader?: boolean
   isSubBork?: boolean
 }
 
 class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps> {
 
   render () {
-    let { bork, showButtons, isSubBork } = this.props
+    let { bork, showButtons, showHeader, isSubBork } = this.props
     let child: Bork | null = null
     let childText: string = ''
     let childIcon: any
@@ -73,7 +74,7 @@ class BorkPreviewComponent extends React.PureComponent<BorkPreviewComponentProps
     return (
       <div>
         <div className="bork-header">
-          {child &&
+          {child && showHeader &&
             <p className="bork-preview-ref">
               <FontAwesomeIcon
                 icon={childIcon}

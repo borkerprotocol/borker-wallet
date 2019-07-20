@@ -7,6 +7,7 @@ import WebService from '../../../web-service'
 import '../../../App.scss'
 import './bork-tags.scss'
 import { RouteComponentProps } from 'react-router'
+import Loader from '../../../components/loader/loader'
 
 export interface BorkTagsParams {
   tag: string
@@ -67,6 +68,7 @@ class BorkTagsPage extends React.Component<BorkTagsProps, BorkTagsState> {
         loadMore={this.getBorks}
         hasMore={more}
         useWindow={false}
+        loader={<Loader key={0} />}
       >
         <BorkList borks={borks} />
       </InfiniteScroll>

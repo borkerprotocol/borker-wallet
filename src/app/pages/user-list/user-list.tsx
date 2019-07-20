@@ -8,6 +8,7 @@ import FollowButton from '../../components/follow-button/follow-button'
 import InfiniteScroll from 'react-infinite-scroller'
 import './user-list.scss'
 import { getDefaultAvatar } from '../../../util/functions'
+import Loader from '../../components/loader/loader'
 
 export enum FollowsType {
   following = 'following',
@@ -91,6 +92,7 @@ class UserListPage extends React.Component<UserListProps, UserListState> {
         loadMore={this.getUsers}
         hasMore={more}
         useWindow={false}
+        loader={<Loader key={0} />}
       >
         <ul className="user-list">
           {users.map(user => {

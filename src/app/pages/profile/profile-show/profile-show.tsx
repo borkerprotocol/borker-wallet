@@ -12,6 +12,7 @@ import 'react-tabs/style/react-tabs.scss'
 import './profile-show.scss'
 import '../../../App.scss'
 import { getDefaultAvatar } from '../../../../util/functions'
+import Loader from '../../../components/loader/loader'
 
 export interface ProfileShowProps extends AuthProps {
   user: User
@@ -22,7 +23,10 @@ export interface ProfileShowState {
   borks: Bork[]
   likes: Bork[]
   flags: Bork[]
-  more: boolean
+  moreBorks: boolean
+  moreLikes: boolean
+  moreFlags: boolean
+  tabIndex: number
 }
 
 class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState> {
@@ -35,7 +39,10 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
       borks: [],
       likes: [],
       flags: [],
-      more: false,
+      moreBorks: false,
+      moreLikes: false,
+      moreFlags: false,
+      tabIndex: 0,
     }
     this.webService = new WebService()
   }
@@ -43,8 +50,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
   async componentDidMount () {
     this.props.setTitle('Profile')
     this.props.setShowFab(true)
-
-    this.fetchData(0, 1, this.props.user.address)
+    this.getBorks(1, this.props.user.address)
   }
 
   async componentWillReceiveProps (nextProps: ProfileShowProps) {
@@ -52,34 +58,34 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     const newAddress = nextProps.user.address
 
     if (oldAddress !== newAddress) {
-      this.fetchData(0, 1, newAddress)
+      await this.setState({
+        loading: true,
+        borks: [],
+        likes: [],
+        flags: [],
+        moreBorks: false,
+        moreLikes: false,
+        moreFlags: false,
+      })
+      this.fetchData(this.state.tabIndex, newAddress)
     }
   }
 
-  fetchData = (index: number, lastIndex: number, senderAddress: string): void | boolean => {
-    if (index === lastIndex) { return false }
+  fetchData = (index: number, senderAddress: string): void | boolean => {
+    console.log('here')
+    this.setState({ tabIndex: index })
 
     switch (index) {
       case 0:
-        console.log('here')
-        this.setState({
-          loading: true,
-          borks: [],
-        })
+        if (this.state.borks.length) { return }
         this.getBorks(1, senderAddress)
         break
       case 1:
-        this.setState({
-          loading: true,
-          likes: [],
-        })
+        if (this.state.likes.length) { return }
         this.getLikes(1, senderAddress)
         break
       case 2:
-        this.setState({
-          loading: true,
-          flags: [],
-        })
+        if (this.state.flags.length) { return }
         this.getFlags(1, senderAddress)
         break
     }
@@ -94,7 +100,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     }) || []
     this.setState({
       borks: this.state.borks.concat(borks),
-      more: borks.length >= 20,
+      moreBorks: borks.length >= 20,
       loading: false,
     })
   }
@@ -108,7 +114,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     }) || []
     this.setState({
       likes: this.state.likes.concat(likes),
-      more: likes.length >= 20,
+      moreLikes: likes.length >= 20,
       loading: false,
     })
   }
@@ -122,13 +128,13 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     }) || []
     this.setState({
       flags: this.state.flags.concat(flags),
-      more: flags.length >= 20,
+      moreFlags: flags.length >= 20,
       loading: false,
     })
   }
 
   render () {
-    const { loading, borks, likes, flags, more } = this.state
+    const { loading, borks, likes, flags, moreBorks, moreLikes, moreFlags } = this.state
     const { user } = this.props
 
     return (
@@ -149,7 +155,6 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           ) : (
             <div>
               <FollowButton user={user} />
-              <br></br>
               <BlockButton user={user} />
             </div>
           )}
@@ -180,19 +185,20 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             {user.followersCount || 0}<span> Followers</span>
           </Link>
         </p>
-        <Tabs onSelect={(index, lastIndex) => this.fetchData(index, lastIndex, user.address)}>
+        <Tabs onSelect={(index) => this.fetchData(index, user.address)}>
           <TabList>
             <Tab>Borks</Tab>
             <Tab>Likes</Tab>
             <Tab>Flags</Tab>
           </TabList>
 
-          <TabPanel>
+          <TabPanel style={{ height: '700px', overflow: 'auto' }}>
             <InfiniteScroll
               pageStart={1}
               loadMore={(page) => this.getBorks(page, user.address)}
-              hasMore={more}
+              hasMore={moreBorks}
               useWindow={false}
+              loader={<Loader key={0} />}
             >
               {borks.length > 0 &&
                 <BorkList borks={borks.map(b => b)} />
@@ -203,15 +209,16 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             </InfiniteScroll>
           </TabPanel>
 
-          <TabPanel>
+          <TabPanel style={{ height: '700px', overflow: 'auto' }}>
             <InfiniteScroll
               pageStart={1}
               loadMore={(page) => this.getLikes(page, user.address)}
-              hasMore={more}
+              hasMore={moreLikes}
               useWindow={false}
+              loader={<Loader key={0} />}
             >
               {likes.length > 0 &&
-                <BorkList borks={likes.map(l => l)} />
+                <BorkList borks={likes.map(l => l)} showHeader={false} />
               }
               {!likes.length && !loading &&
                 <p>No Likes</p>
@@ -219,12 +226,13 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
             </InfiniteScroll>
           </TabPanel>
 
-          <TabPanel>
+          <TabPanel style={{ height: '700px', overflow: 'auto' }}>
             <InfiniteScroll
               pageStart={1}
               loadMore={(page) => this.getFlags(page, user.address)}
-              hasMore={more}
+              hasMore={moreFlags}
               useWindow={false}
+              loader={<Loader key={0} />}
             >
               {flags.length > 0 &&
                 <BorkList borks={flags.map(f => f)} />

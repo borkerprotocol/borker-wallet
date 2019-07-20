@@ -6,12 +6,16 @@ import './bork-list.scss'
 
 export interface BorkListProps {
   borks: Bork[]
+  showButtons?: boolean
+  showHeader?: boolean
 }
 
 class BorkList extends React.PureComponent<BorkListProps> {
 
   render () {
     const { borks } = this.props
+    const showButtons = this.props.showButtons === undefined ? true : this.props.showButtons
+    const showHeader = this.props.showHeader === undefined ? true : this.props.showHeader
 
     return (
       <ul className="bork-list">
@@ -20,7 +24,8 @@ class BorkList extends React.PureComponent<BorkListProps> {
             <li key={b.txid}>
               <BorkPreviewComponent
                 bork={b}
-                showButtons
+                showButtons={showButtons}
+                showHeader={showHeader}
               />
             </li>
           )

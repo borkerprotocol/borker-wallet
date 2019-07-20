@@ -6,6 +6,7 @@ import BorkList from '../../../components/bork-list/bork-list'
 import WebService from '../../../web-service'
 import '../../../App.scss'
 import './feed.scss'
+import Loader from '../../../components/loader/loader'
 
 export interface FeedProps extends AuthProps {}
 
@@ -69,6 +70,7 @@ class FeedPage extends React.Component<FeedProps, FeedState> {
         loadMore={this.getBorks}
         hasMore={more}
         useWindow={false}
+        loader={<Loader key={0} />}
       >
         <BorkList borks={borks} />
       </InfiniteScroll>
