@@ -72,8 +72,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
   }
 
   fetchData = (index: number, senderAddress: string): void | boolean => {
-    console.log('here')
-    this.setState({ tabIndex: index })
+    this.setState({ loading: true, tabIndex: index })
 
     switch (index) {
       case 0:
