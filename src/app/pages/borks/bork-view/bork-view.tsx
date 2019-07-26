@@ -19,7 +19,6 @@ export interface BorkViewProps extends AuthProps, RouteComponentProps<BorkViewPa
 export interface BorkViewState {
   loading: boolean
   bork: Bork | null
-  extensions: Bork[]
   comments: Bork[]
   more: boolean
 }
@@ -32,7 +31,6 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     this.state = {
       loading: true,
       bork: null,
-      extensions: [],
       comments: [],
       more: false,
     }
@@ -58,44 +56,26 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
     if (!this.state.bork || this.state.bork.txid !== txid) {
       await this.setState({
         bork: await this.webService.getBork(txid),
-        extensions: [],
         comments: [],
       })
     }
 
-    let extensions: Bork[] = []
-    const { extensionsCount, type, parent, position } = this.state.bork!
-    if (extensionsCount > this.state.extensions.length) {
-      extensions = await this.webService.getBorks({
-        parentTxid: type === BorkType.Extension ? parent.txid : txid,
-        startPosition: position + 1,
-        types: [BorkType.Extension],
-        order: { position: 'ASC' },
-        page,
-        perPage: 20,
-      })
-    }
-
-    let comments: Bork[] = []
-    if (extensions.length < 20) {
-      comments = await this.webService.getBorks({
-        parentTxid: txid,
-        types: [BorkType.Comment],
-        page,
-        perPage: 20,
-      })
-    }
+    let comments = await this.webService.getBorks({
+      parentTxid: txid,
+      types: [BorkType.Comment],
+      page,
+      perPage: 20,
+    })
 
     this.setState({
-      extensions: this.state.extensions.concat(extensions),
       comments: this.state.comments.concat(comments),
       loading: false,
-      more: extensions.length >= 20 || comments.length >= 20 ? true : false,
+      more: comments.length >= 20,
     })
   }
 
   render () {
-    const { bork, extensions, comments, loading, more } = this.state
+    const { bork, comments, loading, more } = this.state
 
     if (loading) { return null }
 
@@ -114,7 +94,6 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
           useWindow={false}
           loader={<Loader key={0} />}
         >
-          <BorkList borks={extensions} />
           <BorkList borks={comments} />
         </InfiniteScroll>
       </div>

@@ -59,15 +59,10 @@ class BorkComponent extends React.PureComponent<BorkComponentProps> {
 
     const BorkBody = () => {
       const content = buildContent(bork.content)
-      const body = (<h2>
-        {bork.type === BorkType.Extension ? "…" : ""}
-        {content}
-        {bork.position < bork.extensionsCount ? "…" : ""}
-      </h2>)
 
       return (
         <div className="bork-body-link">
-          {body}
+          <h2>{content}</h2>
         </div>
       )
     }
