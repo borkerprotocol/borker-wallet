@@ -45,9 +45,9 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   }
 
   async componentDidMount () {
-    const { txCount, parent } = this.props
+    const { parent } = this.props
 
-    const fee = txCount ? new BigNumber(txCount).times(100000000) : new BigNumber(100000000)
+    const fee = new BigNumber(100000000)
 
     const tip = parent ? parent.tip : new BigNumber(0)
 
@@ -115,7 +115,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
       // construct the txs
       const rawTxs = localWallet!.newBork(data, inputs, recipient, [], fee.toNumber(), borkerLib.Network.Dogecoin)
       // broadcast
-      let res = await this.webService.signAndBroadcastTx(rawTxs)
+      let res = await this.webService.broadcastTx(rawTxs)
       window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
       window.sessionStorage.setItem('lastTransaction', `${res[res.length - 1]}-0:${rawTxs[rawTxs.length - 1]}`)
       // close modal
@@ -136,7 +136,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         <h1>Order Summary</h1>
         <p>Transaction Type: <b>{type}</b></p>
         <p>Total Transactions: {txCount || 1}</p>
-        <p>Miner Fees: {fee.dividedBy(100000000).toString()} DOGE</p>
+        <p>Miner Fees: {fee.times(txCount || 1).dividedBy(100000000).toString()} DOGE</p>
         {tip.isGreaterThan(0) &&
           <div>
             <p>Base Tip: {tip.dividedBy(100000000).toString()} DOGE</p>

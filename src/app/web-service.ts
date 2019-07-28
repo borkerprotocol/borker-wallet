@@ -43,7 +43,7 @@ class WebService {
     return res.referenceId
   }
 
-  async signAndBroadcastTx (body: string[]): Promise<string[]> {
+  async broadcastTx (body: string[]): Promise<string[]> {
     return this.request({
       method: 'POST',
       url: `/borks/broadcast`,

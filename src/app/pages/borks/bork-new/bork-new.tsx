@@ -59,6 +59,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     const modal = (
       <CheckoutModal
         type={this.props.type}
+        txCount={txCount}
         content={body}
         parent={parent ? {
           txid: parent.txid,
