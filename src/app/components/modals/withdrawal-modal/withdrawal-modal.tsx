@@ -74,7 +74,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
       const rawTx = localWallet!.constructSigned(inputs, address, amount_sat.toNumber(), fee.toNumber(), borkerLib.Network.Dogecoin)
 
       // broadcast
-      let res = await this.webService.signAndBroadcastTx([rawTx])
+      let res = await this.webService.broadcastTx([rawTx])
       window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
       window.sessionStorage.setItem('lastTransaction', `${res[0]}-0:${rawTx}`)
       // close modal
