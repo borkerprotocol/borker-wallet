@@ -18,7 +18,8 @@ export interface CheckoutModalProps extends AuthProps {
 }
 
 export interface CheckoutModalState {
-  fee: BigNumber
+  feePerTx: BigNumber
+  totalFee: BigNumber
   tip: BigNumber
   extraTip: string
   totalCost: BigNumber
@@ -33,7 +34,8 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   constructor (props: CheckoutModalProps) {
     super(props)
     this.state = {
-      fee: new BigNumber(0),
+      feePerTx: new BigNumber(0),
+      totalFee: new BigNumber(0),
       tip: new BigNumber(0),
       extraTip: '',
       totalCost: new BigNumber(0),
@@ -47,14 +49,15 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   async componentDidMount () {
     const { parent } = this.props
 
-    const fee = new BigNumber(100000000)
-
+    const feePerTx = new BigNumber(100000000)
+    const totalFee = feePerTx.times(this.props.txCount || 1)
     const tip = parent ? parent.tip : new BigNumber(0)
 
     this.setState({
-      fee,
+      feePerTx,
+      totalFee,
       tip,
-      totalCost: fee.plus(tip),
+      totalCost: totalFee.plus(tip),
     })
   }
 
@@ -67,7 +70,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     const bigValue = value ? new BigNumber(value).times(100000000) : 0
     this.setState({
       extraTip: value,
-      totalCost: this.state.fee.plus(this.state.tip).plus(bigValue),
+      totalCost: this.state.totalFee.plus(this.state.tip).plus(bigValue),
     })
   }
 
@@ -81,7 +84,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
     try {
       const borkerLib = await import('borker-rs-browser')
       const { type, content, parent, wallet, decryptWallet } = this.props
-      const { fee, tip, extraTip, totalCost, pin } = this.state
+      const { feePerTx, tip, extraTip, totalCost, pin } = this.state
 
       // decrypt wallet and set in memory if not already
       const localWallet = wallet || (await decryptWallet(pin)).childWallet
@@ -113,7 +116,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         { address: parent!.senderAddress, value: tip.plus(new BigNumber(extraTip || 0).times(100000000) || 0).toNumber() } :
         null
       // construct the txs
-      const rawTxs = localWallet!.newBork(data, inputs, recipient, [], fee.toNumber(), borkerLib.Network.Dogecoin)
+      const rawTxs = localWallet!.newBork(data, inputs, recipient, [], feePerTx.toNumber(), borkerLib.Network.Dogecoin)
       // broadcast
       let res = await this.webService.broadcastTx(rawTxs)
       window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
@@ -129,32 +132,31 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
 
   render () {
     const { type, txCount, wallet } = this.props
-    const { tip, extraTip, totalCost, fee, pin, processing, error } = this.state
+    const { tip, extraTip, totalCost, totalFee, pin, processing, error } = this.state
 
     return (
       <div className="checkout-modal-content">
+        <form onSubmit={this.signAndBroadcast} className="checkout-form">
         <h1>Order Summary</h1>
         <p>Transaction Type: <b>{type}</b></p>
         <p>Total Transactions: {txCount || 1}</p>
-        <p>Miner Fees: {fee.times(txCount || 1).dividedBy(100000000).toString()} DOGE</p>
+        <p>Miner Fees: {totalFee.dividedBy(100000000).toString()} DOGE</p>
         {tip.isGreaterThan(0) &&
           <div>
             <p>Base Tip: {tip.dividedBy(100000000).toString()} DOGE</p>
-            <p>Extra Tip: <input type="number" min="0" placeholder="Extra Tip Amount" value={extraTip} onChange={this.handleExtraTip} /></p>
+            <input type="number" min="0" placeholder="Additional tip amount" value={extraTip} onChange={this.handleExtraTip} />
           </div>
         }
-        <br></br>
         <p>Total Cost: <b>{totalCost.dividedBy(100000000).toString()} DOGE</b></p>
-        <form onSubmit={this.signAndBroadcast} className="checkout-form">
-          {!wallet &&
-            <input type="number" placeholder="Pin" value={pin} onChange={this.handlePinChange} />
-          }
-          <div style={{ textAlign: "center" }}>
-            <input type="submit" className="small-button" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
-          </div>
-          {error &&
-            <p style={{ color: 'red' }}>{error}</p>
-          }
+        {!wallet &&
+          <input type="number" placeholder="Pin" value={pin} onChange={this.handlePinChange} />
+        }
+        <div style={{ textAlign: "center" }}>
+          <input type="submit" className="small-button" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
+        </div>
+        {error &&
+          <p style={{ color: 'red' }}>{error}</p>
+        }
         </form>
       </div>
     )
