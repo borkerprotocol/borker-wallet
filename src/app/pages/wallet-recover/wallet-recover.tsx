@@ -1,7 +1,5 @@
 import React from 'react'
-import { JsWallet } from 'borker-rs-browser'
 import { UnauthProps, withUnauthContext } from '../../contexts/unauth-context'
-import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 // import { sampleWords } from '../../../util/mocks'
 import '../../App.scss'
 import './wallet-recover.scss'
@@ -10,14 +8,12 @@ export interface WalletRecoverProps extends UnauthProps { }
 
 export interface WalletRecoverState {
   mnemonic: string
-  wallet: JsWallet | null
   isMnemonicEntered: boolean
 }
 
 class WalletRecoverPage extends React.Component<WalletRecoverProps, WalletRecoverState> {
 
   state = {
-    wallet: null as unknown as JsWallet,
     mnemonic: '',
     isMnemonicEntered: false,
   }
@@ -30,17 +26,9 @@ class WalletRecoverPage extends React.Component<WalletRecoverProps, WalletRecove
   }
 
   genWallet = async (e: React.BaseSyntheticEvent) => {
-    if (!this.state.wallet) {
-      const borkerLib = await import('borker-rs-browser')
-      const wallet = new borkerLib.JsWallet(this.state.mnemonic.trim().replace(/ +/g, " ").toLowerCase().split(' '))
-      await this.setState({ wallet })
-    }
-
-    const modal = (
-      <EncryptModal newWallet={this.state.wallet} />
-    )
-
-    this.props.toggleModal(modal)
+    const borkerLib = await import('borker-rs-browser')
+    const wallet = new borkerLib.JsWallet(this.state.mnemonic.trim().replace(/ +/g, " ").toLowerCase().split(' '))
+    await this.props.login(wallet)
   }
 
   render () {

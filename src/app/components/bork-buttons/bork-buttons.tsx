@@ -8,13 +8,13 @@ import { faHeart as heartOutline } from '@fortawesome/free-regular-svg-icons'
 import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
 import { faRetweet } from '@fortawesome/free-solid-svg-icons'
 import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons'
-import CheckoutModal from '../modals/checkout-modal/checkout-modal'
-import { withAppContext, AppProps } from '../../contexts/app-context'
-import BigNumber from 'bignumber.js'
+import TipModal from '../modals/tip-modal/tip-modal'
 import '../../App.scss'
 import './bork-buttons.scss'
+import { AuthProps, withAuthContext } from '../../contexts/auth-context'
+import { Parent } from '../../pages/auth-routes'
 
-export interface BorkButtonsProps extends AppProps {
+export interface BorkButtonsProps extends AuthProps {
   bork: Bork
   showCount: boolean
 }
@@ -22,19 +22,13 @@ export interface BorkButtonsProps extends AppProps {
 class BorkButtons extends React.PureComponent<BorkButtonsProps> {
 
   rebork = () => {
-    const already = !!this.props.bork.iRebork
     const modal = (
-      <CheckoutModal
-        type={already ? BorkType.Delete : BorkType.Rebork}
-        content={already ? undefined : ''}
-        parent={already ? {
-          txid: this.props.bork.iRebork!,
-          senderAddress: this.props.address,
-          tip: new BigNumber(0),
-        } : {
+      <TipModal
+        type={BorkType.Rebork}
+        content={''}
+        parent={{
           txid: this.props.bork.txid,
           senderAddress: this.props.bork.sender.address,
-          tip: new BigNumber(1000000000),
         }}
       />
     )
@@ -42,41 +36,38 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   like = () => {
-    const already = !!this.props.bork.iLike
     const modal = (
-      <CheckoutModal
-        type={already ? BorkType.Delete : BorkType.Like}
-        parent={already ? {
-          txid: this.props.bork.iLike!,
-          senderAddress: this.props.address,
-          tip: new BigNumber(0),
-        } : {
+      <TipModal
+        type={BorkType.Like}
+        content={''}
+        parent={{
           txid: this.props.bork.txid,
           senderAddress: this.props.bork.sender.address,
-          tip: new BigNumber(1000000000),
         }}
       />
     )
     this.props.toggleModal(modal)
   }
 
-  flag = () => {
-    const already = !!this.props.bork.iFlag
-    const modal = (
-      <CheckoutModal
-        type={already ? BorkType.Delete : BorkType.Flag}
-        parent={already ? {
-          txid: this.props.bork.iFlag!,
-          senderAddress: this.props.address,
-          tip: new BigNumber(0),
-        } : {
-          txid: this.props.bork.txid,
-          senderAddress: this.props.bork.sender.address,
-          tip: new BigNumber(0),
-        }}
-      />
+  flag = async () => {
+    await this.props.signAndBroadcast(
+      BorkType.Flag,
+      undefined,
+      undefined,
+      {
+        txid: this.props.bork.txid,
+        senderAddress: this.props.bork.sender.address,
+      },
     )
-    this.props.toggleModal(modal)
+  }
+
+  delete = async (parent: Parent) => {
+    await this.props.signAndBroadcast(
+      BorkType.Delete,
+      undefined,
+      undefined,
+      parent,
+    )
   }
 
   render () {
@@ -94,7 +85,10 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
               </Link>
             </td>
             <td>
-              <a onClick={this.rebork}>
+              <a onClick={bork.iRebork ? () => this.delete({
+                  txid: this.props.bork.iRebork!,
+                  senderAddress: this.props.address,
+                }) : this.rebork}>
                 <FontAwesomeIcon
                   icon={faRetweet}
                   style={bork.iRebork ? {color: 'green'} : {} }
@@ -102,7 +96,10 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
               </a>
             </td>
             <td>
-              <a onClick={this.like}>
+              <a onClick={bork.iLike ? () => this.delete({
+                  txid: this.props.bork.iLike!,
+                  senderAddress: this.props.address,
+                }) : this.like}>
                 <FontAwesomeIcon
                   icon={bork.iLike ? heartSolid : heartOutline}
                   style={bork.iLike ? {color: 'red'} : {} }
@@ -110,7 +107,10 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
               </a>
             </td>
             <td>
-              <a onClick={this.flag}>
+              <a onClick={bork.iFlag ? () => this.delete({
+                  txid: this.props.bork.iFlag!,
+                  senderAddress: this.props.address,
+                }) : this.flag}>
                 <FontAwesomeIcon
                   icon={faSkullCrossbones}
                   style={bork.iFlag ? {color: 'black'} : {} }
@@ -124,4 +124,4 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 }
 
-export default withAppContext(BorkButtons)
+export default withAuthContext(BorkButtons)

@@ -1,6 +1,5 @@
 import React from 'react'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import { User, BorkType } from '../../../../types/types'
 import { RouteComponentProps } from 'react-router'
 import './profile-edit.scss'
@@ -50,16 +49,9 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     const { type } = this.props.match.params
     const { previousValue, value } = this.state
 
-    const modal = (
-      <CheckoutModal
-        type={type}
-        content={value}
-      />
-    )
-
     return (
       <div className="page-content">
-        <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="profile-edit-form">
+        <form onSubmit={(e) => { e.preventDefault(); this.props.signAndBroadcast(type, undefined, value) }} className="profile-edit-form">
           <label>Value</label>
           <input type="text" value={value} maxLength={77} onChange={this.handleValueChange} />
           <input type="submit" value="Checkout" disabled={previousValue === value} />

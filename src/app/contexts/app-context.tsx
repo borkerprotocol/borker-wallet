@@ -5,8 +5,9 @@ import { JsWallet, JsChildWallet } from 'borker-rs-browser'
 export interface AppContext {
   address: string
   wallet: JsChildWallet | null
-  login: (wallet: JsWallet, pin: string) => Promise<void>
+  login: (wallet: JsWallet) => Promise<void>
   logout: () => Promise<void>
+  encryptWallet: (wallet: JsWallet, pin: string) => Promise<void>
   decryptWallet: (pin: string) => Promise<{ wallet: JsWallet, childWallet: JsChildWallet }>
   toggleModal: (content: JSX.Element | null) => void
 }

@@ -54,7 +54,7 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
 
   getBorks = async (page: number, txid = this.props.match.params.txid) => {
     if (!this.state.bork || this.state.bork.txid !== txid) {
-      await this.setState({
+      this.setState({
         bork: await this.webService.getBork(txid),
         comments: [],
       })

@@ -58,7 +58,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     const newAddress = nextProps.user.address
 
     if (oldAddress !== newAddress) {
-      await this.setState({
+      this.setState({
         loading: true,
         borks: [],
         likes: [],

@@ -1,5 +1,4 @@
 import React from 'react'
-import EncryptModal from '../../components/modals/encrypt-modal/encrypt-modal'
 import { withUnauthContext, UnauthProps } from '../../contexts/unauth-context'
 import { JsWallet } from 'borker-rs-browser'
 // import { sampleWords } from '../../../util/mocks'
@@ -32,10 +31,6 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
       return null
     }
 
-    const modal = (
-      <EncryptModal newWallet={wallet} />
-    )
-
     const words = wallet.words()
 
     return (
@@ -65,7 +60,7 @@ class WalletCreatePage extends React.Component<WalletCreateProps, WalletCreateSt
             </tr>
           </tbody>
         </table>
-        <button className="standard-button" onClick={() => this.props.toggleModal(modal)}>
+        <button className="standard-button" onClick={() => this.props.login(wallet)}>
           Done
         </button>
       </div>

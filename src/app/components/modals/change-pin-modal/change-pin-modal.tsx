@@ -15,7 +15,7 @@ class ChangePinModal extends React.Component<
   ChangePinModalProps,
   ChangePinModalState
 > {
-  constructor(props: ChangePinModalProps) {
+  constructor (props: ChangePinModalProps) {
     super(props)
     this.state = {
       oldPin: '',
@@ -41,10 +41,10 @@ class ChangePinModal extends React.Component<
     if (!wallet) {
       return
     }
-    await this.props.login(wallet, this.state.newPin)
+    await this.props.encryptWallet(wallet, this.state.newPin)
   }
 
-  render() {
+  render () {
     const { oldPin, newPin, error } = this.state
 
     return (

@@ -1,13 +1,20 @@
 .bork-form textarea {
   width: 100%;
   height: 84px;
-  margin: 14px 0;
   box-sizing: border-box;
+  margin-bottom: 24px;
 }
 
 .commenting-on {
   border-bottom: solid;
   border-width: 1px;
   border-color: lightgray;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
+}
+
+.divider {
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: lightgray;
+  margin-bottom: 24px;
 }

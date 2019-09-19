@@ -36,28 +36,30 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
-  login = async (wallet: JsWallet, pin: string) => {
+  login = async (wallet: JsWallet) => {
     const borkerLib = await import('borker-rs-browser')
 
     const child = wallet.childAt([-44, -3, -0, 0, 0])
     const address = child.address(borkerLib.Network.Dogecoin)
-    const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer(), pin).toString()
 
-    await Promise.all([
-      Storage.set('wallet', encrypted),
-      Storage.set('address', address),
-    ])
+    await Storage.set('address', address)
+
+    await this.encryptWallet(wallet, '')
 
     this.setState({
       address,
       wallet: child,
-      modalContent: null,
     })
   }
 
   logout = async () => {
     await Storage.clear()
     this.setState({ address: '', wallet: null })
+  }
+
+  encryptWallet = async (wallet: JsWallet, pin: string): Promise<void> => {
+    const encrypted = CryptoJS.AES.encrypt(wallet.toBuffer(), pin).toString()
+    await Storage.set('wallet', encrypted)
   }
 
   decryptWallet = async (pin: string): Promise<{ wallet: JsWallet, childWallet: JsChildWallet }> => {
@@ -82,12 +84,12 @@ class App extends React.Component<{}, AppState> {
 
   render () {
     const { isLoading, address, wallet, modalContent } = this.state
-    const { login, logout, toggleModal, decryptWallet } = this
+    const { login, logout, toggleModal, encryptWallet, decryptWallet } = this
 
     return isLoading ? (
       <p>loading...</p>
     ) : (
-      <AppContext.Provider value={{ address, wallet, login, logout, toggleModal, decryptWallet }}>
+      <AppContext.Provider value={{ address, wallet, login, logout, toggleModal, encryptWallet, decryptWallet }}>
         {address ? <AuthRoutes /> : <UnauthRotes />}
         <Modal content={modalContent}/>
       </AppContext.Provider>

@@ -9,13 +9,13 @@ export const UnauthContext = React.createContext({} as UnauthContext)
 export type UnauthProps = UnauthContext & AppContext
 
 // unauth HOC
-export function withUnauthContext<P extends UnauthProps>(Component: React.ComponentType<P>) {
+export function withUnauthContext<P extends UnauthProps> (Component: React.ComponentType<P>) {
   const AppComp = withAppContext(Component)
   return class UnauthHOC extends React.PureComponent<
     Omit<P, keyof UnauthProps>,
     UnauthProps
     > {
-    render() {
+    render () {
       return (
         <UnauthContext.Consumer>
           {newProps => <AppComp {...this.props as any} {...newProps} />}

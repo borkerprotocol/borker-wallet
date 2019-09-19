@@ -19,7 +19,7 @@ export interface SettingsState {
 class SettingsPage extends React.Component<SettingsProps, SettingsState> {
   public webService: WebService
 
-  constructor(props: SettingsProps) {
+  constructor (props: SettingsProps) {
     super(props)
     this.state = {
       submitEnabled: false,
@@ -29,7 +29,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     this.webService = new WebService()
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.props.setShowFab(false)
     this.props.setTitle('Settings')
 
@@ -73,7 +73,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     }
   }
 
-  render() {
+  render () {
     const { submitEnabled, borkerip, mnemonic } = this.state
 
     return (
@@ -107,7 +107,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
               className="standard-button"
               onClick={() =>
                 this.props.toggleModal(
-                  <PinModal usePinFn={this.showMnemonic} />
+                  <PinModal usePinFn={this.showMnemonic} />,
                 )
               }
             >

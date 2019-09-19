@@ -1,7 +1,6 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router'
 import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
-import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 import BorkPreviewComponent from '../../../components/bork-preview/bork-preview'
 import WebService from '../../../web-service'
 import { Bork, BorkType } from '../../../../types/types'
@@ -20,6 +19,11 @@ export interface NewBorkProps extends AuthProps, RouteComponentProps<NewBorkPara
 export interface NewBorkState {
   body: string
   parent: Bork | undefined
+  tip: BigNumber
+  extraTip: string
+  pin: string
+  processing: boolean,
+  error: string,
 }
 
 class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
@@ -30,6 +34,11 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     this.state = {
       body: '',
       parent: undefined,
+      tip: new BigNumber(1000000000),
+      extraTip: '',
+      pin: '',
+      processing: false,
+      error: '',
     }
     this.webService = new WebService()
   }
@@ -51,39 +60,51 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     })
   }
 
-  render () {
-    const { body, parent } = this.state
-    const charCount = body.length
-    const txCount = charCount === 0 ? 0 : charCount > 76 ? Math.ceil(1 + (charCount - 76) / 75) : 1
+  handleExtraTip = (e: React.BaseSyntheticEvent) => {
+    this.setState({
+      extraTip: e.target.value || '',
+    })
+  }
 
-    const modal = (
-      <CheckoutModal
-        type={this.props.type}
-        txCount={txCount}
-        content={body}
-        parent={parent ? {
-          txid: parent.txid,
-          senderAddress: parent.sender.address,
-          tip: new BigNumber(1000000000),
-        } : undefined}
-      />
-    )
+  render () {
+    const { body, parent, tip, extraTip } = this.state
+    const hasParent = !!this.props.match.params.txid
 
     return (
       <div className="page-content">
+        {hasParent && !parent &&
+          <div className="commenting-on">
+            Loading Parent...
+          </div>
+        }
         {parent &&
           <div className="commenting-on">
             <b>Commenting On:</b>
             <BorkPreviewComponent bork={parent} />
           </div>
         }
-        <form onSubmit={(e) => { e.preventDefault(); this.props.toggleModal(modal) }} className="bork-form">
-          <textarea value={body} onChange={this.handleBodyChange} />
-          <input type="submit" className="small-button" value="Preview" disabled={!charCount} />
+        <form onSubmit={(e) => { e.preventDefault() }} className="bork-form">
+          {!hasParent &&
+            <textarea value={body} onChange={this.handleBodyChange} />
+          }
+          {hasParent &&
+            <div>
+              <div style={{ marginBottom: '12px' }}>
+                <b>Your comment:</b>
+              </div>
+              <textarea value={body} onChange={this.handleBodyChange} />
+
+              <div className="divider"></div>
+
+              <div style={{ marginBottom: '12px' }}>
+                <b>Tip:</b>
+              </div>
+              <p>Base Tip: {tip.dividedBy(100000000).toString()} DOGE</p>
+              <input type="number" min="0" placeholder="Extra tip" value={extraTip} onChange={this.handleExtraTip} />
+            </div>
+          }
+          <input type="submit" className="small-button" value="Bork!" disabled={!body.length} />
         </form>
-        <br />
-        <p>Character Count: {charCount}</p>
-        <p>Transaction Count: {txCount}</p>
       </div>
     )
   }

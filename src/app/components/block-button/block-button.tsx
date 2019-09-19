@@ -1,9 +1,8 @@
 import React from 'react'
 import { User, BorkType } from '../../../types/types'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
-import CheckoutModal from '../modals/checkout-modal/checkout-modal'
 import './block-button.scss'
-import BigNumber from 'bignumber.js'
+import { Parent } from '../../pages/auth-routes'
 
 export interface BlockButtonProps extends AuthProps {
   user: User
@@ -11,24 +10,40 @@ export interface BlockButtonProps extends AuthProps {
 
 class BlockButton extends React.PureComponent<BlockButtonProps> {
 
+  block = async () => {
+    await this.props.signAndBroadcast(
+      BorkType.Block,
+      undefined,
+      this.props.user.address,
+    )
+  }
+
+  unblock = async (parent: Parent) => {
+    await this.props.signAndBroadcast(
+      BorkType.Delete,
+      undefined,
+      undefined,
+      parent,
+    )
+  }
+
   render () {
 
     return this.props.address === this.props.user.address ? (
       null
     ) : this.props.user.iBlock ? (
       <button
-        onClick={() => this.props.toggleModal(<CheckoutModal type={BorkType.Delete} parent={{
+        onClick={() => this.unblock({
           txid: this.props.user.iBlock,
           senderAddress: this.props.address,
-          tip: new BigNumber(0),
-        }} />)}
+        })}
         className="unblock-button"
       >
         Blocking
       </button>
     ) : (
       <button
-        onClick={() => this.props.toggleModal( <CheckoutModal type={BorkType.Block} content={this.props.user.address} />)}>
+        onClick={this.block}>
         Block
       </button>
     )
