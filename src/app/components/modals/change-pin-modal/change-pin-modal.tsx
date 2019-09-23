@@ -1,9 +1,9 @@
 import React from 'react'
 import '../../../App.scss'
 import './change-pin-modal.scss'
-import { AppProps, withAppContext } from '../../../contexts/app-context'
+import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
 
-export interface ChangePinModalProps extends AppProps {}
+export interface ChangePinModalProps extends AuthProps {}
 
 export interface ChangePinModalState {
   oldPin: string
@@ -35,6 +35,7 @@ class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModal
     try {
       const wallet = await this.props.decryptWallet(this.state.oldPin)
       await this.props.encryptWallet(wallet, this.state.newPin)
+      this.props.toggleModal(null)
     } catch (e) {
       this.setState({ error: e.message })
     }
@@ -47,13 +48,13 @@ class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModal
       <form onSubmit={this.savePin} className="change-pin-form">
         <input
           type="text"
-          placeholder="Old Pin"
+          placeholder="Old Pin (Might be blank)"
           value={oldPin}
           onChange={this.handleOldPinChange}
         />
         <input
-          type="number"
-          placeholder="New Pin (Optional)"
+          type="tel"
+          placeholder="New Pin (Can be blank)"
           value={newPin}
           onChange={this.handleNewPinChange}
         />
@@ -64,4 +65,4 @@ class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModal
   }
 }
 
-export default withAppContext(ChangePinModal)
+export default withAuthContext(ChangePinModal)

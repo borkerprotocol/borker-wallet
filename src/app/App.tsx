@@ -33,7 +33,7 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
-  login = async (wallet: JsWallet) => {
+  login = async (wallet: JsWallet, pin = '') => {
     const borkerLib = await import('borker-rs-browser')
 
     const child = this.getChild(wallet)
@@ -41,7 +41,7 @@ class App extends React.Component<{}, AppState> {
 
     await Storage.set('address', address)
 
-    await this.encryptWallet(wallet, '')
+    await this.encryptWallet(wallet, pin)
 
     this.setState({
       address,

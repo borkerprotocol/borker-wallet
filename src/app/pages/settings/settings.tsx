@@ -49,14 +49,13 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
 
   showMnemonic = async () => {
     if (!this.props.wallet) {
-      let wallet: JsWallet
       try {
-        wallet = await this.props.decryptWallet('')
+        const wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
       } catch (e) {
         this.props.toggleModal(<PinModal callback={this.showMnemonic} />)
         return
       }
-      await this.props.login(wallet)
     }
 
     this.setState({

@@ -116,11 +116,11 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
       let wallet: JsWallet
       try {
         wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
       } catch (e) {
         this.toggleModal(<PinModal callback={this.signAndBroadcast} />)
         return
       }
-      await this.props.login(wallet)
     }
 
     const borkerLib = await import('borker-rs-browser')

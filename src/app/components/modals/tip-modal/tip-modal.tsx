@@ -77,7 +77,7 @@ class TipModal extends React.Component<TipModalProps, TipModalState> {
         <form onSubmit={this.signAndBroadcast} className="tip-form">
         <h1>Tip</h1>
           <p>Base Tip: {tip.dividedBy(100000000).toString()} DOGE</p>
-          <input type="number" min="0" placeholder="Additional tip amount" value={extraTip} onChange={this.handleExtraTip} />
+          <input type="tel" min="0" placeholder="Additional tip amount" value={extraTip} onChange={this.handleExtraTip} />
         <div style={{ textAlign: "center" }}>
           <input type="submit" className="small-button" disabled={processing} value={processing ? 'Processing' : 'Bork!'} />
         </div>
