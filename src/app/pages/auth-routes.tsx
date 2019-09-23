@@ -15,6 +15,9 @@ import BigNumber from 'bignumber.js'
 import WebService from '../web-service'
 import { withAppContext, AppProps } from '../contexts/app-context'
 import { BorkType } from '../../types/types'
+import { JsWallet } from 'borker-rs-browser'
+import PinModal from '../components/modals/pin-modal/pin-modal'
+import Modal from '../components/modals/modal'
 
 export interface AuthRoutesState {
   title: string
@@ -22,6 +25,7 @@ export interface AuthRoutesState {
   showFab: boolean
   sidebarOpen: boolean
   sidebarDocked: boolean
+  modalContent: JSX.Element | null
 }
 
 export interface Parent {
@@ -60,6 +64,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
       showFab: false,
       sidebarDocked: mql.matches,
       sidebarOpen: false,
+      modalContent: null,
     }
     this.webService = new WebService()
   }
@@ -106,6 +111,18 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
     parent?: Parent,
     tip?: BigNumber,
   ): Promise<void> => {
+
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+      } catch (e) {
+        this.toggleModal(<PinModal callback={this.signAndBroadcast} />)
+        return
+      }
+      await this.props.login(wallet)
+    }
+
     const borkerLib = await import('borker-rs-browser')
 
     const feePerTx = new BigNumber(100000000)
@@ -124,31 +141,41 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
         referenceId = parent.txid
       }
     }
-
     // construct params for lib
     const data = {
       type,
       content,
       referenceId,
     }
+    // inputs
     let inputs = utxos.map(utxo => utxo.raw)
     if (inputs.length === 0) {
       const last = window.sessionStorage.getItem('lastTransaction')
       inputs = last ? [last.split(':')[1]] : []
     }
-    const recipient = [BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type) ?
-      { address: parent!.senderAddress, value: tip!.toNumber() } :
-      null
-    // construct the txs
-    const rawTxs = this.props.wallet!.newBork(data, inputs, recipient, [], feePerTx.toNumber(), borkerLib.Network.Dogecoin)
+    // recipient
+    let recipient: { address: string, value: number } | null = null
+    if ([BorkType.Comment, BorkType.Rebork, BorkType.Like].includes(type)) {
+      if (!parent) { throw new Error('missing parent') }
+      if (!tip) { throw new Error('missing tip') }
+      recipient = { address: parent.senderAddress, value: tip.toNumber() }
+    }
+
+    const childWallet = this.props.getChild(this.props.wallet!)
+    const rawTxs = childWallet.newBork(data, inputs, recipient, [], feePerTx.toNumber(), borkerLib.Network.Dogecoin)
     // broadcast
-    let res = await this.webService.broadcastTx(rawTxs)
-    window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
-    window.sessionStorage.setItem('lastTransaction', `${res[res.length - 1]}-0:${rawTxs[rawTxs.length - 1]}`)
+    console.log('boradcasting:', rawTxs)
+    // let res = await this.webService.broadcastTx(rawTxs)
+    // window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
+    // window.sessionStorage.setItem('lastTransaction', `${res[res.length - 1]}-0:${rawTxs[rawTxs.length - 1]}`)
+  }
+
+  toggleModal = (modalContent: JSX.Element | null) => {
+    this.setState({ modalContent })
   }
 
   render () {
-    const { title, balance, sidebarDocked, sidebarOpen, showFab } = this.state
+    const { title, balance, sidebarDocked, sidebarOpen, showFab, modalContent } = this.state
 
     const contentHeader = (
       <div>
@@ -175,6 +202,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
         setShowFab: this.setShowFab,
         getBalance: this.getBalance,
         signAndBroadcast: this.signAndBroadcast,
+        toggleModal: this.toggleModal,
         balance,
       }}>
         <Sidebar {...sidebarProps}>
@@ -213,6 +241,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
             </Link>
           }
         </Sidebar>
+        <Modal content={modalContent}/>
       </AuthContext.Provider>
     )
   }

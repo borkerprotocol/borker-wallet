@@ -4,9 +4,9 @@ import WebService from '../../web-service'
 import * as Storage from 'idb-keyval'
 import '../../App.scss'
 import './settings.scss'
-import * as CryptoJS from 'crypto-js'
 import PinModal from '../../components/modals/pin-modal/pin-modal'
 import ChangePinModal from '../../components/modals/change-pin-modal/change-pin-modal'
+import { JsWallet } from 'borker-rs-browser'
 
 export interface SettingsProps extends AuthProps {}
 
@@ -47,12 +47,21 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     })
   }
 
-  showMnemonic = async (pin: string) => {
-    const { wallet } = await this.props.decryptWallet(pin)
+  showMnemonic = async () => {
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.showMnemonic} />)
+        return
+      }
+      await this.props.login(wallet)
+    }
+
     this.setState({
-      mnemonic: wallet.words().join(' '),
+      mnemonic: this.props.wallet!.words().join(' '),
     })
-    this.props.toggleModal(null)
   }
 
   saveConfig = async (e: React.BaseSyntheticEvent) => {
@@ -105,11 +114,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
           {!mnemonic && (
             <button
               className="standard-button"
-              onClick={() =>
-                this.props.toggleModal(
-                  <PinModal usePinFn={this.showMnemonic} />,
-                )
-              }
+              onClick={this.showMnemonic}
             >
               View Recovery Phrase
             </button>

@@ -58,7 +58,7 @@ class TipModal extends React.Component<TipModalProps, TipModalState> {
         txCount,
         content,
         parent,
-        this.state.tip.plus(this.state.extraTip),
+        this.state.tip.plus(this.state.extraTip || 0),
       )
       this.props.toggleModal(null)
     } catch (e) {

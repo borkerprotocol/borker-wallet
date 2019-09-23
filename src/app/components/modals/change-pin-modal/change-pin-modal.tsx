@@ -1,9 +1,9 @@
 import React from 'react'
 import '../../../App.scss'
 import './change-pin-modal.scss'
-import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
+import { AppProps, withAppContext } from '../../../contexts/app-context'
 
-export interface ChangePinModalProps extends AuthProps {}
+export interface ChangePinModalProps extends AppProps {}
 
 export interface ChangePinModalState {
   oldPin: string
@@ -11,10 +11,7 @@ export interface ChangePinModalState {
   error: string
 }
 
-class ChangePinModal extends React.Component<
-  ChangePinModalProps,
-  ChangePinModalState
-> {
+class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModalState> {
   constructor (props: ChangePinModalProps) {
     super(props)
     this.state = {
@@ -34,14 +31,13 @@ class ChangePinModal extends React.Component<
 
   savePin = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
-    const wallet = await this.props
-      .decryptWallet(this.state.oldPin)
-      .then(res => res.wallet)
-      .catch(err => this.setState({ error: err.message }))
-    if (!wallet) {
-      return
+
+    try {
+      const wallet = await this.props.decryptWallet(this.state.oldPin)
+      await this.props.encryptWallet(wallet, this.state.newPin)
+    } catch (e) {
+      this.setState({ error: e.message })
     }
-    await this.props.encryptWallet(wallet, this.state.newPin)
   }
 
   render () {
@@ -68,4 +64,4 @@ class ChangePinModal extends React.Component<
   }
 }
 
-export default withAuthContext(ChangePinModal)
+export default withAppContext(ChangePinModal)

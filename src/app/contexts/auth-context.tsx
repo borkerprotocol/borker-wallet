@@ -16,6 +16,7 @@ export interface AuthContext {
   setTitle: (title: string) => void
   setShowFab: (showFab: boolean) => void
   getBalance: () => Promise<void>
+  toggleModal: (content: JSX.Element | null) => void
   balance: BigNumber
 }
 export const AuthContext = React.createContext({} as AuthContext)

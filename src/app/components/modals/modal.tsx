@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactModal from 'react-modal'
-import { AppProps, withAppContext } from '../../contexts/app-context'
+import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import './modal.scss'
 
-export interface ModalProps extends AppProps {
+export interface ModalProps extends AuthProps {
   content: JSX.Element | null
 }
 
@@ -22,9 +22,9 @@ class Modal extends React.PureComponent<ModalProps> {
         overlayClassName="Modal-Overlay"
       >
         {content}
-      </ReactModal> 
+      </ReactModal>
     )
   }
 }
 
-export default withAppContext(Modal)
+export default withAuthContext(Modal)

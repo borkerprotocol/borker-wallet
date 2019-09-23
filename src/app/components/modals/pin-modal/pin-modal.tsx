@@ -1,22 +1,25 @@
 import React from 'react'
 import '../../../App.scss'
 import './pin-modal.scss'
+import { AuthProps, withAuthContext } from '../../../contexts/auth-context'
 
-export interface PinModalProps {
-  usePinFn: (pin: string) => Promise<void>
+export interface PinModalProps extends AuthProps {
+  callback: (...args: any[]) => any
 }
 
 export interface PinModalState {
   pin: string
   error: string
+  processing: boolean
 }
 
 class PinModal extends React.Component<PinModalProps, PinModalState> {
-  constructor(props: PinModalProps) {
+  constructor (props: PinModalProps) {
     super(props)
     this.state = {
       pin: '',
       error: '',
+      processing: false,
     }
   }
 
@@ -24,19 +27,25 @@ class PinModal extends React.Component<PinModalProps, PinModalState> {
     this.setState({ pin: e.target.value, error: '' })
   }
 
-  submitPin = (e: React.BaseSyntheticEvent) => {
+  submit = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
-    this.props
-      .usePinFn(this.state.pin)
-      .catch(err => this.setState({ error: err.message }))
+
+    try {
+      const wallet = await this.props.decryptWallet(this.state.pin)
+      await this.props.login(wallet)
+      this.props.toggleModal(null)
+      await this.props.callback()
+    } catch (e) {
+      this.setState({ error: e.message })
+    }
   }
 
-  render() {
+  render () {
     const { pin, error } = this.state
 
     return (
-      <form onSubmit={this.submitPin} className="pin-form">
-        <p>Enter your pin if you have one.</p>
+      <form onSubmit={this.submit} className="pin-form">
+        <p>Please enter your pin</p>
         <input
           type="number"
           placeholder="Pin"
@@ -50,4 +59,4 @@ class PinModal extends React.Component<PinModalProps, PinModalState> {
   }
 }
 
-export default PinModal
+export default withAuthContext(PinModal)
