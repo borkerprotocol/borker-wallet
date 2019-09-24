@@ -50,7 +50,7 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
   async componentDidMount () {
     this.props.setTitle('Profile')
     this.props.setShowFab(true)
-    this.getBorks(1, this.props.user.address)
+    this.fetchData(0, this.props.user.address)
   }
 
   async componentWillReceiveProps (nextProps: ProfileShowProps) {
@@ -72,22 +72,30 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
   }
 
   fetchData = (index: number, senderAddress: string): void | boolean => {
-    this.setState({ loading: true, tabIndex: index })
+    this.setState({ tabIndex: index })
 
+    let fn: () => Promise<any> = () => { return Promise.resolve() }
     switch (index) {
       case 0:
         if (this.state.borks.length) { return }
-        this.getBorks(1, senderAddress)
+        this.setState({ loading: true })
+        fn = () => this.getBorks(1, senderAddress)
         break
       case 1:
         if (this.state.likes.length) { return }
-        this.getLikes(1, senderAddress)
+        this.setState({ loading: true })
+        fn = () => this.getLikes(1, senderAddress)
         break
       case 2:
         if (this.state.flags.length) { return }
-        this.getFlags(1, senderAddress)
+        this.setState({ loading: true })
+        fn = () => this.getFlags(1, senderAddress)
         break
     }
+
+    fn().then(() => {
+      this.setState({ loading: false })
+    })
   }
 
   getBorks = async (page: number, senderAddress: string) => {
@@ -100,7 +108,6 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     this.setState({
       borks: this.state.borks.concat(borks),
       moreBorks: borks.length >= 20,
-      loading: false,
     })
   }
 
@@ -114,7 +121,6 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     this.setState({
       likes: this.state.likes.concat(likes),
       moreLikes: likes.length >= 20,
-      loading: false,
     })
   }
 
@@ -128,7 +134,6 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
     this.setState({
       flags: this.state.flags.concat(flags),
       moreFlags: flags.length >= 20,
-      loading: false,
     })
   }
 
@@ -192,54 +197,69 @@ class ProfileShowPage extends React.Component<ProfileShowProps, ProfileShowState
           </TabList>
 
           <TabPanel style={{ height: '700px', overflow: 'auto' }}>
-            <InfiniteScroll
-              pageStart={1}
-              loadMore={(page) => this.getBorks(page, user.address)}
-              hasMore={moreBorks}
-              useWindow={false}
-              loader={<Loader key={0} />}
-            >
-              {borks.length > 0 &&
-                <BorkList borks={borks.map(b => b)} />
-              }
-              {!borks.length && !loading &&
-                <p>No Borks</p>
-              }
-            </InfiniteScroll>
+            {loading &&
+              <Loader key={0} />
+            }
+            {!loading &&
+              <InfiniteScroll
+                pageStart={1}
+                loadMore={(page) => this.getBorks(page, user.address)}
+                hasMore={moreBorks}
+                useWindow={false}
+                loader={<Loader key={0} />}
+              >
+                {!borks.length &&
+                  <p>No Borks</p>
+                }
+                {!!borks.length &&
+                  <BorkList borks={borks.map(b => b)} />
+                }
+              </InfiniteScroll>
+            }
           </TabPanel>
 
           <TabPanel style={{ height: '700px', overflow: 'auto' }}>
-            <InfiniteScroll
-              pageStart={1}
-              loadMore={(page) => this.getLikes(page, user.address)}
-              hasMore={moreLikes}
-              useWindow={false}
-              loader={<Loader key={0} />}
-            >
-              {likes.length > 0 &&
-                <BorkList borks={likes.map(l => l)} showHeader={false} />
-              }
-              {!likes.length && !loading &&
-                <p>No Likes</p>
-              }
-            </InfiniteScroll>
+            {loading &&
+              <Loader key={0} />
+            }
+            {!loading &&
+              <InfiniteScroll
+                pageStart={1}
+                loadMore={(page) => this.getLikes(page, user.address)}
+                hasMore={moreLikes}
+                useWindow={false}
+                loader={<Loader key={0} />}
+              >
+                {!likes.length &&
+                  <p>No Likes</p>
+                }
+                {!!likes.length &&
+                  <BorkList borks={likes.map(l => l)} showHeader={false} />
+                }
+              </InfiniteScroll>
+            }
           </TabPanel>
 
           <TabPanel style={{ height: '700px', overflow: 'auto' }}>
-            <InfiniteScroll
-              pageStart={1}
-              loadMore={(page) => this.getFlags(page, user.address)}
-              hasMore={moreFlags}
-              useWindow={false}
-              loader={<Loader key={0} />}
-            >
-              {flags.length > 0 &&
-                <BorkList borks={flags.map(f => f)} />
-              }
-              {!flags.length && !loading &&
-                <p>No Flags</p>
-              }
-            </InfiniteScroll>
+            {loading &&
+              <Loader key={0} />
+            }
+            {!loading &&
+              <InfiniteScroll
+                pageStart={1}
+                loadMore={(page) => this.getFlags(page, user.address)}
+                hasMore={moreFlags}
+                useWindow={false}
+                loader={<Loader key={0} />}
+              >
+                {!flags.length &&
+                  <p>No Flags</p>
+                }
+                {!!flags.length &&
+                  <BorkList borks={flags.map(f => f)} />
+                }
+              </InfiniteScroll>
+            }
           </TabPanel>
         </Tabs>
       </div>

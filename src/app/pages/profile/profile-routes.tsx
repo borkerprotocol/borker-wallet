@@ -7,6 +7,7 @@ import { User } from '../../../types/types'
 import WebService from '../../web-service'
 import '../../App.scss'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
+import Loader from '../../components/loader/loader'
 
 export interface ProfileRoutesParams {
   address: string
@@ -18,6 +19,7 @@ export interface ProfileRoutesProps
 
 export interface ProfileRoutesState {
   user: User | null
+  loading: boolean
 }
 
 class ProfileRoutes extends React.Component<
@@ -30,6 +32,7 @@ class ProfileRoutes extends React.Component<
     super(props)
     this.state = {
       user: null,
+      loading: true,
     }
     this.webService = new WebService()
   }
@@ -37,6 +40,7 @@ class ProfileRoutes extends React.Component<
   async componentDidMount () {
     this.setState({
       user: await this.webService.getUser(this.props.match.params.address),
+      loading: false,
     })
   }
 
@@ -45,6 +49,7 @@ class ProfileRoutes extends React.Component<
     const newAddress = nextProps.match.params.address
 
     if (oldAddress !== newAddress) {
+      this.setState({ loading: true })
       this.setState({
         user: await this.webService.getUser(newAddress),
       })
@@ -52,9 +57,17 @@ class ProfileRoutes extends React.Component<
   }
 
   render () {
-    const { user } = this.state
+    const { user, loading } = this.state
 
-    return !user ? null : (
+    if (loading) {
+      return (
+        <Loader key={0} />
+      )
+    }
+
+    return !user ? (
+      <p>User not found.</p>
+    ) : (
       <Switch>
         <Route
           exact

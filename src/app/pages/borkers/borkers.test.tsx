@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import ExplorePage from './explore'
+import BorkersPage from './borkers'
 
 // it('renders without crashing', () => {
 //   const div = document.createElement('div')
-//   ReactDOM.render(<ExplorePage />, div)
+//   ReactDOM.render(<BorkersPage />, div)
 //   ReactDOM.unmountComponentAtNode(div)
 // })

@@ -5,7 +5,7 @@ import SidebarContent from '../components/sidebar-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import BorksRoutes from './borks/bork-routes'
-import ExplorePage from './explore/explore'
+import BorkersPage from './borkers/borkers'
 import WalletPage from './wallet/wallet'
 import SettingsPage from './settings/settings'
 import ProfileRoutes from './profile/profile-routes'
@@ -216,8 +216,8 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
             />
             <Route
               exact
-              path="/explore"
-              component={ExplorePage}
+              path="/borkers"
+              component={BorkersPage}
             />
             <Route
               path="/profile/:address"

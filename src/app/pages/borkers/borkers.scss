@@ -1,4 +1,4 @@
-.bork-list {
+.user-list {
   list-style: none;
   margin-top: 0;
   padding-left: 0;
@@ -6,7 +6,16 @@
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-color: lightgray;
-    // overflow: hidden;
-    word-wrap: break-word;
+    overflow: hidden;
   }
+}
+
+.user-item {
+  margin: 14px;
+}
+
+.user-item-follow {
+  position: relative;
+  float: right;
+  margin-right: 14px;
 }

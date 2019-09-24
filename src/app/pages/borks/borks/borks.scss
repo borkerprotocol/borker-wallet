@@ -2,18 +2,6 @@ body.noScroll { /* ...or body.dialogShowing */
   overflow: hidden;
 }
 
-.user-list {
-  list-style: none;
-  margin-top: 0;
-  padding-left: 0;
-  & li {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: lightgray;
-    overflow: hidden;
-  }
-}
-
 .tag-list {
   list-style: none;
   margin-top: 0;
@@ -28,14 +16,4 @@ body.noScroll { /* ...or body.dialogShowing */
       padding-left: 20px;
     }
   }
-}
-
-.user-item {
-  margin: 14px;
-}
-
-.user-item-follow {
-  position: relative;
-  float: right;
-  margin-right: 14px;
 }

@@ -18,3 +18,11 @@
   border-color: lightgray;
   margin-bottom: 24px;
 }
+
+.bork-form input[type=number] {
+  width: 100%;
+  padding: 8px;
+  font-size: .7rem;
+  margin-bottom: 36px;
+  box-sizing: border-box;
+}

@@ -6,7 +6,6 @@ import '../../App.scss'
 import './settings.scss'
 import PinModal from '../../components/modals/pin-modal/pin-modal'
 import ChangePinModal from '../../components/modals/change-pin-modal/change-pin-modal'
-import { JsWallet } from 'borker-rs-browser'
 
 export interface SettingsProps extends AuthProps {}
 
@@ -87,7 +86,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
     return (
       <div className="page-content">
         <form onSubmit={this.saveConfig} className="settings-edit-form">
-          <label>Borker IP Address</label>
+          <label>Borker URL/IP Address</label>
           <input
             type="text"
             value={borkerip}
@@ -106,7 +105,7 @@ class SettingsPage extends React.Component<SettingsProps, SettingsState> {
             className="standard-button"
             onClick={() => this.props.toggleModal(<ChangePinModal />)}
           >
-            Change Pin
+            Set/Change Pin
           </button>
         </div>
         <div style={{ marginBottom: '40px' }}>

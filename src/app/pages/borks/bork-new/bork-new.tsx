@@ -7,6 +7,7 @@ import { Bork, BorkType } from '../../../../types/types'
 import BigNumber from 'bignumber.js'
 import './bork-new.scss'
 import '../../../App.scss'
+import { Parent } from '../../auth-routes'
 
 export interface NewBorkParams {
   txid: string
@@ -34,7 +35,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     this.state = {
       body: '',
       parent: undefined,
-      tip: new BigNumber(1000000000),
+      tip: this.props.match.params.txid ? new BigNumber(1000000000) : new BigNumber(0),
       extraTip: '',
       pin: '',
       processing: false,
@@ -66,6 +67,28 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     })
   }
 
+  bork = async (e: React.BaseSyntheticEvent) => {
+    e.preventDefault()
+
+    this.setState({ processing: true })
+
+    const charCount = this.state.body.length
+    const txCount = charCount === 0 ? 0 : charCount > 76 ? Math.ceil(1 + (charCount - 76) / 75) : 1
+
+    const parent: Parent | undefined = this.state.parent ? {
+      txid: this.state.parent.txid,
+      senderAddress: this.state.parent.sender.address,
+    } : undefined
+
+    await this.props.signAndBroadcast(
+      this.props.type,
+      txCount,
+      this.state.body,
+      parent,
+      this.state.tip.plus(this.state.extraTip || 0),
+    )
+  }
+
   render () {
     const { body, parent, tip, extraTip } = this.state
     const hasParent = !!this.props.match.params.txid
@@ -83,7 +106,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
             <BorkPreviewComponent bork={parent} />
           </div>
         }
-        <form onSubmit={(e) => { e.preventDefault() }} className="bork-form">
+        <form onSubmit={this.bork} className="bork-form">
           {!hasParent &&
             <textarea value={body} onChange={this.handleBodyChange} />
           }
@@ -100,7 +123,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
                 <b>Tip:</b>
               </div>
               <p>Base Tip: {tip.dividedBy(100000000).toString()} DOGE</p>
-              <input type="number" min="0" placeholder="Extra tip" value={extraTip} onChange={this.handleExtraTip} />
+              <input type="number" min="0" placeholder="Additional tip amount" value={extraTip} onChange={this.handleExtraTip} />
             </div>
           }
           <input type="submit" className="small-button" value="Bork!" disabled={!body.length} />

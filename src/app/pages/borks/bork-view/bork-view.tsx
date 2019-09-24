@@ -77,7 +77,11 @@ class BorkViewPage extends React.Component<BorkViewProps, BorkViewState> {
   render () {
     const { bork, comments, loading, more } = this.state
 
-    if (loading) { return null }
+    if (loading) {
+      return (
+        <Loader key={0} />
+      )
+    }
 
     return !bork ? (
       <div>

@@ -48,13 +48,13 @@ class ChangePinModal extends React.Component<ChangePinModalProps, ChangePinModal
       <form onSubmit={this.savePin} className="change-pin-form">
         <input
           type="text"
-          placeholder="Old Pin (Might be blank)"
+          placeholder="Old pin (optional)"
           value={oldPin}
           onChange={this.handleOldPinChange}
         />
         <input
           type="tel"
-          placeholder="New Pin (Can be blank)"
+          placeholder="New pin (optional)"
           value={newPin}
           onChange={this.handleNewPinChange}
         />

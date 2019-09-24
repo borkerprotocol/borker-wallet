@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import FeedPage from './feed/feed'
+import BorksPage from './borks/borks'
 import BorkViewPage from './bork-view/bork-view'
 import BorkNewPage from './bork-new/bork-new'
 import UserListPage from '../user-list/user-list'
@@ -12,7 +12,7 @@ class BorksRoutes extends React.Component<{}, {}> {
   render () {
     return (
       <Switch>
-        <Route exact path="/borks/feed" component={FeedPage} />
+        <Route exact path="/borks" component={BorksPage} />
         <Route
           exact
           path="/borks/new"
@@ -44,7 +44,7 @@ class BorksRoutes extends React.Component<{}, {}> {
           path="/borks/:ref/flags"
           render={props => <UserListPage {...props} filter={BorkType.Flag} />}
         />
-        <Redirect to="/borks/feed" />
+        <Redirect to="/borks" />
       </Switch>
     )
   }

@@ -100,7 +100,7 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
       <form onSubmit={this.withdraw} className="withdrawal-form">
         <h2>Withdrawal</h2>
         <input type="text" placeholder="Destination Address" value={address} onChange={this.handleAddressChange} />
-        <input type="tel" placeholder="Amount" value={amount} onChange={this.handleAmountChange} />
+        <input type="number" min="0" placeholder="Amount" value={amount} onChange={this.handleAmountChange} />
         <p>Available: <a className={"clickable"} onClick={this.fillMax}>{balance && balance.isGreaterThan(0) ? balance.dividedBy(100000000).toFormat(8) : new BigNumber(0).toFormat(8)}</a></p>
         <br />
         <br />
