@@ -13,6 +13,8 @@ import '../../App.scss'
 import './bork-buttons.scss'
 import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import { Parent } from '../../pages/auth-routes'
+import { JsWallet } from 'borker-rs-browser'
+import PinModal from '../modals/pin-modal/pin-modal'
 
 export interface BorkButtonsProps extends AuthProps {
   bork: Bork
@@ -21,7 +23,18 @@ export interface BorkButtonsProps extends AuthProps {
 
 class BorkButtons extends React.PureComponent<BorkButtonsProps> {
 
-  rebork = () => {
+  rebork = async () => {
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.rebork} />)
+        return
+      }
+    }
+
     const modal = (
       <TipModal
         type={BorkType.Rebork}
@@ -35,7 +48,18 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
     this.props.toggleModal(modal)
   }
 
-  like = () => {
+  like = async () => {
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.like} />)
+        return
+      }
+    }
+
     const modal = (
       <TipModal
         type={BorkType.Like}

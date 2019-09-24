@@ -4,6 +4,8 @@ import './withdrawal-modal.scss'
 import WebService from '../../../web-service'
 import PinModal from '../pin-modal/pin-modal'
 import { withAuthContext, AuthProps } from '../../../contexts/auth-context'
+import * as Storage from 'idb-keyval'
+import ConfirmModal from '../confirm-modal/confirm-modal'
 
 export interface WithdrawalModalProps extends AuthProps { }
 
@@ -75,12 +77,12 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
       const rawTx = childWallet.constructSigned(inputs, address, amount_sat.toNumber(), fee.toNumber(), borkerLib.Network.Dogecoin)
 
       // broadcast
-      console.log('rawTx: ', rawTx)
-      // let res = await this.webService.broadcastTx([rawTx])
-      // window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
-      // window.sessionStorage.setItem('lastTransaction', `${res[0]}-0:${rawTx}`)
-      // close modal
-      this.props.toggleModal(null)
+      let res = await this.webService.broadcastTx([rawTx])
+      window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
+      window.sessionStorage.setItem('lastTransaction', `${res[0]}-0:${rawTx}`)
+      // show confirm modal maybe
+      const hideConfirmation = await Storage.get('hideConfirmation')
+      this.props.toggleModal(hideConfirmation ? null : <ConfirmModal />)
     } catch (err) {
       this.setState({
         error: `Error processing withdrawal: "${err.message}"`,

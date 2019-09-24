@@ -34,7 +34,7 @@ class PinModal extends React.Component<PinModalProps, PinModalState> {
       const wallet = await this.props.decryptWallet(this.state.pin)
       await this.props.login(wallet, this.state.pin)
       this.props.toggleModal(null)
-      await this.props.callback()
+      this.props.callback()
     } catch (e) {
       this.setState({ error: e.message })
     }
@@ -45,10 +45,10 @@ class PinModal extends React.Component<PinModalProps, PinModalState> {
 
     return (
       <form onSubmit={this.submit} className="pin-form">
-        <p>Please enter your pin</p>
+        <p>First, please enter your pin to decrypt your wallet.</p>
         <input
           type="tel"
-          placeholder="Pin"
+          placeholder="Wallet pin"
           value={pin}
           onChange={this.handlePinChange}
         />

@@ -22,7 +22,6 @@ export interface NewBorkState {
   parent: Bork | undefined
   tip: BigNumber
   extraTip: string
-  pin: string
   processing: boolean,
   error: string,
 }
@@ -37,7 +36,6 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
       parent: undefined,
       tip: this.props.match.params.txid ? new BigNumber(1000000000) : new BigNumber(0),
       extraTip: '',
-      pin: '',
       processing: false,
       error: '',
     }
@@ -70,7 +68,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
   bork = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
 
-    this.setState({ processing: true })
+    this.setState({ processing: true, error: '' })
 
     const charCount = this.state.body.length
     const txCount = charCount === 0 ? 0 : charCount > 76 ? Math.ceil(1 + (charCount - 76) / 75) : 1
@@ -80,13 +78,25 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
       senderAddress: this.state.parent.sender.address,
     } : undefined
 
-    await this.props.signAndBroadcast(
-      this.props.type,
-      txCount,
-      this.state.body,
-      parent,
-      this.state.tip.plus(this.state.extraTip || 0),
-    )
+    try {
+      await this.props.signAndBroadcast(
+        this.props.type,
+        txCount,
+        this.state.body,
+        parent,
+        this.state.tip.plus(this.state.extraTip || 0),
+      )
+      this.setState({
+        processing: false,
+        body: '',
+        extraTip: '',
+      })
+    } catch (e) {
+      this.setState({
+        processing: false,
+        error: e.message,
+      })
+    }
   }
 
   render () {

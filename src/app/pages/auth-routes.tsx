@@ -18,6 +18,8 @@ import { BorkType } from '../../types/types'
 import { JsWallet } from 'borker-rs-browser'
 import PinModal from '../components/modals/pin-modal/pin-modal'
 import Modal from '../components/modals/modal'
+import * as Storage from 'idb-keyval'
+import ConfirmModal from '../components/modals/confirm-modal/confirm-modal'
 
 export interface AuthRoutesState {
   title: string
@@ -118,7 +120,7 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
         wallet = await this.props.decryptWallet('')
         await this.props.login(wallet)
       } catch (e) {
-        this.toggleModal(<PinModal callback={this.signAndBroadcast} />)
+        this.toggleModal(<PinModal callback={() => this.signAndBroadcast(type, txCount, content, parent, tip)} />)
         return
       }
     }
@@ -164,10 +166,12 @@ class AuthRoutes extends React.Component<AppProps, AuthRoutesState> {
     const childWallet = this.props.getChild(this.props.wallet!)
     const rawTxs = childWallet.newBork(data, inputs, recipient, [], feePerTx.toNumber(), borkerLib.Network.Dogecoin)
     // broadcast
-    console.log('boradcasting:', rawTxs)
-    // let res = await this.webService.broadcastTx(rawTxs)
-    // window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
-    // window.sessionStorage.setItem('lastTransaction', `${res[res.length - 1]}-0:${rawTxs[rawTxs.length - 1]}`)
+    let res = await this.webService.broadcastTx(rawTxs)
+    window.sessionStorage.setItem('usedUTXOs', ret_utxos.map(u => `${u.txid}-${u.position}`) + ',' + (window.sessionStorage.getItem('lastTransaction') || '').split(':')[0])
+    window.sessionStorage.setItem('lastTransaction', `${res[res.length - 1]}-0:${rawTxs[rawTxs.length - 1]}`)
+    // show confirm modal maybe
+    const hideConfirmation = await Storage.get('hideConfirmation')
+    this.toggleModal(hideConfirmation ? null : <ConfirmModal />)
   }
 
   toggleModal = (modalContent: JSX.Element | null) => {

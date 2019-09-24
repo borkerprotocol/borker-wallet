@@ -5,6 +5,8 @@ import WithdrawalModal from '../../components/modals/withdrawal-modal/withdrawal
 import '../../App.scss'
 import './wallet.scss'
 import BigNumber from 'bignumber.js'
+import { JsWallet } from 'borker-rs-browser'
+import PinModal from '../../components/modals/pin-modal/pin-modal'
 
 export interface WalletProps extends AuthProps { }
 
@@ -14,6 +16,21 @@ class WalletPage extends React.PureComponent<WalletProps> {
     this.props.setShowFab(false)
     this.props.setTitle('Wallet')
     this.props.getBalance()
+  }
+
+  withdraw = async () => {
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.withdraw} />)
+        return
+      }
+    }
+
+    this.props.toggleModal(<WithdrawalModal />)
   }
 
   render () {
@@ -30,7 +47,7 @@ class WalletPage extends React.PureComponent<WalletProps> {
           <tbody>
             <tr>
               <td><button onClick={() => this.props.toggleModal(<DepositModal />)}>Deposit</button></td>
-              <td><button onClick={() => this.props.toggleModal(<WithdrawalModal />)}>Withdraw</button></td>
+              <td><button onClick={this.withdraw}>Withdraw</button></td>
             </tr>
           </tbody>
         </table>
