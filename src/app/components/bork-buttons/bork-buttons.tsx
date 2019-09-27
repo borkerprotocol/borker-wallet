@@ -15,6 +15,7 @@ import { AuthProps, withAuthContext } from '../../contexts/auth-context'
 import { Parent } from '../../pages/auth-routes'
 import { JsWallet } from 'borker-rs-browser'
 import PinModal from '../modals/pin-modal/pin-modal'
+import CheckoutModal from '../modals/checkout-modal/checkout-modal'
 
 export interface BorkButtonsProps extends AuthProps {
   bork: Bork
@@ -74,24 +75,48 @@ class BorkButtons extends React.PureComponent<BorkButtonsProps> {
   }
 
   flag = async () => {
-    await this.props.signAndBroadcast(
-      BorkType.Flag,
-      undefined,
-      undefined,
-      {
-        txid: this.props.bork.txid,
-        senderAddress: this.props.bork.sender.address,
-      },
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.flag} />)
+        return
+      }
+    }
+
+    const modal = (
+      <CheckoutModal
+        type={BorkType.Flag}
+        parent={{
+          txid: this.props.bork.txid,
+          senderAddress: this.props.bork.sender.address,
+        }}
+      />
     )
+    this.props.toggleModal(modal)
   }
 
   delete = async (parent: Parent) => {
-    await this.props.signAndBroadcast(
-      BorkType.Delete,
-      undefined,
-      undefined,
-      parent,
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.delete} />)
+        return
+      }
+    }
+
+    const modal = (
+      <CheckoutModal
+        type={BorkType.Delete}
+        parent={parent}
+      />
     )
+    this.props.toggleModal(modal)
   }
 
   render () {
