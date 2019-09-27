@@ -44,6 +44,7 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
   }
 
   render () {
+    const { processing } = this.state
 
     return (
       <div className="confirm-modal-content">
@@ -55,8 +56,9 @@ class CheckoutModal extends React.Component<CheckoutModalProps, CheckoutModalSta
         <button
           onClick={this.broadcast}
           className="small-button"
+          disabled={processing}
         >
-          Broadcast!
+          {processing ? 'Processing' : 'Broadcast!'}
         </button>
       </div>
     )

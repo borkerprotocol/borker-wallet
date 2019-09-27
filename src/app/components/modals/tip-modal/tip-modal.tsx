@@ -58,7 +58,7 @@ class TipModal extends React.Component<TipModalProps, TipModalState> {
         txCount,
         content,
         parent,
-        this.state.tip.plus(this.state.extraTip || 0),
+        this.state.tip.plus(this.state.extraTip ? new BigNumber(this.state.extraTip).times(100000000) : 0),
       )
     } catch (e) {
       this.setState({
