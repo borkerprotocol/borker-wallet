@@ -100,7 +100,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
   }
 
   render () {
-    const { body, parent, tip, extraTip } = this.state
+    const { body, parent, tip, extraTip, processing } = this.state
     const hasParent = !!this.props.match.params.txid
 
     return (
@@ -136,7 +136,12 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
               <input type="number" min="0" placeholder="Additional tip amount" value={extraTip} onChange={this.handleExtraTip} />
             </div>
           }
-          <input type="submit" className="small-button" value="Bork!" disabled={!body.length} />
+          <input
+            type="submit"
+            className="small-button"
+            value={processing ? 'Processing' : 'Broadcast!'}
+            disabled={!body.length || processing}
+          />
         </form>
       </div>
     )
