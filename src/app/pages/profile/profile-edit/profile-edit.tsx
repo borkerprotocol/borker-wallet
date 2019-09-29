@@ -4,6 +4,9 @@ import { User, BorkType } from '../../../../types/types'
 import { RouteComponentProps } from 'react-router'
 import './profile-edit.scss'
 import '../../../App.scss'
+import { JsWallet } from 'borker-rs-browser'
+import PinModal from '../../../components/modals/pin-modal/pin-modal'
+import CheckoutModal from '../../../components/modals/checkout-modal/checkout-modal'
 
 export interface ProfileEditParams {
   type: BorkType.SetName | BorkType.SetBio | BorkType.SetAvatar
@@ -45,16 +48,40 @@ class ProfileEditPage extends React.Component<ProfileEditProps, ProfileEditState
     })
   }
 
+  broadcast = async (e: React.BaseSyntheticEvent) => {
+    if (e) {
+      e.preventDefault()
+    }
+
+    if (!this.props.wallet) {
+      let wallet: JsWallet
+      try {
+        wallet = await this.props.decryptWallet('')
+        await this.props.login(wallet)
+      } catch (e) {
+        this.props.toggleModal(<PinModal callback={this.broadcast} />)
+        return
+      }
+    }
+
+    const modal = (
+      <CheckoutModal
+        type={this.props.match.params.type}
+        content={this.state.value}
+      />
+    )
+    this.props.toggleModal(modal)
+  }
+
   render () {
-    const { type } = this.props.match.params
     const { previousValue, value } = this.state
 
     return (
       <div className="page-content">
-        <form onSubmit={(e) => { e.preventDefault(); this.props.signAndBroadcast(type, undefined, value) }} className="profile-edit-form">
+        <form onSubmit={this.broadcast} className="profile-edit-form">
           <label>Value</label>
           <input type="text" value={value} maxLength={77} onChange={this.handleValueChange} />
-          <input type="submit" value="Checkout" disabled={previousValue === value} />
+          <input type="submit" className="small-button" value="Broadcast!" disabled={previousValue === value} />
         </form>
       </div>
     )

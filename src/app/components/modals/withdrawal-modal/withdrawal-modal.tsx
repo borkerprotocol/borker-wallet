@@ -41,7 +41,9 @@ class WithdrawalModal extends React.Component<WithdrawalModalProps, WithdrawalMo
   }
 
   withdraw = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    if (e) {
+      e.preventDefault()
+    }
 
     this.setState({
       processing: true,

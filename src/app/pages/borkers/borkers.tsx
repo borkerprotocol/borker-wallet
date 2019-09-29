@@ -34,7 +34,7 @@ class BorkersPage extends React.Component<BorkersProps, BorkersState> {
 
   async componentDidMount () {
     this.props.setTitle('Borkers')
-    this.props.setShowFab(true)
+    this.props.setShowFab(false)
     await this.getUsers(1)
     this.setState({ loading: false })
   }
