@@ -34,7 +34,7 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
     this.state = {
       body: '',
       parent: undefined,
-      tip: this.props.match.params.txid ? new BigNumber(1000000000) : new BigNumber(0),
+      tip: this.props.match.params.txid ? new BigNumber(100000000) : new BigNumber(0),
       extraTip: '',
       processing: false,
       error: '',
@@ -105,42 +105,42 @@ class NewBorkPage extends React.Component<NewBorkProps, NewBorkState> {
 
     return (
       <div className="page-content">
-        {hasParent && !parent &&
+        { hasParent && !parent &&
           <div className="commenting-on">
             Loading Parent...
           </div>
         }
-        {parent &&
+        { parent &&
           <div className="commenting-on">
             <b>Commenting On:</b>
-            <BorkPreviewComponent bork={parent} />
+            <BorkPreviewComponent bork={ parent} />
           </div>
         }
-        <form onSubmit={this.bork} className="bork-form">
-          {!hasParent &&
-            <textarea value={body} onChange={this.handleBodyChange} />
+        <form onSubmit={ this.bork} className="bork-form">
+          { !hasParent &&
+            <textarea value={ body} onChange={ this.handleBodyChange} />
           }
-          {hasParent &&
+          { hasParent &&
             <div>
-              <div style={{ marginBottom: '12px' }}>
+              <div style={ { marginBottom: '12px' }}>
                 <b>Your comment:</b>
               </div>
-              <textarea value={body} onChange={this.handleBodyChange} />
+              <textarea value={ body} onChange={ this.handleBodyChange} />
 
               <div className="divider"></div>
 
-              <div style={{ marginBottom: '12px' }}>
+              <div style={ { marginBottom: '12px' }}>
                 <b>Tip:</b>
               </div>
-              <p>Base Tip: {tip.dividedBy(100000000).toString()} DOGE</p>
-              <input type="number" min="0" placeholder="Additional tip amount" value={extraTip} onChange={this.handleExtraTip} />
+              <p>Base Tip: { tip.dividedBy(100000000).toString()} DOGE</p>
+              <input type="number" min="0" placeholder="Additional tip amount" value={ extraTip} onChange={ this.handleExtraTip} />
             </div>
           }
           <input
             type="submit"
             className="small-button"
-            value={processing ? 'Processing' : 'Broadcast!'}
-            disabled={!body.length || processing}
+            value={ processing ? 'Processing' : 'Broadcast!'}
+            disabled={ !body.length || processing}
           />
         </form>
       </div>
