@@ -4,8 +4,6 @@ Borker is a first-of-its-kind, Twitter-like microblogging platform built on top 
 
 The Borker-Wallet is a Progressive Web Application (PWA) and cryptocurrency wallet for managing private keys and publishing and consuming information on the Borker network.
 
-https://wallet.borker.io
-
 ## Installation Instructions
 
 ### Install Node.js if not installed
