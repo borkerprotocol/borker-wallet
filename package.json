@@ -28,7 +28,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-modal": "^3.8.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1",
+    "react-scripts": "5.0.1",
     "react-sidebar": "^3.0.2",
     "react-tabs": "^3.0.0",
     "request": "^2.88.0",
